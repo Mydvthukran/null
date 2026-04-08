@@ -105,6 +105,16 @@ const Navbar = () => {
         { name: 'Video Gallery', href: '/life-at-siet/video-gallery' },
         { name: 'Events & Activities', href: '/life-at-siet/events-activities' }
       ]
+    },
+    {
+      name: 'Notices',
+      href: '/all-notices',
+      submenu: null
+    },
+    {
+      name: 'Admission',
+      href: '/admission-form',
+      submenu: null
     }
   ];
 
@@ -167,9 +177,9 @@ const Navbar = () => {
           </ul>
 
           <div className="nav-actions">
-            <a href="#contact" className="nav-cta" onClick={closeMobileMenu}>
+            <Link to="/contact" className="nav-cta" onClick={closeMobileMenu}>
               Contact
-            </a>
+            </Link>
           </div>
         </div>
       </div>
