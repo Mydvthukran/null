@@ -19,6 +19,21 @@ const Footer = () => {
     { label: 'Top-Level Sections', to: '/top-level-sections' },
   ];
 
+  const importantLinks = [
+    { label: 'Tech Admissions Haryana', href: 'https://techadmissionshry.gov.in/' },
+    { label: 'Tech Education Haryana', href: 'https://www.techeduhry.gov.in/' },
+    { label: 'HSTES', href: 'https://www.hstes.org.in/' },
+    { label: 'Higher Education Haryana', href: 'https://highereduhry.ac.in/' },
+    { label: 'AICTE', href: 'https://www.aicte.gov.in/' },
+    { label: 'JEE Main', href: 'https://jeemain.nta.nic.in/' },
+    { label: 'KUK Date Sheet', href: 'https://kuk.ac.in/date-sheet/' },
+    { label: 'Panchkula NIC', href: 'https://panchkula.nic.in/' },
+    { label: 'Nichar Haryana', href: 'https://nicharyana.nic.in/' },
+    { label: 'Haryana Government', href: 'https://www.haryana.gov.in/' },
+    { label: 'DIPR Haryana Twitter', href: 'https://x.com/DiprHaryana' },
+    { label: 'NITTTR Chandigarh', href: 'https://www.nitttrchd.ac.in/' },
+  ];
+
   return (
     <footer className="footer" id="contact">
       <div className="footer-top">
@@ -38,6 +53,17 @@ const Footer = () => {
                 {quickLinks.map((link) => (
                   <li key={link.label}>
                     <Link to={link.to}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h3 className="footer-title">IMPORTANT LINKS</h3>
+              <ul className="footer-links">
+                {importantLinks.map((link) => (
+                  <li key={link.label}>
+                    <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
                   </li>
                 ))}
               </ul>

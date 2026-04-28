@@ -46,21 +46,7 @@ const createDepartmentDemoSections = (departmentName, focusAreas, routeSlug) => 
       ['TBA', 'Assistant Professor', 'Lab Coordination']
     ]
   },
-  {
-    id: 'lesson-plans',
-    title: 'Lesson Plans',
-    route: routeSlug ? `/departments/${routeSlug}/lesson-plans` : undefined,
-    body: [
-      'Unit-wise teaching plans, assignments, and lab schedules will be published each semester.',
-      'Lesson plans are structured to maintain pace, improve outcomes, and ensure timely syllabus completion with practical exposure.'
-    ],
-    points: [
-      'Week 1–2: Foundation lectures and orientation.',
-      'Week 3–4: Lab exercises and tutorial sessions.',
-      'Week 5+: Internal assessment and project discussions.',
-      'End-term review: Revision, doubt sessions, and exam readiness support.'
-    ]
-  },
+  
   {
     id: 'time-table',
     title: 'Time Table',
