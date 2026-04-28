@@ -35,7 +35,6 @@ export const departmentSectionPaths = [
   'about-department',
   'vision-mission',
   'faculty',
-  'lesson-plans',
   'time-table'
 ];
 
@@ -43,6 +42,5 @@ export const departmentSectionTitles = {
   'about-department': 'About Department',
   'vision-mission': 'Vision & Mission',
   faculty: 'Faculty',
-  'lesson-plans': 'Lesson Plans',
   'time-table': 'Time Table'
 };

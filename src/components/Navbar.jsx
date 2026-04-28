@@ -84,7 +84,6 @@ const Navbar = () => {
             { name: 'About Department', href: '/departments/cse#about-department' },
             { name: 'Vision & Mission', href: '/departments/cse#vision-mission' },
             { name: 'Faculty', href: '/departments/cse#faculty' },
-            { name: 'Lesson Plans', href: '/departments/cse#lesson-plans' },
             { name: 'Time Table', href: '/departments/cse#time-table' }
           ]
         },
@@ -95,7 +94,6 @@ const Navbar = () => {
             { name: 'About Department', href: '/departments/ai-ml#about-department' },
             { name: 'Vision & Mission', href: '/departments/ai-ml#vision-mission' },
             { name: 'Faculty', href: '/departments/ai-ml#faculty' },
-            { name: 'Lesson Plans', href: '/departments/ai-ml#lesson-plans' },
             { name: 'Time Table', href: '/departments/ai-ml#time-table' }
           ]
         },
@@ -106,7 +104,6 @@ const Navbar = () => {
             { name: 'About Department', href: '/departments/cyber-security#about-department' },
             { name: 'Vision & Mission', href: '/departments/cyber-security#vision-mission' },
             { name: 'Faculty', href: '/departments/cyber-security#faculty' },
-            { name: 'Lesson Plans', href: '/departments/cyber-security#lesson-plans' },
             { name: 'Time Table', href: '/departments/cyber-security#time-table' }
           ]
         },
@@ -117,7 +114,6 @@ const Navbar = () => {
             { name: 'About Department', href: '/departments/robotics#about-department' },
             { name: 'Vision & Mission', href: '/departments/robotics#vision-mission' },
             { name: 'Faculty', href: '/departments/robotics#faculty' },
-            { name: 'Lesson Plans', href: '/departments/robotics#lesson-plans' },
             { name: 'Time Table', href: '/departments/robotics#time-table' }
           ]
         },
@@ -128,7 +124,6 @@ const Navbar = () => {
             { name: 'About Department', href: '/departments/electrical-engineering#about-department' },
             { name: 'Vision & Mission', href: '/departments/electrical-engineering#vision-mission' },
             { name: 'Faculty', href: '/departments/electrical-engineering#faculty' },
-            { name: 'Lesson Plans', href: '/departments/electrical-engineering#lesson-plans' },
             { name: 'Time Table', href: '/departments/electrical-engineering#time-table' }
           ]
         },
@@ -139,7 +134,6 @@ const Navbar = () => {
             { name: 'About Department', href: '/departments/electronics-vlsi#about-department' },
             { name: 'Vision & Mission', href: '/departments/electronics-vlsi#vision-mission' },
             { name: 'Faculty', href: '/departments/electronics-vlsi#faculty' },
-            { name: 'Lesson Plans', href: '/departments/electronics-vlsi#lesson-plans' },
             { name: 'Time Table', href: '/departments/electronics-vlsi#time-table' }
           ]
         }

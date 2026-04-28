@@ -23,11 +23,11 @@ function Home() {
       {/* About Institute */}
       <AboutInstituteHome />
 
-      {/* Director's Message Section */}
-      <DirectorDesk />
-
       {/* Vision & Mission */}
       <VisionMissionHome />
+
+      {/* Director's Message Section */}
+      <DirectorDesk />
 
       {/* Courses Section - Current and Upcoming Programs */}
       <Courses />
