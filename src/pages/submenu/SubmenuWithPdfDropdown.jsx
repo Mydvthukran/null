@@ -44,6 +44,7 @@ const SubmenuWithPdfDropdown = ({
               <div className="submenu-hero-copy">
                 <p className="submenu-kicker">{sectionLabel}</p>
                 <h1 className="submenu-title">{title}</h1>
+                <div className="title-underline" style={{ marginTop: '0.6rem' }}></div>
                 {subtitle ? <p className="submenu-subtitle">{subtitle}</p> : null}
                 <div className="submenu-hero-actions">
                   <Link to={sectionHome.to} className="submenu-action-btn secondary">Back</Link>

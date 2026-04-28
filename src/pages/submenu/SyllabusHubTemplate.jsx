@@ -52,6 +52,7 @@ const SyllabusHubTemplate = ({
                 <div className="submenu-hero-copy">
                   <p className="submenu-kicker">{sectionLabel}</p>
                   <h1 className="submenu-title">{title}</h1>
+                  <div className="title-underline" style={{ marginTop: '0.6rem' }}></div>
                   {subtitle ? <p className="submenu-subtitle">{subtitle}</p> : null}
                   <div className="submenu-hero-actions">
                     <Link to={sectionHome.to} className="submenu-action-btn secondary">Back</Link>
@@ -69,16 +70,16 @@ const SyllabusHubTemplate = ({
             <main className="submenu-main">
               <div className="submenu-content-card syllabus-hub-shell">
                 {hideHero ? (
-                  <div className="submenu-inline-header">
-                    <p className="submenu-inline-kicker">{sectionLabel}</p>
-                    <div className="submenu-inline-header-row">
-                      <div>
-                        <h1 className="submenu-inline-title">{title}</h1>
-                        {subtitle ? <p className="submenu-inline-subtitle">{subtitle}</p> : null}
-                      </div>
+                  <>
+                    <div className="section-header" style={{ marginBottom: '1rem' }}>
+                      <h1 className="section-title">{title}</h1>
+                      <div className="title-underline"></div>
+                      {subtitle ? <p className="section-subtitle">{subtitle}</p> : null}
+                    </div>
+                    <div style={{ marginBottom: '1.5rem' }}>
                       <Link to={sectionHome.to} className="submenu-inline-back">Back</Link>
                     </div>
-                  </div>
+                  </>
                 ) : null}
 
                 <div className="syllabus-finder-bar">

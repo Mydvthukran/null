@@ -34,7 +34,10 @@ const SubmenuTemplate = ({
           <div className="submenu-layout">
             <main className="submenu-main">
               <div className="submenu-content-card">
-                <h2 className="submenu-section-title">{title}</h2>
+                <div className="section-header">
+                  <h1 className="section-title">{title}</h1>
+                  <div className="title-underline"></div>
+                </div>
                 <div className="submenu-prose">
                   <SubmenuBodyProse body={body} resources={resources} points={points} />
 

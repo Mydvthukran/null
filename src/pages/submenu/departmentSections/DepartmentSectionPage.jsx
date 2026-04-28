@@ -76,7 +76,10 @@ const DepartmentSectionPage = () => {
           <div className="submenu-layout">
             <main className="submenu-main">
               <div className="submenu-content-card">
-                <h2 className="submenu-section-title">{config.title}</h2>
+                <div className="section-header">
+                  <h1 className="section-title">{config.title}</h1>
+                  <div className="title-underline"></div>
+                </div>
                 <p className="submenu-paragraph" style={{ marginBottom: '1.5rem' }}>
                   {departmentDescriptions[deptSlug]}
                 </p>

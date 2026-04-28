@@ -20,7 +20,10 @@ const SubmenuWithTabs = ({
           <div className="submenu-layout">
             <main className="submenu-main">
               <div className="submenu-content-card">
-                <h2 className="submenu-section-title">{title}</h2>
+                <div className="section-header">
+                  <h1 className="section-title">{title}</h1>
+                  <div className="title-underline"></div>
+                </div>
                 {resolvedTabs.length > 0 ? (
                   <>
                     <div className="submenu-tabs" role="tablist" aria-label={`${title} content tabs`}>
