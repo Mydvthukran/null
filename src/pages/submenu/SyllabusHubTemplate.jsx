@@ -30,6 +30,7 @@ const SyllabusHubTemplate = ({
           key: c.key || c.label,
           label: c.label || c.key,
           pdfUrl: c.pdfUrl || '',
+          hasFile: Boolean(c.pdfUrl),
         })),
     [courses]
   );
@@ -105,7 +106,7 @@ const SyllabusHubTemplate = ({
                       >
                         {filtered.map((c) => (
                           <option key={c.key} value={c.key}>
-                            {c.label}
+                            {c.hasFile ? c.label : `${c.label} (No file)`}
                           </option>
                         ))}
                         {filtered.length === 0 && <option value="">No programs match search</option>}
@@ -135,7 +136,7 @@ const SyllabusHubTemplate = ({
                       />
                     ) : (
                       <div className="submenu-pdf-empty syllabus-empty-state">
-                        <p className="submenu-paragraph">Select a program from the finder above to view the syllabus.</p>
+                        <p className="submenu-paragraph">No file for this selection.</p>
                       </div>
                     )}
                   </div>

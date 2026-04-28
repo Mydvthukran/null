@@ -17,11 +17,16 @@ import galleryAltImage from '../../assets/new-assets/life at siet/gallery/IMG_19
 import libraryImage from '../../assets/new-assets/life at siet/gallery/IMG_1922-1024x768.jpg';
 import inspectionImage from '../../assets/new-assets/life at siet/gallery/Inspection-Pic-1024x768.jpg';
 import teacherImage from '../../assets/new-assets/depatment/facalities/teachers/anil-kumar.jpg';
-import academicCalendarDoc from '../../assets/new-assets/home/notices/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
-import leetSyllabusDoc from '../../assets/new-assets/home/notices/B.Tech-LEET-Syllabus-2025-26-07.05.2025.pdf';
+import firstYearSyllabusDoc from '../../assets/new-assets/student/syllabus/B.Tech_.-1st-Year-Common-Syllabus-1 (1).pdf';
+import cseAimlCsSecondYearSyllabusDoc from '../../assets/new-assets/student/syllabus/B.Tech_CSE-AIML-CS_2ndyear_2025onwards.pdf';
+import roboticsAutomationSyllabusDoc from '../../assets/new-assets/student/syllabus/B.tech_syllabus_RoboticsAutomation (1).pdf';
+import aimlSemesterFiveSixSyllabusDoc from '../../assets/new-assets/student/syllabus/AIML-5-6-SEM (1).pdf';
 import beBtechBarchProspectusDoc from '../../assets/new-assets/student/admission prospectus/BE-BTech-BArch-Prospectus-2025.pdf';
 import btechLeetProspectusDoc from '../../assets/new-assets/student/admission prospectus/BTechLE-Prospectus-2025.pdf';
 import createDepartmentDemoSections from './departmentDemoSections';
+
+const kukWebsiteUrl = 'https://kuk.ac.in/';
+const kukDateSheetUrl = 'https://kuk.ac.in/date-sheet/';
 
 const academicCalendarImage = null;
 const facilitiesImage = campusImage;
@@ -281,14 +286,14 @@ export const submenuData = {
     image: academicCalendarImage,
     showHeroImage: false,
     body: [
-      'Download the latest academic calendar for session dates, exam schedules, and semester timelines.'
+      'Refer to the official Kurukshetra University website for the latest academic calendar, session dates, and semester timelines.'
     ],
     resources: [
-      { label: 'Open Academic Calendar (PDF)', href: academicCalendarDoc }
+      { label: 'Kurukshetra University Website', href: kukWebsiteUrl }
     ],
     points: [
-      'Semester dates and class commencement notices are published under Updates.',
-      'Track announcements regularly for the latest term dates.'
+      'Semester dates and class commencement notices are published by Kurukshetra University.',
+      'Check the official KUK website regularly for updates to the academic calendar.'
     ]
   },
   'academics/syllabus': {
@@ -296,16 +301,16 @@ export const submenuData = {
     title: 'Syllabus',
     subtitle: 'Search and open the syllabus PDF for your program.',
     courses: [
-      { key: 'btech-1st', label: 'B.tech 1st year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-cse-aiml-2nd', label: 'B.tech CSE AIML-2nd year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-cse-cs-2nd', label: 'B.tech CSE CS-2nd year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-ra-2nd', label: 'B.tech Robotics & Automation-2nd year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-cse-aiml-3rd', label: 'B.tech CSE AIML-3rd year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-cse-cs-3rd', label: 'B.tech CSE CS-3rd year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-ra-3rd', label: 'B.tech Robotics & Automation-3rd year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-cse-aiml-4th', label: 'B.tech CSE AIML-4th year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-cse-cs-4th', label: 'B.tech CSE CS-4th year', pdfUrl: leetSyllabusDoc },
-      { key: 'btech-ra-4th', label: 'B.tech Robotics & Automation-4th year', pdfUrl: leetSyllabusDoc }
+      { key: 'btech-1st', label: 'B.tech 1st year', pdfUrl: firstYearSyllabusDoc },
+      { key: 'btech-cse-aiml-2nd', label: 'B.tech CSE AIML-2nd year', pdfUrl: cseAimlCsSecondYearSyllabusDoc },
+      { key: 'btech-cse-cs-2nd', label: 'B.tech CSE CS-2nd year', pdfUrl: cseAimlCsSecondYearSyllabusDoc },
+      { key: 'btech-ra-2nd', label: 'B.tech Robotics & Automation-2nd year', pdfUrl: roboticsAutomationSyllabusDoc },
+      { key: 'btech-cse-aiml-3rd', label: 'B.tech CSE AIML-3rd year', pdfUrl: aimlSemesterFiveSixSyllabusDoc },
+      { key: 'btech-cse-cs-3rd', label: 'B.tech CSE CS-3rd year', pdfUrl: null },
+      { key: 'btech-ra-3rd', label: 'B.tech Robotics & Automation-3rd year', pdfUrl: null },
+      { key: 'btech-cse-aiml-4th', label: 'B.tech CSE AIML-4th year', pdfUrl: null },
+      { key: 'btech-cse-cs-4th', label: 'B.tech CSE CS-4th year', pdfUrl: null },
+      { key: 'btech-ra-4th', label: 'B.tech Robotics & Automation-4th year', pdfUrl: null }
     ],
     body: [
       'Find and download the official syllabus for each year and department below.'
@@ -353,12 +358,13 @@ export const submenuData = {
     title: 'Exam Schedule',
     image: academicCalendarImage,
     resources: [
-      { label: 'Student Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/' }
+      { label: 'Kurukshetra University Date Sheet', href: kukDateSheetUrl },
+      { label: 'Kurukshetra University Website', href: kukWebsiteUrl }
     ],
     points: [
-      'External practical datesheets are announced through official updates.',
-      'Follow notified timings, dress code, and exam-day instructions.',
-      'Date-wise exam notices are posted on the Updates page.'
+      'External practical datesheets are announced through Kurukshetra University.',
+      'Follow the notified timings and exam-day instructions published on the KUK website.',
+      'Use the official KUK date sheet for current exam schedule updates.'
     ]
   },
   'academics/code-of-conduct': {
