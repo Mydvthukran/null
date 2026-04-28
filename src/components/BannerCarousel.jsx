@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import ScrollReveal from './ScrollReveal';
-import galleryOne from '../assets/new-assets/gallery/1-1-1024x768.jpg';
-import galleryTwo from '../assets/new-assets/gallery/3-1-edited.jpg';
-import galleryThree from '../assets/new-assets/gallery/IMG_1922-1024x768.jpg';
-import galleryFour from '../assets/new-assets/gallery/IMG_1927-1024x768.jpg';
-import galleryFive from '../assets/new-assets/gallery/Inspection-Pic-1024x768.jpg';
-import gallerySix from '../assets/new-assets/gallery/sportsmeetpic_nancy-edited.jpg';
+import galleryOne from '../assets/new-assets/home/gallery/1-1-1024x768.jpg';
+import galleryTwo from '../assets/new-assets/home/gallery/3-1-edited.jpg';
+import galleryThree from '../assets/new-assets/home/gallery/IMG_1922-1024x768.jpg';
+import galleryFour from '../assets/new-assets/home/gallery/IMG_1927-1024x768.jpg';
+import galleryFive from '../assets/new-assets/home/gallery/Inspection-Pic-1024x768.jpg';
+import gallerySix from '../assets/new-assets/home/gallery/sportsmeetpic_nancy-edited.jpg';
 
 const banners = [
   {

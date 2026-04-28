@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import heroBg1 from '../assets/new-assets/hero-home/siet1.jpg';
-import heroBg2 from '../assets/new-assets/hero-home/siet2.jpg';
-import heroBg3 from '../assets/new-assets/hero-home/siet3.jpeg';
-import heroBg4 from '../assets/new-assets/hero-home/siet2.webp';
+import heroBg1 from '../assets/new-assets/home/hero-home/siet1.jpg';
+import heroBg2 from '../assets/new-assets/home/hero-home/siet2.jpg';
+import heroBg3 from '../assets/new-assets/home/hero-home/siet3.jpeg';
+import heroBg4 from '../assets/new-assets/home/hero-home/siet2.webp';
 /**
  * Hero Component
  * Hero banner with rotating backgrounds and quick actions

@@ -119,7 +119,7 @@ const SubmenuDocumentHub = ({
                               onClick={() => setActiveKey(d.key)}
                             >
                               <span className="doc-panel-item-title">{d.label}</span>
-                              <span className="doc-panel-item-meta">{d.pdfUrl ? 'PDF' : 'Pending'}</span>
+                              <span className="doc-panel-item-meta">{d.pdfUrl ? 'PDF' : 'No file'}</span>
                             </button>
                           );
                         })}

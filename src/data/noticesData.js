@@ -1,20 +1,21 @@
-import meritListDoc from '../assets/new-assets/notifications/12th-merit-list.pdf';
-import aicteQualificationsDoc from '../assets/new-assets/notifications/AICTE-Degree-Pay-Qualifications-and-Promotions.pdf';
-import applicationPklDoc from '../assets/new-assets/notifications/Application-PKL.pdf';
-import leetSyllabusDoc from '../assets/new-assets/notifications/B.Tech-LEET-Syllabus-2025-26-07.05.2025.pdf';
-import btechLeetDoc from '../assets/new-assets/notifications/B.Tech_LEET.pdf';
-import btechProspectusDoc from '../assets/new-assets/notifications/BTech-Prospectus-2025-26-1.pdf';
-import leetKeyDatesDoc from '../assets/new-assets/notifications/BTechLE-KeyDates-2025.pdf';
-import admissionDocsDoc from '../assets/new-assets/notifications/Doc_B.techAdmission2025.pdf';
-import admissionDocsAltDoc from '../assets/new-assets/notifications/Doc_B.techAdmission2025-1.pdf';
-import feeStructureDoc from '../assets/new-assets/notifications/Fee_Structure_b.tech_2025.pdf';
-import guestFacultyGuidelinesDoc from '../assets/new-assets/notifications/Guidelines-for-engagement-of-Guest-Faculty-Instructors-dated-22.12.2022.pdf';
-import iitRoparDoc from '../assets/new-assets/notifications/IITROPAR.pdf';
-import jeeListDoc from '../assets/new-assets/notifications/jee-list.pdf';
-import ptmNoticeDoc from '../assets/new-assets/notifications/Notice-PTM.pdf';
-import martyrdomQuizDoc from '../assets/new-assets/notifications/Quiz-Competition-on-Martyrdom-Day.pdf';
-import academicCalendarDoc from '../assets/new-assets/notifications/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
-import trainingPolicyDoc from '../assets/new-assets/notifications/training-policy.pdf';
+import meritListDoc from '../assets/new-assets/home/notices/12th-merit-list.pdf';
+import aicteQualificationsDoc from '../assets/new-assets/home/notices/AICTE-Degree-Pay-Qualifications-and-Promotions.pdf';
+import applicationPklDoc from '../assets/new-assets/home/notices/Application-PKL.pdf';
+import leetSyllabusDoc from '../assets/new-assets/home/notices/B.Tech-LEET-Syllabus-2025-26-07.05.2025.pdf';
+import btechLeetDoc from '../assets/new-assets/home/notices/B.Tech_LEET.pdf';
+import btechProspectusDoc from '../assets/new-assets/home/notices/BTech-Prospectus-2025-26-1.pdf';
+import leetKeyDatesDoc from '../assets/new-assets/home/notices/BTechLE-KeyDates-2025.pdf';
+import admissionDocsAltDoc from '../assets/new-assets/home/notices/Doc_B.techAdmission2025-1.pdf';
+import feeStructureDoc from '../assets/new-assets/home/notices/Fee_Structure_b.tech_2025.pdf';
+import guestFacultyGuidelinesDoc from '../assets/new-assets/home/notices/Guidelines-for-engagement-of-Guest-Faculty-Instructors-dated-22.12.2022.pdf';
+import iitRoparDoc from '../assets/new-assets/home/notices/IITROPAR.pdf';
+import jeeListDoc from '../assets/new-assets/home/notices/jee-list.pdf';
+import ptmNoticeDoc from '../assets/new-assets/home/notices/Notice-PTM.pdf';
+import martyrdomQuizDoc from '../assets/new-assets/home/notices/Quiz-Competition-on-Martyrdom-Day.pdf';
+import academicCalendarDoc from '../assets/new-assets/home/notices/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
+import trainingPolicyDoc from '../assets/new-assets/home/notices/training-policy.pdf';
+
+const admissionDocsDoc = null;
 
 export const noticesBoardData = [
   {

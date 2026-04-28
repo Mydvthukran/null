@@ -1,3 +1,15 @@
+import ankitaPhoto from '../assets/new-assets/depatment/facalities/teachers/ANKITA.jpg';
+import divyaGargPhoto from '../assets/new-assets/depatment/facalities/teachers/DIVYAGARG.jpg';
+import divyaSinglaPhoto from '../assets/new-assets/depatment/facalities/teachers/DIVYASINGLA (1).jpg';
+import elamPhoto from '../assets/new-assets/depatment/facalities/teachers/ELAM.jpg';
+import luxmiPhoto from '../assets/new-assets/depatment/facalities/teachers/LUXMI.jpg';
+import milapPhoto from '../assets/new-assets/depatment/facalities/teachers/MILAP.jpg';
+import monikaPhoto from '../assets/new-assets/depatment/facalities/teachers/MONIKA.jpg';
+import niveditaPhoto from '../assets/new-assets/depatment/facalities/teachers/NAVNEETA.jpg';
+import reenaPhoto from '../assets/new-assets/depatment/facalities/teachers/REENADULL.jpg';
+import rituPhoto from '../assets/new-assets/depatment/facalities/teachers/RITU.jpg';
+import tusharPhoto from '../assets/new-assets/depatment/facalities/teachers/TUSHAR.jpg';
+
 const ALL_DEPARTMENTS = [
   'cse',
   'ai-ml',
@@ -7,7 +19,7 @@ const ALL_DEPARTMENTS = [
   'electronics-vlsi'
 ];
 
-export const facultyProfiles = [
+const facultyProfilesData = [
   {
     slug: 'dr-milap-sharma',
     name: 'Dr. Milap Sharma',
@@ -28,7 +40,7 @@ export const facultyProfiles = [
     email: 'jiwan.soloman.ankita@gmail.com',
     areaOfInterest: 'Object Oriented Programming, Database System, C, C++, Python',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682850',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture2.jpg',
+    image: null,
     departments: ['cse']
   },
   {
@@ -39,7 +51,7 @@ export const facultyProfiles = [
     email: 'divya29garg@gmail.com',
     areaOfInterest: 'Affective Computing, Artificial Intelligence, Human Computer Interaction',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682325',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture3.jpg',
+    image: null,
     departments: ['ai-ml', 'cse']
   },
   {
@@ -51,7 +63,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'C, C++, VB, Network Security, Software Engineering, Wireless Sensor Networks, Artificial Intelligence',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682537',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture4.jpg',
+    image: null,
     departments: ['cyber-security', 'cse']
   },
   {
@@ -63,7 +75,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'Advance Database Management System, Python, Data Analytics, Data Structure and Algorithm, MATLAB, Wireless Sensor Network',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682335',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture5.jpg',
+    image: null,
     departments: ['cse', 'ai-ml']
   },
   {
@@ -75,7 +87,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'English Literature, Language and Linguistics, Translation Studies, Regional and Folk Literature, Indian Aesthetics and Indian Knowledge System, Soft Skills and Personality Development',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/683757',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture6.jpg',
+    image: null,
     departments: ALL_DEPARTMENTS
   },
   {
@@ -87,7 +99,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'Power System Protection, Power System Stability, Automatic Generation Control using Fuzzy Logic Controller, Power Electronics and Drives, Electrical Vehicles',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/681915',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture7.jpg',
+    image: null,
     departments: ['electrical-engineering', 'electronics-vlsi']
   },
   {
@@ -99,7 +111,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'Reliability Analysis, Mathematical Modeling of Industrial Machines, Mechanical Modeling, Laplace Transformation, Stochastic Process, Statistics',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682378',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture8.jpg',
+    image: null,
     departments: ['robotics', 'electrical-engineering']
   },
   {
@@ -111,7 +123,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'C, C++, Python, Computer Networks, Network Security, Wireless Networks, Artificial Intelligence, Software Engineering',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682375',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture9.jpg',
+    image: null,
     departments: ['cyber-security', 'cse']
   },
   {
@@ -123,7 +135,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'Cyber Security, Computer Networks, Ad Hoc Network, DBMS, Agile Software Development, Cloud Computing, Software Verification Validation and Testing',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682234',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture10.jpg',
+    image: null,
     departments: ['cyber-security']
   },
   {
@@ -135,7 +147,7 @@ export const facultyProfiles = [
     areaOfInterest:
       'Computer Network, Python, Internet of Things, Computer Architecture, DBMS, Artificial Intelligence, Discrete Mathematics',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682303',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture11.jpg',
+    image: null,
     departments: ['ai-ml', 'cse']
   },
   {
@@ -146,10 +158,29 @@ export const facultyProfiles = [
     email: 'drdivvyasingla@gmail.com',
     areaOfInterest: 'Software Engineering, Database Management System, Machine Learning, Artificial Intelligence',
     vidwan: 'https://vidwan.inflibnet.ac.in/profile/682323',
-    image: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/02/Picture12.jpg',
+    image: null,
     departments: ['ai-ml', 'cse']
   }
 ];
+
+const facultyImageBySlug = {
+  'dr-milap-sharma': milapPhoto,
+  'mrs-ankita-jiwan': ankitaPhoto,
+  'dr-divya-garg': divyaGargPhoto,
+  'ms-luxmi-sharma': luxmiPhoto,
+  'ms-nivedita-kapoor': niveditaPhoto,
+  'ms-reena-dhull': reenaPhoto,
+  'dr-elam-siwach': elamPhoto,
+  'ms-monika': monikaPhoto,
+  'er-tushar': tusharPhoto,
+  'ms-ritu-kadiyan': rituPhoto,
+  'dr-divya-singla': divyaSinglaPhoto
+};
+
+export const facultyProfiles = facultyProfilesData.map((profile) => ({
+  ...profile,
+  image: facultyImageBySlug[profile.slug] ?? profile.image
+}));
 
 export const facultySourceUrl = 'https://sietpanchkula.ac.in/faculty/';
 

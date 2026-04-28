@@ -1,29 +1,30 @@
-import campusImage from '../../assets/new-assets/hero-home/siet1.jpg';
-import campusAltImage from '../../assets/new-assets/hero-home/siet2.jpg';
-import directorImage from '../../assets/new-assets/principal-photo/prienciple.jpeg';
-import aiMlImage from '../../assets/new-assets/courses/AI-ML.jpg';
-import cyberImage from '../../assets/new-assets/courses/Cyber-Security.jpg';
-import roboticsImage from '../../assets/new-assets/courses/Robotics-Automation.jpg';
-import cseDeptImage from '../../assets/new-assets/courses/cse.jpeg';
-import electricalDeptImage from '../../assets/new-assets/courses/electrical.jpeg';
-import electronicsDeptImage from '../../assets/new-assets/courses/electronics.jpeg';
-import academicCalendarImage from '../../assets/new-assets/teachers/Academic-Calendar-2025-26-733x1024.jpg';
-import facilitiesImage from '../../assets/new-assets/campus/siet-panchkula-building.jpg';
-import competitionImage from '../../assets/new-assets/events/Web-Development-Competition.jpg';
-import expertLectureImage from '../../assets/new-assets/events/Expert_Lecture-1-724x1024.jpg';
-import walkInImage from '../../assets/new-assets/events/walk-in-1024x593.png';
-import campusLifeImage from '../../assets/new-assets/gallery/1-1-1024x768.jpg';
-import sportsImage from '../../assets/new-assets/gallery/sportsmeetpic_nancy-edited.jpg';
-import galleryImage from '../../assets/new-assets/gallery/3-1-edited.jpg';
-import galleryAltImage from '../../assets/new-assets/gallery/IMG_1927-1024x768.jpg';
-import libraryImage from '../../assets/new-assets/gallery/IMG_1922-1024x768.jpg';
-import inspectionImage from '../../assets/new-assets/gallery/Inspection-Pic-1024x768.jpg';
-import teacherImage from '../../assets/new-assets/teachers/anil-kumar.jpg';
-import academicCalendarDoc from '../../assets/new-assets/notifications/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
-import leetSyllabusDoc from '../../assets/new-assets/notifications/B.Tech-LEET-Syllabus-2025-26-07.05.2025.pdf';
-import beBtechBarchProspectusDoc from '../../assets/new-assets/prospectus/BE-BTech-BArch-Prospectus-2025.pdf';
-import btechLeetProspectusDoc from '../../assets/new-assets/prospectus/BTechLE-Prospectus-2025.pdf';
+import campusImage from '../../assets/new-assets/home/hero-home/siet1.jpg';
+import campusAltImage from '../../assets/new-assets/home/hero-home/siet2.jpg';
+import directorImage from '../../assets/new-assets/home/principal-photo/prienciple.jpeg';
+import aiMlImage from '../../assets/new-assets/home/courses/AI-ML.jpg';
+import cyberImage from '../../assets/new-assets/home/courses/Cyber-Security.jpg';
+import roboticsImage from '../../assets/new-assets/home/courses/Robotics-Automation.jpg';
+import cseDeptImage from '../../assets/new-assets/home/courses/cse.jpeg';
+import electricalDeptImage from '../../assets/new-assets/home/courses/electrical.jpeg';
+import electronicsDeptImage from '../../assets/new-assets/home/courses/electronics.jpeg';
+import competitionImage from '../../assets/new-assets/life at siet/events/Web-Development-Competition.jpg';
+import expertLectureImage from '../../assets/new-assets/life at siet/events/Expert_Lecture-1-724x1024.jpg';
+import walkInImage from '../../assets/new-assets/life at siet/events/walk-in-1024x593.png';
+import campusLifeImage from '../../assets/new-assets/life at siet/gallery/1-1-1024x768.jpg';
+import sportsImage from '../../assets/new-assets/life at siet/gallery/sportsmeetpic_nancy-edited.jpg';
+import galleryImage from '../../assets/new-assets/life at siet/gallery/3-1-edited.jpg';
+import galleryAltImage from '../../assets/new-assets/life at siet/gallery/IMG_1927-1024x768.jpg';
+import libraryImage from '../../assets/new-assets/life at siet/gallery/IMG_1922-1024x768.jpg';
+import inspectionImage from '../../assets/new-assets/life at siet/gallery/Inspection-Pic-1024x768.jpg';
+import teacherImage from '../../assets/new-assets/depatment/facalities/teachers/anil-kumar.jpg';
+import academicCalendarDoc from '../../assets/new-assets/home/notices/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
+import leetSyllabusDoc from '../../assets/new-assets/home/notices/B.Tech-LEET-Syllabus-2025-26-07.05.2025.pdf';
+import beBtechBarchProspectusDoc from '../../assets/new-assets/student/admission prospectus/BE-BTech-BArch-Prospectus-2025.pdf';
+import btechLeetProspectusDoc from '../../assets/new-assets/student/admission prospectus/BTechLE-Prospectus-2025.pdf';
 import createDepartmentDemoSections from './departmentDemoSections';
+
+const academicCalendarImage = null;
+const facilitiesImage = campusImage;
 
 /* ──────────────────────────────────────────────
    Shared anti-ragging content (used by both
@@ -123,10 +124,7 @@ export const submenuData = {
     body: [
       'SIET is approved by AICTE, New Delhi and affiliated to Kurukshetra University (KUK).'
     ],
-    resources: [
-      { label: 'AICTE Approval (PDF)', href: 'https://sietpanchkula.ac.in/wp-content/uploads/2025/03/AICTE-LOA.pdf' },
-      { label: 'KUK Affiliation (PDF)', href: 'https://sietpanchkula.ac.in/wp-content/uploads/2026/01/KUK-Affiliation.pdf' }
-    ],
+    resources: [],
     points: []
   },
   'about/anti-ragging': {

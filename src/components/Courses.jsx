@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import admissionFormDoc from '../assets/new-assets/documents/SIET-PKL-B.TECH_Admission_Form-2025-26.pdf';
-import cseImg from '../assets/new-assets/courses/cse.jpeg';
-import aimlImg from '../assets/new-assets/courses/AI-ML.jpg';
-import cyberImg from '../assets/new-assets/courses/Cyber-Security.jpg';
-import roboticsImg from '../assets/new-assets/courses/Robotics-Automation.jpg';
-import electricalImg from '../assets/new-assets/courses/electrical.jpeg';
-import electronicsImg from '../assets/new-assets/courses/electronics.jpeg';
+import cseImg from '../assets/new-assets/home/courses/cse.jpeg';
+import aimlImg from '../assets/new-assets/home/courses/AI-ML.jpg';
+import cyberImg from '../assets/new-assets/home/courses/Cyber-Security.jpg';
+import roboticsImg from '../assets/new-assets/home/courses/Robotics-Automation.jpg';
+import electricalImg from '../assets/new-assets/home/courses/electrical.jpeg';
+import electronicsImg from '../assets/new-assets/home/courses/electronics.jpeg';
+
+const admissionFormDoc = null;
 
 /**
  * Courses Component
@@ -131,9 +132,15 @@ const Courses = () => {
         </div>
         
         {course.status === 'upcoming' ? (
-          <a href={admissionFormDoc} target="_blank" rel="noopener noreferrer" className={`course-btn ${course.status}`}>
-            Pre-Register
-          </a>
+          admissionFormDoc ? (
+            <a href={admissionFormDoc} target="_blank" rel="noopener noreferrer" className={`course-btn ${course.status}`}>
+              Pre-Register
+            </a>
+          ) : (
+            <span className={`course-btn ${course.status} course-btn-disabled`} aria-disabled="true">
+              No file
+            </span>
+          )
         ) : (
           <Link to={course.learnMoreHref || '/departments/cse'} className={`course-btn ${course.status}`}>
             Learn More

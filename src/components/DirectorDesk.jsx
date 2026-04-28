@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import principalPhoto from '../assets/new-assets/principal-photo/prienciple.jpeg';
+import principalPhoto from '../assets/new-assets/home/principal-photo/prienciple.jpeg';
 
 /**
  * DirectorDesk Component

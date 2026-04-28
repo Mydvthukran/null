@@ -4,7 +4,7 @@ import React from 'react';
  * Media section and gallery
  */
 const LifeAtSIET = () => {
-  const galleryPool = import.meta.glob('../assets/new-assets/gallery/**/*.{jpg,jpeg,png,webp}', {
+  const galleryPool = import.meta.glob('../assets/new-assets/life at siet/gallery/**/*.{jpg,jpeg,png,webp}', {
     eager: true,
     import: 'default'
   });

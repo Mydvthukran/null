@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
-import campusBuilding from '../assets/new-assets/campus/siet-panchkula-building.jpg';
+import campusBuilding from '../assets/new-assets/home/hero-home/siet1.jpg';
 const AboutInstituteHome = () => {
   return (
     <ScrollReveal>
