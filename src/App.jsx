@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import LifeAtSIET from './pages/LifeAtSIET';
 import SubmenuRouteHandler from './pages/submenu/SubmenuRouteHandler';
-import SocialMediaPanel from './components/SocialMediaPanel';
 import ChatbotWidget from './components/ChatbotWidget';
 import AllNotices from './pages/AllNotices';
 import Admission from './pages/Admission';
@@ -83,7 +82,6 @@ function App() {
         <Route path="/search" element={<Search />} />
       </Routes>
 
-      <SocialMediaPanel />
       <ChatbotWidget />
 
       {/* Footer with Links and Contact Info */}
