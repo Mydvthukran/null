@@ -168,14 +168,24 @@ Before pushing changes:
 3. Manually open these critical routes: `/`, `/all-notices`, `/admission-form`, `/life-at-siet`, `/events`, `/student-helpline`.
 4. Confirm at least one PDF/document link opens correctly from the notices board.
 
-## 13) Backend implementation reference
+## 13) HostingRaja / Apache deployment
+
+This project must be deployed from the Vite build output, not from the source root.
+
+1. Run `npm run build`.
+2. Upload the contents of `dist/` to the hosting document root, or point the document root directly at `dist/` if your control panel allows it.
+3. Keep the `dist/.htaccess` file in place so React Router routes continue to resolve to `index.html`.
+4. Do not deploy the source `index.html` with `/src/main.jsx` as the live entry file; that file is only for the Vite source tree.
+5. If the site is hosted in a subdirectory instead of the domain root, update `vite.config.js` `base` to match that path before building.
+
+## 14) Backend implementation reference
 
 Backend planning and implementation notes are documented in:
 - `BACKEND.md`
 
 Use this document when you want to migrate static frontend content to API-driven content (notices, departments, courses, events, forms).
 
-## 14) Program count consistency rule
+## 15) Program count consistency rule
 
 The website now presents six B.Tech programs as the canonical offering:
 1. Computer Science and Engineering (Core)
@@ -187,7 +197,7 @@ The website now presents six B.Tech programs as the canonical offering:
 
 When updating homepage copy, chatbot answers, submenu content, or course summaries, do not publish outdated text that lists only three programs.
 
-## 15) Cleanup policy for unused files
+## 16) Cleanup policy for unused files
 
 Before adding new components, verify whether an existing component is still in use.
 If a component is not imported anywhere and has no route usage, remove it to avoid stale code.
