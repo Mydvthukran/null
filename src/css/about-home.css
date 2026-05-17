@@ -1,0 +1,351 @@
+/* =============================================
+   About Us Home — Leadership Grid Section
+   ============================================= */
+
+/* Section container with subtle textured background */
+.about-us-home {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(10, 25, 47, 0.03) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(10, 25, 47, 0.03) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(10, 25, 47, 0.03) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(10, 25, 47, 0.03) 25%, transparent 25%),
+    linear-gradient(180deg, #f9f7f0 0%, #f4f1e8 100%);
+  background-size: 20px 20px, 20px 20px, 20px 20px, 20px 20px, 100% 100%;
+  overflow: hidden;
+}
+
+/* Decorative top accent bar */
+.about-us-home::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0a192f, #c5a059, #0a192f);
+}
+
+/* ── Leadership Grid (top row, 4 columns) ── */
+.about-leaders-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 2.5vw, 2rem);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* ── Individual Leader Card ── */
+.about-leader-card {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  animation: aboutFadeUp 0.6s ease both;
+}
+
+@keyframes aboutFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Photo wrapper (positions the ring + image) */
+.about-leader-photo-wrap {
+  position: relative;
+  width: clamp(120px, 14vw, 170px);
+  height: clamp(120px, 14vw, 170px);
+  margin: 0 auto 1rem;
+}
+
+/* Gold accent ring behind the photo */
+.about-leader-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(145deg, #c5a059, #e8d5a8, #c5a059) border-box;
+  z-index: 0;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.about-leader-card:hover .about-leader-ring {
+  transform: scale(1.04);
+  box-shadow: 0 8px 28px rgba(197, 160, 89, 0.28);
+}
+
+/* Circular photo */
+.about-leader-photo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 20px rgba(10, 25, 47, 0.12);
+  transition: transform 0.35s ease;
+}
+
+.about-leader-card:hover .about-leader-photo {
+  transform: scale(1.03);
+}
+
+.about-leader-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: filter 0.35s ease;
+}
+
+/* Name */
+.about-leader-name {
+  font-family: var(--font-heading);
+  font-size: clamp(0.88rem, 1.1vw, 1.05rem);
+  color: var(--ink-900);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+}
+
+/* Designation */
+.about-leader-designation {
+  font-size: 0.82rem;
+  color: var(--ink-700);
+  line-height: 1.4;
+}
+
+/* Organization */
+.about-leader-org {
+  font-size: 0.78rem;
+  color: var(--ink-500);
+  line-height: 1.4;
+}
+
+/* ── Bottom Row: Principal + Content ── */
+.about-bottom-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  padding-top: clamp(1rem, 2vw, 1.5rem);
+  border-top: 1px solid rgba(10, 25, 47, 0.08);
+}
+
+.about-principal-card {
+  min-width: 160px;
+  max-width: 200px;
+}
+
+/* ── Mission / About Content Block ── */
+.about-mission-block {
+  position: relative;
+  padding: clamp(1.2rem, 2.2vw, 1.8rem);
+  padding-left: clamp(1.8rem, 3vw, 2.8rem);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(10, 25, 47, 0.06);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 20px rgba(10, 25, 47, 0.04);
+}
+
+/* Decorative opening quote */
+.about-mission-quote-icon {
+  position: absolute;
+  top: -0.2rem;
+  left: 0.6rem;
+  font-size: 2.8rem;
+  line-height: 1;
+  color: rgba(197, 160, 89, 0.35);
+  font-family: var(--font-heading);
+  pointer-events: none;
+  user-select: none;
+}
+
+.about-mission-text {
+  color: var(--ink-700);
+  font-size: clamp(0.88rem, 1vw, 1rem);
+  line-height: 1.85;
+  text-align: justify;
+}
+
+.about-mission-text-secondary {
+  margin-top: 0.7rem;
+  color: var(--ink-500);
+  font-style: italic;
+}
+
+/* ── Animated Stats Bar ── */
+.about-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: clamp(1.2rem, 2vw, 1.6rem);
+  padding: clamp(0.7rem, 1.2vw, 1rem);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0a192f 0%, #142e52 100%);
+  box-shadow: 0 6px 24px rgba(10, 25, 47, 0.18);
+}
+
+.about-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.5rem 0.25rem;
+  position: relative;
+}
+
+/* Subtle vertical divider between stats */
+.about-stat-item + .about-stat-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: rgba(197, 160, 89, 0.25);
+}
+
+.about-stat-value {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  font-weight: 700;
+  color: #c5a059;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.about-stat-label {
+  font-size: clamp(0.62rem, 0.75vw, 0.78rem);
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Action buttons */
+.about-mission-actions {
+  margin-top: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+/* Gold-outline button variant */
+.btn-outline-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.62rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-900);
+  background: transparent;
+  border: 2px solid #c5a059;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-outline-gold:hover {
+  background: #c5a059;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(197, 160, 89, 0.3);
+}
+
+/* ── Responsive Breakpoints ── */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .about-leaders-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .about-leader-photo-wrap {
+    width: 110px;
+    height: 110px;
+  }
+
+  .about-stats-bar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Smaller tablets & large phones */
+@media (max-width: 768px) {
+  .about-leaders-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem 0.8rem;
+  }
+
+  .about-bottom-row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .about-principal-card {
+    max-width: none;
+  }
+
+  .about-mission-block {
+    padding-left: 1rem;
+  }
+
+  .about-mission-quote-icon {
+    display: none;
+  }
+
+  .about-mission-text {
+    text-align: left;
+  }
+
+  .about-mission-actions {
+    justify-content: center;
+  }
+
+  .about-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .about-leaders-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 0.5rem;
+  }
+
+  .about-leader-photo-wrap {
+    width: 100px;
+    height: 100px;
+  }
+
+  .about-leader-name {
+    font-size: 0.82rem;
+  }
+
+  .about-leader-designation,
+  .about-leader-org {
+    font-size: 0.72rem;
+  }
+
+  .about-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .about-stat-value {
+    font-size: 1.2rem;
+  }
+}
