@@ -41,7 +41,7 @@ const stats = [
   { value: 6, suffix: '', label: 'B.Tech Programs' },
   { value: 100, suffix: '%', label: 'Govt. Funded' },
   { value: 20, suffix: '+', label: 'Expert Faculty' },
-  { value: 2024, suffix: '', label: 'Established' },
+  { value: 2023, suffix: '', label: 'Established' },
 ];
 
 /* Animated counter hook */
