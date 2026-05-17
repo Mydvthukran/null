@@ -5,9 +5,9 @@ import ScrollReveal from './ScrollReveal';
 
 // Leadership images
 import chiefMinister from '../assets/new-assets/home/about-leadership/chiefminister.jpg';
-import educationMinister from '../assets/new-assets/home/about-leadership/mahipal.jpg';
-import principalSecretary from '../assets/new-assets/home/about-leadership/apoorva.jpg';
-import directorGeneral from '../assets/new-assets/home/about-leadership/prabhjot.jpeg';
+import educationMinister from '../assets/new-assets/home/about-leadership/mahipal-hq.png';
+import principalSecretary from '../assets/new-assets/home/about-leadership/apoorva-hq.jpg';
+import directorGeneral from '../assets/new-assets/home/about-leadership/prabhjot.png';
 import principalPhoto from '../assets/new-assets/home/principal-photo/prienciple.jpeg';
 
 const leaders = [
@@ -119,11 +119,11 @@ const AboutInstituteHome = () => {
             <div className="about-leader-card about-principal-card">
               <div className="about-leader-photo-wrap">
                 <div className="about-leader-photo about-principal-photo">
-                  <img src={principalPhoto} alt="Prof. Anil Kumar" loading="lazy" />
+                  <img src={principalPhoto} alt="Prof. Anil Kumar Rose" loading="lazy" />
                 </div>
                 <div className="about-leader-ring"></div>
               </div>
-              <h3 className="about-leader-name">Prof. Anil Kumar</h3>
+              <h3 className="about-leader-name">Prof. Anil Kumar Rose</h3>
               <p className="about-leader-designation">Director-Principal,</p>
               <p className="about-leader-org">SIET, Panchkula</p>
             </div>

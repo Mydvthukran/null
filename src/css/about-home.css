@@ -139,7 +139,11 @@
 
 .about-principal-card {
   min-width: 160px;
-  max-width: 200px;
+  max-width: 220px;
+}
+
+.about-principal-card .about-leader-name {
+  white-space: nowrap;
 }
 
 /* ── Mission / About Content Block ── */

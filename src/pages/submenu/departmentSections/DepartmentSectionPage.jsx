@@ -182,6 +182,46 @@ const DepartmentSectionPage = () => {
                             ))}
                           </div>
                         ) : null}
+
+                        {section.timetablePdf ? (
+                          <div className="timetable-pdf-section" style={{ marginTop: '1.5rem' }}>
+                            <div className="timetable-pdf-embed" style={{
+                              width: '100%',
+                              height: '600px',
+                              borderRadius: '10px',
+                              overflow: 'hidden',
+                              border: '1px solid rgba(10,25,47,0.1)',
+                              boxShadow: '0 4px 16px rgba(10,25,47,0.08)'
+                            }}>
+                              <iframe
+                                src={section.timetablePdf}
+                                title="Department Timetable"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 'none' }}
+                              />
+                            </div>
+                            <div style={{ marginTop: '1rem', display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                              <a
+                                href={section.timetablePdf}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-primary"
+                                style={{ fontSize: '0.85rem' }}
+                              >
+                                📄 Open Timetable
+                              </a>
+                              <a
+                                href={section.timetablePdf}
+                                download
+                                className="btn btn-outline-gold"
+                                style={{ fontSize: '0.85rem' }}
+                              >
+                                ⬇ Download PDF
+                              </a>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                       {/* Divider between sections except last */}
                       {section.id !== sections[sections.length - 1].id && (
