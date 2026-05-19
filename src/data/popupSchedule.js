@@ -8,7 +8,7 @@ export const popupSchedule = [
     ctaLink: 'https://techadmissionshry.gov.in/',
     startDate: '2026-04-01',
     endDate: '2026-07-31',
-    enabled: false,
+    enabled: true,
   },
   {
     id: 'event-2026-techfest',
