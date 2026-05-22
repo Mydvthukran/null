@@ -27,8 +27,7 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
     .map((item) => item.trim())
     .filter(Boolean);
   const coreExpertise = interests.slice(0, 4);
-  const vidwanProfileId = profile.vidwan.split('/').filter(Boolean).pop();
-  const hasLocalImage = profile.image && !/^https?:\/\//i.test(profile.image);
+  const vidwanProfileId = profile.vidwan ? profile.vidwan.split('/').filter(Boolean).pop() : '';
 
   return (
     <div className="submenu-page teacher-profile-page">
@@ -52,10 +51,10 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
             <article className="teacher-profile-surface">
               <header className="teacher-profile-header">
                 <div className="teacher-profile-photo-wrap">
-                  {hasLocalImage ? (
+                  {profile.image ? (
                     <img src={profile.image} alt={profile.name} className="teacher-profile-photo" loading="eager" />
                   ) : (
-                    <div className="teacher-profile-no-file">No file</div>
+                    <div className="teacher-profile-no-file">No photo</div>
                   )}
                 </div>
 

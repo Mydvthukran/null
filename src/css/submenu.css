@@ -978,6 +978,20 @@
   gap: 0.85rem;
 }
 
+.submenu-uniscroll-section {
+  scroll-margin-top: 6.5rem;
+  background: var(--surface);
+  border: 1px solid rgba(16, 35, 63, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.3s ease;
+}
+
+.submenu-uniscroll-section:hover {
+  box-shadow: var(--shadow-mid);
+}
+
 .submenu-nested-card {
   scroll-margin-top: 6.5rem;
 }

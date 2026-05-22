@@ -14,10 +14,6 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
-    if (this.state.isChunkError && !window.sessionStorage.getItem('chunk_reloaded')) {
-      window.sessionStorage.setItem('chunk_reloaded', 'true');
-      window.location.reload();
-    }
   }
 
   render() {
