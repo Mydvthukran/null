@@ -1447,6 +1447,7 @@
   overflow: hidden;
   border: 1px solid rgba(16, 35, 63, 0.14);
   background: var(--surface-muted);
+  aspect-ratio: 3 / 4;
 }
 
 .teacher-profile-photo {

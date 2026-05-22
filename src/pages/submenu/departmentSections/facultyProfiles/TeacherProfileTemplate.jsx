@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { departmentSectionCatalog } from '../../departmentSectionCatalog';
 import { facultySourceUrl } from '../../../../data/facultyProfiles';
 
 const TeacherProfileTemplate = ({ deptSlug, profile }) => {
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [profile]);
+
   if (!profile) {
     return null;
   }
