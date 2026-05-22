@@ -71,7 +71,7 @@ const DepartmentSectionPage = () => {
 
   return (
     <div className="submenu-page">
-      <section className="section submenu-content-section" style={{ background: 'var(--off-white)' }}>
+      <section className="section submenu-content-section submenu-bg-offwhite">
         <div className="container">
           <div className="submenu-layout">
             <main className="submenu-main">
@@ -80,12 +80,12 @@ const DepartmentSectionPage = () => {
                   <h1 className="section-title">{config.title}</h1>
                   <div className="title-underline"></div>
                 </div>
-                <p className="submenu-paragraph" style={{ marginBottom: '1.5rem' }}>
+                <p className="submenu-paragraph submenu-mb-15">
                   {departmentDescriptions[deptSlug]}
                 </p>
-                <div className="submenu-uniscroll-stack" style={{ display: 'grid', gap: '3rem' }}>
+                <div className="submenu-uniscroll-stack submenu-grid-gap-3">
                   {sections.map((section) => (
-                    <div key={section.id} id={section.id} className="submenu-uniscroll-section" style={{ scrollMarginTop: '100px' }}>
+                    <div key={section.id} id={section.id} className="submenu-uniscroll-section submenu-scroll-mt">
                       <h2 className="submenu-section-title">{departmentSectionTitles[section.id]}</h2>
                       <div className="submenu-prose">
                         {section.body?.length > 0 ? (
@@ -93,7 +93,7 @@ const DepartmentSectionPage = () => {
                             {section.body.map((line) => {
                               const isHeading = line === 'Vision' || line === 'Mission' || line === 'Program Educational Objectives (PEOs)' || line === 'Program Outcomes (POs)';
                               return isHeading ? (
-                                <h3 key={`${section.id}-${line}`} className="submenu-subsection-title" style={{ marginTop: '1.5rem' }}>{line}</h3>
+                                <h3 key={`${section.id}-${line}`} className="submenu-subsection-title submenu-mt-15">{line}</h3>
                               ) : (
                                 <p key={`${section.id}-${line}`} className="submenu-paragraph">{line}</p>
                               );
@@ -104,13 +104,13 @@ const DepartmentSectionPage = () => {
                         {section.points?.length > 0 ? (
                           <ul className="submenu-point-list">
                             {section.points.map((point) => (
-                              <li key={point} className="submenu-paragraph" style={{ marginBottom: '0.4rem' }}>{point}</li>
+                              <li key={point} className="submenu-paragraph submenu-mb-04">{point}</li>
                             ))}
                           </ul>
                         ) : null}
 
                         {section.table?.length > 0 ? (
-                          <div className="submenu-demo-table" role="table" aria-label={`${departmentSectionTitles[section.id]} data table`} style={{ marginTop: '1rem' }}>
+                          <div className="submenu-demo-table submenu-mt-10" role="table" aria-label={`${departmentSectionTitles[section.id]} data table`}>
                             <div className="submenu-demo-table-row submenu-demo-table-head" role="row">
                               {section.table[0].map((cell) => (
                                 <div key={cell} role="columnheader" className="submenu-demo-table-cell">{cell}</div>
@@ -127,7 +127,7 @@ const DepartmentSectionPage = () => {
                         ) : null}
 
                         {section.facultyMembers?.length > 0 ? (
-                          <div className="faculty-card-grid" style={{ marginTop: '1rem' }}>
+                          <div className="faculty-card-grid submenu-mt-10">
                             {section.facultyMembers.map((faculty) => {
                               const interests = faculty.areaOfInterest
                                 .split(',')
@@ -172,7 +172,7 @@ const DepartmentSectionPage = () => {
                         ) : null}
 
                         {section.schedule?.length > 0 ? (
-                          <div className="submenu-schedule-grid" style={{ marginTop: '1rem' }}>
+                          <div className="submenu-schedule-grid submenu-mt-10">
                             {section.schedule.map((item) => (
                               <div key={`${item.day}-${item.slot}`} className="submenu-schedule-card">
                                 <strong>{item.day}</strong>
@@ -184,38 +184,29 @@ const DepartmentSectionPage = () => {
                         ) : null}
 
                         {section.timetablePdf ? (
-                          <div className="timetable-pdf-section" style={{ marginTop: '1.5rem' }}>
-                            <div className="timetable-pdf-embed" style={{
-                              width: '100%',
-                              height: '600px',
-                              borderRadius: '10px',
-                              overflow: 'hidden',
-                              border: '1px solid rgba(10,25,47,0.1)',
-                              boxShadow: '0 4px 16px rgba(10,25,47,0.08)'
-                            }}>
+                          <div className="timetable-pdf-section submenu-mt-15">
+                            <div className="timetable-pdf-embed timetable-pdf-embed-container">
                               <iframe
                                 src={section.timetablePdf}
                                 title="Department Timetable"
                                 width="100%"
                                 height="100%"
-                                style={{ border: 'none' }}
+                                className="timetable-pdf-iframe"
                               />
                             </div>
-                            <div style={{ marginTop: '1rem', display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                            <div className="timetable-pdf-actions">
                               <a
                                 href={section.timetablePdf}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn btn-primary"
-                                style={{ fontSize: '0.85rem' }}
+                                className="btn btn-primary btn-sm"
                               >
                                 📄 Open Timetable
                               </a>
                               <a
                                 href={section.timetablePdf}
                                 download
-                                className="btn btn-outline-gold"
-                                style={{ fontSize: '0.85rem' }}
+                                className="btn btn-outline-gold btn-sm"
                               >
                                 ⬇ Download PDF
                               </a>
@@ -225,7 +216,7 @@ const DepartmentSectionPage = () => {
                       </div>
                       {/* Divider between sections except last */}
                       {section.id !== sections[sections.length - 1].id && (
-                        <hr style={{ marginTop: '3rem', border: 'none', borderBottom: '1px solid rgba(10,25,47,0.08)' }} />
+                        <hr className="submenu-divider" />
                       )}
                     </div>
                   ))}

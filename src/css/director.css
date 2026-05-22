@@ -223,50 +223,6 @@
 
 .director-classic-photo img {
   width: 100%;
-  aspect-ratio: 3 / 3.25;
-  object-fit: cover;
-  object-position: center 15%;
-}
-
-.director-classic-message {
-  position: relative;
-  display: grid;
-  gap: 1rem;
-  color: #152842;
-  font-family: var(--font-heading);
-  font-style: italic;
-  font-size: clamp(1.08rem, 1.15vw, 1.22rem);
-  line-height: 1.72;
-}
-
-.director-classic-message p {
-  margin: 0;
-}
-
-.director-classic-signoff {
-  margin-top: 0.3rem;
-  color: #0a192f;
-  font-style: normal;
-  font-family: var(--font-body);
-  font-size: 0.94rem;
-  line-height: 1.55;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-/* Vision & Mission Home Section */
-.vision-mission-home {
-  position: relative;
-}
-
-.vm-home-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1rem, 2.5vw, 1.6rem);
-}
-
-.vm-home-card {
-  border-radius: 12px;
   padding: clamp(1.2rem, 2.5vw, 1.8rem);
   background: #fff;
   border: 1px solid rgba(16, 35, 63, 0.1);

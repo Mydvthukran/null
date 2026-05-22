@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import useMediaQuery from '../hooks/useMediaQuery';
 
 const STORAGE_KEY = 'siet-chatbot-history';
 
@@ -126,7 +127,7 @@ const getReply = (message) => {
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCompactMobile, setIsCompactMobile] = useState(false);
+  const isCompactMobile = useMediaQuery('(max-width: 560px)');
   const [isTyping, setIsTyping] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [input, setInput] = useState('');
@@ -158,14 +159,6 @@ const ChatbotWidget = () => {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
   }, [messages, isOpen]);
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 560px)');
-    const apply = () => setIsCompactMobile(media.matches);
-    apply();
-    media.addEventListener('change', apply);
-    return () => media.removeEventListener('change', apply);
-  }, []);
 
   useEffect(() => {
     isOpenRef.current = isOpen;

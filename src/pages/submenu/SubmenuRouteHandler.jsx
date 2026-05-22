@@ -1,52 +1,53 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, Suspense } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import AboutInstitute from './AboutInstitute';
-import VisionMission from './VisionMission';
-import DirectorsMessage from './DirectorsMessage';
-import QualityPolicy from './QualityPolicy';
-import Affiliations from './Affiliations';
-import AntiRagging from './AntiRagging';
-import AcademicAntiRagging from './AcademicAntiRagging';
-import History from './History';
-import DepartmentEngineering from './DepartmentEngineering';
-import DepartmentAiMl from './DepartmentAiMl';
-import DepartmentCyberSecurity from './DepartmentCyberSecurity';
-import DepartmentRobotics from './DepartmentRobotics';
-import DepartmentComputerScience from './DepartmentComputerScience';
-import DepartmentElectricalEngineering from './DepartmentElectricalEngineering';
-import DepartmentElectronicsVlsi from './DepartmentElectronicsVlsi';
-import DepartmentSectionPage from './departmentSections/DepartmentSectionPage';
-import CoursesOffered from './CoursesOffered';
-import AcademicCalendar from './AcademicCalendar';
-import TeachingLearning from './TeachingLearning';
-import Curriculum from './Curriculum';
-import ExamSchedule from './ExamSchedule';
-import AcademicStudentTestimonials from './AcademicStudentTestimonials';
-import Syllabus from './Syllabus';
-import CodeOfConduct from './CodeOfConduct';
-import AdmissionProspectus from './AdmissionProspectus';
-import Infrastructure from './Infrastructure';
-import Library from './Library';
-import Hostels from './Hostels';
-import Sports from './Sports';
-import SmartClassrooms from './SmartClassrooms';
-import Laboratories from './Laboratories';
-import Cafeteria from './Cafeteria';
-import Healthcare from './Healthcare';
-import Security from './Security';
-import CampusTraining from './CampusTraining';
-import PlacementBrochure from './PlacementBrochure';
-import PlacementRecords from './PlacementRecords';
-import MajorRecruiters from './MajorRecruiters';
-import PlacementProcess from './PlacementProcess';
-import PlacementStudentTestimonials from './PlacementStudentTestimonials';
-import AlumniDirectory from './AlumniDirectory';
-import AlumniRegistration from './AlumniRegistration';
-import AlumniEvents from './AlumniEvents';
-import CampusLife from './CampusLife';
-import PhotoGallery from './PhotoGallery';
-import VideoGallery from './VideoGallery';
-import EventsActivities from './EventsActivities';
+
+const AboutInstitute = React.lazy(() => import('./AboutInstitute'));
+const VisionMission = React.lazy(() => import('./VisionMission'));
+const DirectorsMessage = React.lazy(() => import('./DirectorsMessage'));
+const QualityPolicy = React.lazy(() => import('./QualityPolicy'));
+const Affiliations = React.lazy(() => import('./Affiliations'));
+const AntiRagging = React.lazy(() => import('./AntiRagging'));
+const AcademicAntiRagging = React.lazy(() => import('./AcademicAntiRagging'));
+const History = React.lazy(() => import('./History'));
+const DepartmentEngineering = React.lazy(() => import('./DepartmentEngineering'));
+const DepartmentAiMl = React.lazy(() => import('./DepartmentAiMl'));
+const DepartmentCyberSecurity = React.lazy(() => import('./DepartmentCyberSecurity'));
+const DepartmentRobotics = React.lazy(() => import('./DepartmentRobotics'));
+const DepartmentComputerScience = React.lazy(() => import('./DepartmentComputerScience'));
+const DepartmentElectricalEngineering = React.lazy(() => import('./DepartmentElectricalEngineering'));
+const DepartmentElectronicsVlsi = React.lazy(() => import('./DepartmentElectronicsVlsi'));
+const DepartmentSectionPage = React.lazy(() => import('./departmentSections/DepartmentSectionPage'));
+const CoursesOffered = React.lazy(() => import('./CoursesOffered'));
+const AcademicCalendar = React.lazy(() => import('./AcademicCalendar'));
+const TeachingLearning = React.lazy(() => import('./TeachingLearning'));
+const Curriculum = React.lazy(() => import('./Curriculum'));
+const ExamSchedule = React.lazy(() => import('./ExamSchedule'));
+const AcademicStudentTestimonials = React.lazy(() => import('./AcademicStudentTestimonials'));
+const Syllabus = React.lazy(() => import('./Syllabus'));
+const CodeOfConduct = React.lazy(() => import('./CodeOfConduct'));
+const AdmissionProspectus = React.lazy(() => import('./AdmissionProspectus'));
+const Infrastructure = React.lazy(() => import('./Infrastructure'));
+const Library = React.lazy(() => import('./Library'));
+const Hostels = React.lazy(() => import('./Hostels'));
+const Sports = React.lazy(() => import('./Sports'));
+const SmartClassrooms = React.lazy(() => import('./SmartClassrooms'));
+const Laboratories = React.lazy(() => import('./Laboratories'));
+const Cafeteria = React.lazy(() => import('./Cafeteria'));
+const Healthcare = React.lazy(() => import('./Healthcare'));
+const Security = React.lazy(() => import('./Security'));
+const CampusTraining = React.lazy(() => import('./CampusTraining'));
+const PlacementBrochure = React.lazy(() => import('./PlacementBrochure'));
+const PlacementRecords = React.lazy(() => import('./PlacementRecords'));
+const MajorRecruiters = React.lazy(() => import('./MajorRecruiters'));
+const PlacementProcess = React.lazy(() => import('./PlacementProcess'));
+const PlacementStudentTestimonials = React.lazy(() => import('./PlacementStudentTestimonials'));
+const AlumniDirectory = React.lazy(() => import('./AlumniDirectory'));
+const AlumniRegistration = React.lazy(() => import('./AlumniRegistration'));
+const AlumniEvents = React.lazy(() => import('./AlumniEvents'));
+const CampusLife = React.lazy(() => import('./CampusLife'));
+const PhotoGallery = React.lazy(() => import('./PhotoGallery'));
+const VideoGallery = React.lazy(() => import('./VideoGallery'));
+const EventsActivities = React.lazy(() => import('./EventsActivities'));
 
 const submenuComponents = {
   'about/history': History,
@@ -120,7 +121,11 @@ const SubmenuRouteHandler = () => {
     return <Navigate to="/" replace />;
   }
 
-  return <Component />;
+  return (
+    <Suspense fallback={<div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center' }}>Loading...</div>}>
+      <Component />
+    </Suspense>
+  );
 };
 
 export default SubmenuRouteHandler;

@@ -9,6 +9,63 @@ import electronicsImg from '../assets/new-assets/home/courses/electronics.jpeg';
 
 const admissionFormDoc = null;
 
+const CourseCard = React.memo(({ course }) => (
+  <div className={`course-card ${course.status}`}>
+    <div className="course-card-image">
+      {course.image ? (
+        <img 
+          src={course.image}
+          alt={course.title}
+          className="course-img"
+        />
+      ) : (
+        <div className="course-img course-img-placeholder" aria-hidden="true" />
+      )}
+      <div className="course-overlay">
+        <div className="course-badge">{course.status === 'upcoming' ? 'Coming Soon' : 'Available'}</div>
+      </div>
+    </div>
+    
+    <div className="course-card-content">
+      <h3 className="course-title">{course.title}</h3>
+      <p className="course-code">Code: {course.shortCode}</p>
+      
+      {course.description ? <p className="course-description">{course.description}</p> : null}
+      
+      <div className="course-details">
+        {course.duration ? (
+          <div className="detail-item">
+            <span className="detail-label">Duration:</span>
+            <span className="detail-value">{course.duration}</span>
+          </div>
+        ) : null}
+        {typeof course.seats === 'number' ? (
+          <div className="detail-item">
+            <span className="detail-label">Seats:</span>
+            <span className="detail-value">{course.seats}</span>
+          </div>
+        ) : null}
+      </div>
+      
+      {course.status === 'upcoming' ? (
+        admissionFormDoc ? (
+          <a href={admissionFormDoc} target="_blank" rel="noopener noreferrer" className={`course-btn ${course.status}`}>
+            Pre-Register
+          </a>
+        ) : (
+          <span className={`course-btn ${course.status} course-btn-disabled`} aria-disabled="true">
+            No file
+          </span>
+        )
+      ) : (
+        <Link to={course.learnMoreHref || '/departments/cse'} className={`course-btn ${course.status}`}>
+          Learn More
+        </Link>
+      )}
+    </div>
+  </div>
+));
+
 /**
  * Courses Component
  * Displays current and upcoming courses offered by the college
@@ -91,65 +148,6 @@ const Courses = () => {
     }
   ];
 
-  const upcomingCourses = [];
-
-  const CourseCard = ({ course }) => (
-    <div className={`course-card ${course.status}`}>
-      <div className="course-card-image">
-        {course.image ? (
-          <img 
-            src={course.image}
-            alt={course.title}
-            className="course-img"
-          />
-        ) : (
-          <div className="course-img course-img-placeholder" aria-hidden="true" />
-        )}
-        <div className="course-overlay">
-          <div className="course-badge">{course.status === 'upcoming' ? 'Coming Soon' : 'Available'}</div>
-        </div>
-      </div>
-      
-      <div className="course-card-content">
-        <h3 className="course-title">{course.title}</h3>
-        <p className="course-code">Code: {course.shortCode}</p>
-        
-        {course.description ? <p className="course-description">{course.description}</p> : null}
-        
-        <div className="course-details">
-          {course.duration ? (
-            <div className="detail-item">
-              <span className="detail-label">Duration:</span>
-              <span className="detail-value">{course.duration}</span>
-            </div>
-          ) : null}
-          {typeof course.seats === 'number' ? (
-            <div className="detail-item">
-              <span className="detail-label">Seats:</span>
-              <span className="detail-value">{course.seats}</span>
-            </div>
-          ) : null}
-        </div>
-        
-        {course.status === 'upcoming' ? (
-          admissionFormDoc ? (
-            <a href={admissionFormDoc} target="_blank" rel="noopener noreferrer" className={`course-btn ${course.status}`}>
-              Pre-Register
-            </a>
-          ) : (
-            <span className={`course-btn ${course.status} course-btn-disabled`} aria-disabled="true">
-              No file
-            </span>
-          )
-        ) : (
-          <Link to={course.learnMoreHref || '/departments/cse'} className={`course-btn ${course.status}`}>
-            Learn More
-          </Link>
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <section className="courses section" id="courses">
       <div className="container">
@@ -169,17 +167,6 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* Upcoming Courses */}
-        {upcomingCourses.length > 0 ? (
-          <div className="courses-category">
-            <h3 className="category-title">Coming Soon</h3>
-            <div className="courses-grid">
-              {upcomingCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          </div>
-        ) : null}
       </div>
     </section>
   );

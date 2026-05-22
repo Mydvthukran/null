@@ -90,16 +90,8 @@ const ScrollableCardBody = ({ items, scrollRef, contentRef, pauseRef }) => (
  * Three auto-scrolling information cards
  */
 const InfoCards = () => {
-  const newsEvents = [];
-
   const notifications = notificationsListData;
   const notices = noticesListData;
-
-  const placements = [];
-
-  const newsScrollRef = useRef(null);
-  const newsContentRef = useRef(null);
-  const newsPauseRef = useRef(false);
 
   const notifScrollRef = useRef(null);
   const notifContentRef = useRef(null);
@@ -109,14 +101,8 @@ const InfoCards = () => {
   const noticesContentRef = useRef(null);
   const noticesPauseRef = useRef(false);
 
-  const placScrollRef = useRef(null);
-  const placContentRef = useRef(null);
-  const placPauseRef = useRef(false);
-
-  useAutoScroll(newsScrollRef, newsContentRef, newsPauseRef);
   useAutoScroll(notifScrollRef, notifContentRef, notifPauseRef);
   useAutoScroll(noticesScrollRef, noticesContentRef, noticesPauseRef);
-  useAutoScroll(placScrollRef, placContentRef, placPauseRef);
 
   return (
     <section className="info-cards section" id="updates">
@@ -132,12 +118,12 @@ const InfoCards = () => {
               <div className="card-icon" aria-hidden="true">NEWS</div>
               <h3 className="card-title">News and Events</h3>
             </div>
-            <ScrollableCardBody
-              items={newsEvents}
-              scrollRef={newsScrollRef}
-              contentRef={newsContentRef}
-              pauseRef={newsPauseRef}
-            />
+            <div className="card-body">
+              <div className="card-empty">
+                <p className="card-empty-title">No updates available</p>
+                <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
+              </div>
+            </div>
             <div className="card-footer">
               <Link to="/all-notices" className="card-link">
                 View all news {'->'}
@@ -186,12 +172,12 @@ const InfoCards = () => {
               <div className="card-icon" aria-hidden="true">PLAC</div>
               <h3 className="card-title">Placement Updates</h3>
             </div>
-            <ScrollableCardBody
-              items={placements}
-              scrollRef={placScrollRef}
-              contentRef={placContentRef}
-              pauseRef={placPauseRef}
-            />
+            <div className="card-body">
+              <div className="card-empty">
+                <p className="card-empty-title">No updates available</p>
+                <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
+              </div>
+            </div>
             <div className="card-footer">
               <a href="https://siettpo.vercel.app/" target="_blank" rel="noopener noreferrer" className="card-link">
                 View all placements {'->'}

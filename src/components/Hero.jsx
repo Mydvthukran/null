@@ -42,9 +42,9 @@ const Hero = () => {
               Learn from faculty mentors, build in modern labs, and graduate with the confidence to lead in AI, Cyber Security, Robotics, Computer Science (Core), Electrical Engineering, and Electronics Engineering (VLSI Design).
             </p>
             <div className="hero-buttons">
-              <Link to="https://techadmissionshry.gov.in/" className="btn btn-primary">
+              <a href="https://techadmissionshry.gov.in/" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
               Admission Portal
-              </Link>
+              </a>
               <Link to="/admission-form" className="btn btn-secondary">
                 Admission Form
               </Link>

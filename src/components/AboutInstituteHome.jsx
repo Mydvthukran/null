@@ -49,6 +49,7 @@ function useCountUp(target, duration = 1800) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const started = useRef(false);
+  const animationRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -60,15 +61,20 @@ function useCountUp(target, duration = 1800) {
             const progress = Math.min((now - start) / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
             setCount(Math.round(eased * target));
-            if (progress < 1) requestAnimationFrame(step);
+            if (progress < 1) {
+              animationRef.current = requestAnimationFrame(step);
+            }
           };
-          requestAnimationFrame(step);
+          animationRef.current = requestAnimationFrame(step);
         }
       },
       { threshold: 0.3 }
     );
     if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
   }, [target, duration]);
 
   return [count, ref];

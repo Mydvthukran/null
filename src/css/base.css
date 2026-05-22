@@ -1,7 +1,7 @@
 /* Fonts loaded via index.html: Noto Serif + Source Sans 3 */
 
-/* Primary website styling restored from the original monolithic stylesheet */
-@import '../styles.css';
+/* Primary website styling extracted to modular components */
+@import './buttons.css';
 
 /* Chatbot-specific fixes and suggested-question styles */
 @import './chatbot.css';

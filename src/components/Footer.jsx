@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
  * Footer Component
  * Institute info, links, and contact details with social media integration
  */
-const Footer = () => {
+const Footer = React.memo(() => {
   const currentYear = new Date().getFullYear();
   const quickLinks = [
     { label: 'Home', to: '/' },
@@ -93,6 +93,7 @@ const Footer = () => {
                         src="https://www.google.com/maps?q=State%20Institute%20of%20Engineering%20and%20Technology%2C%20Sector%2026%2C%20Panchkula%2C%20Haryana&output=embed"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
+                        sandbox="allow-scripts allow-same-origin"
                         allowFullScreen
                       ></iframe>
                     </div>
@@ -115,6 +116,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;
