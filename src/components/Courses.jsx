@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import cseImg from '../assets/new-assets/home/courses/cse.jpeg';
 import aimlImg from '../assets/new-assets/home/courses/AI-ML.jpg';
 import cyberImg from '../assets/new-assets/home/courses/Cyber-Security.jpg';
@@ -65,6 +66,21 @@ const CourseCard = React.memo(({ course }) => (
     </div>
   </div>
 ));
+
+CourseCard.displayName = 'CourseCard';
+
+CourseCard.propTypes = {
+  course: PropTypes.shape({
+    image: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    shortCode: PropTypes.string,
+    description: PropTypes.string,
+    duration: PropTypes.string,
+    seats: PropTypes.number,
+    learnMoreHref: PropTypes.string,
+  }).isRequired,
+};
 
 /**
  * Courses Component

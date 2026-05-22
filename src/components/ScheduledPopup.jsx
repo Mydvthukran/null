@@ -24,18 +24,18 @@ const ScheduledPopup = () => {
     });
   }, []);
 
-  if (!activePopup || dismissed) {
-    return null;
-  }
+  const wasDismissed = useMemo(() => {
+    if (!activePopup) return true;
+    const storageKey = `popup-dismissed-${activePopup.id}`;
+    return window.sessionStorage.getItem(storageKey) === 'true';
+  }, [activePopup]);
 
-  const storageKey = `popup-dismissed-${activePopup.id}`;
-  const wasDismissed = window.sessionStorage.getItem(storageKey);
-
-  if (wasDismissed === 'true') {
+  if (!activePopup || dismissed || wasDismissed) {
     return null;
   }
 
   const handleClose = () => {
+    const storageKey = `popup-dismissed-${activePopup.id}`;
     window.sessionStorage.setItem(storageKey, 'true');
     setDismissed(true);
   };

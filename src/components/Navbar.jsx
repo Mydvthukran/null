@@ -18,6 +18,15 @@ const Navbar = () => {
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
   const searchWrapRef = useRef(null);
   const searchInputRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isSearchOpen) return;
