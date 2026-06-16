@@ -43,22 +43,46 @@ const ScheduledPopup = () => {
   return (
     <div className="site-popup-overlay" role="dialog" aria-modal="true" aria-label={activePopup.title}>
       <div className="site-popup-card">
-        <button className="site-popup-close" aria-label="Close popup" onClick={handleClose}>
+        <button 
+          className="site-popup-close" 
+          aria-label="Close popup" 
+          onClick={handleClose}
+          style={{ zIndex: 10, right: '0.5rem', top: '0.5rem' }}
+        >
           x
         </button>
 
-        <p className="site-popup-tag">{activePopup.type === 'admission' ? 'Admission Alert' : 'Event Alert'}</p>
-        <h2 className="site-popup-title">{activePopup.title}</h2>
-        <p className="site-popup-message">{activePopup.message}</p>
+        {activePopup.image ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Link to={activePopup.ctaLink} onClick={handleClose} style={{ display: 'block', width: '100%' }}>
+              <img 
+                src={activePopup.image} 
+                alt={activePopup.title} 
+                style={{ width: '100%', height: 'auto', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px' }} 
+              />
+            </Link>
+            <div className="site-popup-actions" style={{ width: '100%', marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <Link to={activePopup.ctaLink} className="site-popup-btn" onClick={handleClose} style={{ width: '100%', maxWidth: '300px', fontSize: '1rem', padding: '0.8rem' }}>
+                {activePopup.ctaLabel}
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="site-popup-tag">{activePopup.type === 'admission' ? 'Admission Alert' : 'Event Alert'}</p>
+            <h2 className="site-popup-title">{activePopup.title}</h2>
+            <p className="site-popup-message">{activePopup.message}</p>
 
-        <div className="site-popup-actions">
-          <Link to={activePopup.ctaLink} className="site-popup-btn" onClick={handleClose}>
-            {activePopup.ctaLabel}
-          </Link>
-          <button className="site-popup-btn site-popup-btn-ghost" onClick={handleClose}>
-            Dismiss
-          </button>
-        </div>
+            <div className="site-popup-actions">
+              <Link to={activePopup.ctaLink} className="site-popup-btn" onClick={handleClose}>
+                {activePopup.ctaLabel}
+              </Link>
+              <button className="site-popup-btn site-popup-btn-ghost" onClick={handleClose}>
+                Dismiss
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
