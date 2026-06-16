@@ -322,8 +322,8 @@ export const submenuData = {
     title: 'Admission Prospectus',
     subtitle: 'Select a prospectus document to preview.',
     documents: [
-      { key: 'be-btech-barch', label: 'BE / B.Tech / B.Arch Prospectus (2025-26)', pdfUrl: beBtechBarchProspectusDoc },
-      { key: 'btech-leet', label: 'B.Tech LEET Prospectus (2025-26)', pdfUrl: btechLeetProspectusDoc }
+      { key: 'be-btech-barch', label: 'BE / B.Tech / B.Arch Prospectus (2026-27)', pdfUrl: beBtechBarchProspectusDoc },
+      { key: 'btech-leet', label: 'B.Tech LEET Prospectus (2026-27)', pdfUrl: btechLeetProspectusDoc }
     ],
     resources: [
       { label: 'HSTES Admissions Portal', href: 'https://www.hstes.org.in/' }
