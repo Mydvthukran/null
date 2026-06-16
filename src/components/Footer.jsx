@@ -75,11 +75,13 @@ const Footer = React.memo(() => {
                 <div className="contact-item">
                   <div>
                     <p><a href="mailto:sietpkl@gmail.com">sietpkl@gmail.com</a></p>
+                    <p style={{ marginTop: '0.2rem' }}><a href="mailto:admissions@sietpanchkula.ac.in">admissions@sietpanchkula.ac.in</a></p>
                   </div>
                 </div>
                 <div className="contact-item">
                   <div>
                     <p><a href="tel:01722929871">0172-2929871</a></p>
+                    <p style={{ marginTop: '0.2rem' }}><a href="tel:01722979887">0172-2979887</a></p>
                   </div>
                 </div>
                 <div className="contact-item">

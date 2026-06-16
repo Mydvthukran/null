@@ -12,7 +12,19 @@ const AdmissionHelpline = () => {
 
         <div className="submenu-layout" style={{ display: 'block' }}>
           <main className="submenu-main" style={{ width: '100%', maxWidth: '100%' }}>
-            
+            {/* Official Contact Info */}
+            <div className="submenu-content-card" style={{ marginBottom: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)' }}>
+              <h2 className="submenu-section-title" style={{ marginTop: 0 }}>Official Admissions Office</h2>
+              <div style={{ marginTop: '1rem' }}>
+                <p style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>
+                  <strong>Contact No:</strong> <a href="tel:01722979887" style={{ color: '#0a192f', textDecoration: 'underline' }}>0172-2979887</a>
+                </p>
+                <p style={{ fontSize: '1.05rem' }}>
+                  <strong>Secondary Email:</strong> <a href="mailto:admissions@sietpanchkula.ac.in" style={{ color: '#0a192f', textDecoration: 'underline' }}>admissions@sietpanchkula.ac.in</a>
+                </p>
+              </div>
+            </div>
+
             {/* First Table */}
             <div className="submenu-content-card" style={{ marginBottom: '2rem' }}>
               <h2 className="submenu-section-title">Department Coordinators</h2>
