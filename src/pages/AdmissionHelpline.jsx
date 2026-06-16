@@ -14,13 +14,10 @@ const AdmissionHelpline = () => {
           <main className="submenu-main" style={{ width: '100%', maxWidth: '100%' }}>
             {/* Official Contact Info */}
             <div className="submenu-content-card" style={{ marginBottom: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)' }}>
-              <h2 className="submenu-section-title" style={{ marginTop: 0 }}>Official Admissions Office</h2>
+              <h2 className="submenu-section-title" style={{ marginTop: 0 }}>Admission Related Queries</h2>
               <div style={{ marginTop: '1rem' }}>
-                <p style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>
-                  <strong>Contact No:</strong> <a href="tel:01722979887" style={{ color: '#0a192f', textDecoration: 'underline' }}>0172-2979887</a>
-                </p>
                 <p style={{ fontSize: '1.05rem' }}>
-                  <strong>Secondary Email:</strong> <a href="mailto:admissions@sietpanchkula.ac.in" style={{ color: '#0a192f', textDecoration: 'underline' }}>admissions@sietpanchkula.ac.in</a>
+                  <strong>Admissions Inquiry Email:</strong> <a href="mailto:admissions@sietpanchkula.ac.in" style={{ color: '#0a192f', textDecoration: 'underline' }}>admissions@sietpanchkula.ac.in</a>
                 </p>
               </div>
             </div>
@@ -75,7 +72,7 @@ const AdmissionHelpline = () => {
 
             {/* Second Table */}
             <div className="submenu-content-card">
-              <h2 className="submenu-section-title">General Helpline Contacts</h2>
+              <h2 className="submenu-section-title">General Admission Queries</h2>
               <div className="table-responsive" style={{ overflowX: 'auto', marginTop: '1rem' }}>
                 <table className="helpline-table">
                   <thead>
@@ -115,6 +112,15 @@ const AdmissionHelpline = () => {
             </div>
 
           </main>
+          
+          <div className="submenu-content-card" style={{ marginTop: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)' }}>
+            <h2 className="submenu-section-title" style={{ marginTop: 0 }}>Office Contact</h2>
+            <div style={{ marginTop: '1rem' }}>
+              <p style={{ fontSize: '1.05rem' }}>
+                <strong>Contact No:</strong> <a href="tel:01722979887" style={{ color: '#0a192f', textDecoration: 'underline' }}>0172-2979887</a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
