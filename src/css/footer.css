@@ -1,4 +1,4 @@
-﻿/* Footer */
+/* Footer */
 .footer {
   margin-top: clamp(2.8rem, 8vw, 5rem);
   position: relative;
@@ -24,7 +24,7 @@
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
   gap: clamp(1.2rem, 2.7vw, 2rem);
 }
 

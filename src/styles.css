@@ -1687,7 +1687,7 @@ img {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
   gap: clamp(1.2rem, 2.7vw, 2rem);
 }
 
@@ -3403,16 +3403,21 @@ img {
 
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 1.35rem;
+    gap: 1.8rem;
   }
 
   .footer-column {
-    gap: 0.35rem;
+    gap: 0.6rem;
+  }
+
+  .footer-links {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
   }
 
   .footer-column + .footer-column {
     border-top: 1px solid rgba(255, 255, 255, 0.14);
-    padding-top: 1rem;
+    padding-top: 1.5rem;
   }
 
   .chatbot-panel {
