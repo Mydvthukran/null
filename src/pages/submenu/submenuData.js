@@ -503,7 +503,7 @@ export const submenuData = {
     sectionLabel: 'TRAINING & PLACEMENTS',
     title: 'Placement Brochure 2026-27',
     subtitle: 'Bridging academic excellence and industrial innovation.',
-    pdfUrl: 'https://siettpo.vercel.app/brochure.pdf',
+    pdfUrl: 'https://tpo.sietpanchkula.ac.in/brochure.pdf',
     body: [
       'The brochure covers batch demographics, department highlights, and the placement cell workflow. Preview below or download the PDF.'
     ],
@@ -513,7 +513,7 @@ export const submenuData = {
       'Training ecosystem and industry-readiness initiatives.'
     ],
     resources: [
-      { label: 'Open Placement Portal', href: 'https://siettpo.vercel.app/' }
+      { label: 'Open Placement Portal', href: 'https://tpo.sietpanchkula.ac.in/' }
     ]
   },
   'placements/placement-records': {

@@ -22,7 +22,7 @@ const FacultyProfileRoute = React.lazy(() => import('./pages/submenu/departmentS
 
 const ExternalPlacementRedirect = () => {
   React.useEffect(() => {
-    window.location.replace('https://siettpo.vercel.app/');
+    window.location.replace('https://tpo.sietpanchkula.ac.in/');
   }, []);
 
   return null;

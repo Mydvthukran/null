@@ -179,7 +179,7 @@ const InfoCards = () => {
               </div>
             </div>
             <div className="card-footer">
-              <a href="https://siettpo.vercel.app/" target="_blank" rel="noopener noreferrer" className="card-link">
+              <a href="https://tpo.sietpanchkula.ac.in/" target="_blank" rel="noopener noreferrer" className="card-link">
                 View all placements {'->'}
               </a>
             </div>

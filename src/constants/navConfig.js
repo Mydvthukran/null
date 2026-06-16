@@ -112,7 +112,7 @@ export const navItems = [
   },
   {
     name: 'Training & Placements',
-    href: 'https://siettpo.vercel.app/',
+    href: 'https://tpo.sietpanchkula.ac.in/',
     external: true,
     submenu: null
   },
