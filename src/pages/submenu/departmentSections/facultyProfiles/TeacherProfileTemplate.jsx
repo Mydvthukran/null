@@ -1,7 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { departmentSectionCatalog } from '../../departmentSectionCatalog';
-import { facultySourceUrl } from '../../../../data/facultyProfiles';
 
 const TeacherProfileTemplate = ({ deptSlug, profile }) => {
   useLayoutEffect(() => {
@@ -146,9 +145,6 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
                   </a>
                 </div>
                 <p className="teacher-profile-note-text">VIDWAN ID: {vidwanProfileId}</p>
-                <p className="teacher-profile-note-text">
-                  Source: <a href={facultySourceUrl} target="_blank" rel="noreferrer" className="teacher-inline-link">Official SIET Faculty Page</a>
-                </p>
               </section>
             </article>
           </div>
