@@ -54,11 +54,14 @@ const ScheduledPopup = () => {
 
         {activePopup.image ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h2 className="site-popup-title" style={{ marginTop: 0, marginBottom: '1rem', textAlign: 'center' }}>
+              {activePopup.title}
+            </h2>
             <Link to={activePopup.ctaLink} onClick={handleClose} style={{ display: 'block', width: '100%' }}>
               <img 
                 src={activePopup.image} 
                 alt={activePopup.title} 
-                style={{ width: '100%', height: 'auto', maxHeight: '70vh', objectFit: 'contain', borderRadius: '8px' }} 
+                style={{ width: '100%', height: 'auto', maxHeight: '65vh', objectFit: 'contain', borderRadius: '8px' }} 
               />
             </Link>
             <div className="site-popup-actions" style={{ width: '100%', marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
