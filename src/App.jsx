@@ -21,6 +21,7 @@ const DepartmentSectionPage = React.lazy(() => import('./pages/submenu/departmen
 const FacultyProfileRoute = React.lazy(() => import('./pages/submenu/departmentSections/FacultyProfileRoute'));
 const AdmissionHelpline = React.lazy(() => import('./pages/AdmissionHelpline'));
 const PayFeesOnline = React.lazy(() => import('./pages/PayFeesOnline'));
+const AdmissionDocuments = React.lazy(() => import('./pages/AdmissionDocuments'));
 
 const ExternalPlacementRedirect = () => {
   React.useEffect(() => {
@@ -79,6 +80,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/admission-helpline" element={<AdmissionHelpline />} />
           <Route path="/pay-fees-online" element={<PayFeesOnline />} />
+          <Route path="/admission-documents" element={<AdmissionDocuments />} />
         </Routes>
       </Suspense>
 
