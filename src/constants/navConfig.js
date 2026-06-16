@@ -140,8 +140,12 @@ export const navItems = [
     ]
   },
   {
-    name: 'Admission Helpline',
+    name: 'Admissions',
     href: '/admission-helpline',
-    submenu: null
+    submenu: [
+      { name: 'Admission Helpline', href: '/admission-helpline' },
+      { name: 'Admission Documents', href: '/academics/admission-prospectus' },
+      { name: 'Pay Fees Online', href: '/pay-fees-online' }
+    ]
   }
 ];
