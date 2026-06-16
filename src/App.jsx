@@ -19,6 +19,7 @@ const Staff = React.lazy(() => import('./pages/Staff'));
 const Search = React.lazy(() => import('./pages/Search'));
 const DepartmentSectionPage = React.lazy(() => import('./pages/submenu/departmentSections/DepartmentSectionPage'));
 const FacultyProfileRoute = React.lazy(() => import('./pages/submenu/departmentSections/FacultyProfileRoute'));
+const AdmissionHelpline = React.lazy(() => import('./pages/AdmissionHelpline'));
 
 const ExternalPlacementRedirect = () => {
   React.useEffect(() => {
@@ -75,6 +76,7 @@ function App() {
           <Route path="/content-differences" element={<ContentDifferences />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/admission-helpline" element={<AdmissionHelpline />} />
         </Routes>
       </Suspense>
 
