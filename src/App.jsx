@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatbotWidget from './components/ChatbotWidget';
 import ScheduledPopup from './components/ScheduledPopup';
+import SocialMediaBar from './components/SocialMediaBar';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const LifeAtSIET = React.lazy(() => import('./pages/LifeAtSIET'));
@@ -85,6 +86,7 @@ function App() {
       </Suspense>
 
       <ChatbotWidget />
+      <SocialMediaBar />
 
       {/* Footer with Links and Contact Info */}
       <Footer />
