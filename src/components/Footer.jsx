@@ -80,8 +80,7 @@ const Footer = React.memo(() => {
                 </div>
                 <div className="contact-item">
                   <div>
-                    <p><a href="tel:01722929871">0172-2929871</a></p>
-                    <p style={{ marginTop: '0.2rem' }}><a href="tel:01722979887">0172-2979887</a></p>
+                    <p><a href="tel:01722979887">0172-2979887</a></p>
                   </div>
                 </div>
                 <div className="contact-item">

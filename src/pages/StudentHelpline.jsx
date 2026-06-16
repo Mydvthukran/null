@@ -25,7 +25,7 @@ const StudentHelpline = () => {
             <div className="submenu-content-card" style={{ marginTop: '1rem' }}>
               <h2 className="submenu-section-title">Student Support Channels</h2>
               <p className="submenu-paragraph">General Helpdesk Email: <a href="mailto:sietpkl@gmail.com">sietpkl@gmail.com</a></p>
-              <p className="submenu-paragraph">Institute Contact: <a href="tel:01722929871">0172-2929871</a></p>
+              <p className="submenu-paragraph">Institute Contact: <a href="tel:01722979887">0172-2979887</a></p>
               <p className="submenu-paragraph">For grievance handling, use the Grievance Redressal route once enabled in your section menu.</p>
             </div>
           </main>

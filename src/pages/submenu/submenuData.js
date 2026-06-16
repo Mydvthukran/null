@@ -578,7 +578,7 @@ export const submenuData = {
       'Register to stay connected with SIET\'s alumni network and receive event invitations.'
     ],
     points: [
-      'Institute helpline: 0172-2929871',
+      'Institute helpline: 0172-2979887',
       'Official email: sietpkl@gmail.com'
     ]
   },

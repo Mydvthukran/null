@@ -42,7 +42,10 @@ const ScheduledPopup = () => {
 
   return (
     <div className="site-popup-overlay" role="dialog" aria-modal="true" aria-label={activePopup.title}>
-      <div className="site-popup-card">
+      <div 
+        className="site-popup-card" 
+        style={activePopup.image ? { padding: '1.5rem', width: 'min(440px, 100%)' } : {}}
+      >
         <button 
           className="site-popup-close" 
           aria-label="Close popup" 
@@ -61,7 +64,15 @@ const ScheduledPopup = () => {
               <img 
                 src={activePopup.image} 
                 alt={activePopup.title} 
-                style={{ width: '100%', height: 'auto', maxHeight: '65vh', objectFit: 'contain', borderRadius: '8px' }} 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  maxHeight: '65vh', 
+                  objectFit: 'contain', 
+                  borderRadius: '8px',
+                  border: '2px solid rgba(197, 160, 89, 0.4)',
+                  boxShadow: '0 8px 24px rgba(10, 25, 47, 0.15)'
+                }} 
               />
             </Link>
             <div className="site-popup-actions" style={{ width: '100%', marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
