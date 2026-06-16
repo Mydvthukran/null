@@ -12,8 +12,7 @@ const AdmissionHelpline = () => {
 
         <div className="submenu-layout" style={{ display: 'block' }}>
           <main className="submenu-main" style={{ width: '100%', maxWidth: '100%' }}>
-            {/* Official Contact Info */}
-            <div className="submenu-content-card" style={{ marginBottom: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)' }}>
+            <div className="submenu-content-card" style={{ marginBottom: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)', padding: '1.5rem', borderRadius: '8px' }}>
               <h2 className="submenu-section-title" style={{ marginTop: 0 }}>Admission Related Queries</h2>
               <div style={{ marginTop: '1rem' }}>
                 <p style={{ fontSize: '1.05rem' }}>
@@ -112,8 +111,7 @@ const AdmissionHelpline = () => {
             </div>
 
           </main>
-          
-          <div className="submenu-content-card" style={{ marginTop: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)' }}>
+          <div className="submenu-content-card" style={{ marginTop: '2rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)', padding: '1.5rem', borderRadius: '8px' }}>
             <h2 className="submenu-section-title" style={{ marginTop: 0 }}>Office Contact</h2>
             <div style={{ marginTop: '1rem' }}>
               <p style={{ fontSize: '1.05rem' }}>
