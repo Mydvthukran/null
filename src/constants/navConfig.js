@@ -90,6 +90,7 @@ export const navItems = [
       { name: 'Admission Form', href: '/admission-form' },
       { name: 'Admission Prospectus', href: '/academics/admission-prospectus' },
       { name: 'Admission Helpline', href: '/admission-helpline' },
+      { name: 'Pay Fees Online', href: '/pay-fees-online' },
       { name: 'Exam Schedule', href: '/academics/exam-schedule' },
       { name: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },
       { name: 'Code of Conduct', href: '/academics/code-of-conduct' },
