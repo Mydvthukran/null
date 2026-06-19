@@ -87,7 +87,7 @@ export const navItems = [
     submenu: [
       { name: 'Academic Calendar', href: '/academics/academic-calendar' },
       { name: 'Syllabus', href: '/academics/syllabus' },
-      { name: 'Admission Form', href: '/admission-form' },
+      { name: 'Query Form', href: '/admission-form' },
       { name: 'Admission Prospectus', href: '/academics/admission-prospectus' },
       { name: 'Pay Fees Online', href: '/pay-fees-online' },
       { name: 'Exam Schedule', href: '/academics/exam-schedule' },

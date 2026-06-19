@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const staffQuickLinks = [
   { label: 'All Notices', to: '/all-notices' },
   { label: 'Academic Calendar', to: '/academics/academic-calendar' },
-  { label: 'Admission Form', to: '/admission-form' },
+  { label: 'Query Form', to: '/admission-form' },
   { label: 'Student Helpline', to: '/student-helpline' },
   { label: 'Content Differences Tracker', to: '/content-differences' }
 ];

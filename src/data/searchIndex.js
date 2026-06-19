@@ -44,7 +44,7 @@ export const searchableLinks = [
   { label: "Director - Principal's Desk", href: '/about/directors-message' },
   { label: 'Academic Calendar', href: '/academics/academic-calendar' },
   { label: 'Syllabus', href: '/academics/syllabus' },
-  { label: 'Admission Form', href: '/admission-form' },
+  { label: 'Query Form', href: '/admission-form' },
   { label: 'Admission Prospectus', href: '/academics/admission-prospectus' },
   { label: 'Exam Schedule', href: '/academics/exam-schedule' },
   { label: 'Code of Conduct', href: '/academics/code-of-conduct' },

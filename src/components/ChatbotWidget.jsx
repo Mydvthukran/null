@@ -70,7 +70,7 @@ const getReply = (message) => {
   const value = message.toLowerCase();
   if (value.includes('admission') || value.includes('apply') || value.includes('form')) {
     return {
-      text: `${botReplies.admission} You can open the Admission Form page from the Academics menu.`,
+      text: `${botReplies.admission} You can open the Query Form page from the Academics menu.`,
       links: [
         { label: 'Admission Prospectus', href: resourceLinks.admissions },
         { label: 'All Notices', href: resourceLinks.notices },

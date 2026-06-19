@@ -46,7 +46,7 @@ const Hero = () => {
               Admission Portal
               </a>
               <Link to="/admission-form" className="btn btn-secondary">
-                Admission Form
+                Query Form
               </Link>
             </div>
           </div>

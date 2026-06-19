@@ -11,7 +11,7 @@ const Footer = React.memo(() => {
     { label: 'About Us', to: '/about/about-institute' },
     { label: 'Academics', to: '/academics/academic-calendar' },
     { label: 'Departments', to: '/departments/cse' },
-    { label: 'Admission Form', to: '/admission-form' },
+    { label: 'Query Form', to: '/admission-form' },
     { label: 'All Notices', to: '/all-notices' },
     { label: 'Events', to: '/events' },
     { label: 'Student Helpline', to: '/student-helpline' },

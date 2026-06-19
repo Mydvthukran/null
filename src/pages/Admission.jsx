@@ -80,7 +80,7 @@ const Admission = () => {
       <section className="section registration-form-section">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Student Admission Enquiry Form</h2>
+            <h2 className="section-title">Student Query Form</h2>
             <div className="title-underline"></div>
           </div>
           <div className="form-container admission-form-container">
@@ -200,11 +200,11 @@ const Admission = () => {
               </div>
 
               <button type="submit" className="btn btn-primary">
-                Submit Admission Form
+                Submit Query Form
               </button>
               {isSubmitted && (
                 <p className="form-success">
-                  Admission form submitted successfully. Our admissions team will contact you soon.
+                  Query form submitted successfully. Our admissions team will contact you soon.
                 </p>
               )}
             </form>
