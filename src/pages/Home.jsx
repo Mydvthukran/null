@@ -23,17 +23,17 @@ function Home() {
       <Hero />
 
       {/* MoU Section */}
-      <section className="section" style={{ backgroundColor: '#fcfaf2', padding: '4rem 0' }}>
+      <section className="section" style={{ paddingTop: '5rem', paddingBottom: '2rem' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <h2 className="section-title" style={{ fontSize: '1.8rem', color: '#0a192f', maxWidth: '900px', margin: '0 auto', lineHeight: '1.4' }}>
+          <div className="section-header">
+            <h2 className="section-title" style={{ fontSize: '1.8rem', textTransform: 'none', lineHeight: '1.4' }}>
               IIT Ropar and SIET Panchkula Sign Landmark MoU for Academic, Faculty, and Student Exchange Cooperation
             </h2>
-            <div className="title-underline" style={{ margin: '1.5rem auto 0 auto' }}></div>
+            <div className="title-underline"></div>
           </div>
-          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <img src={mouImg1} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', objectFit: 'cover' }} />
-            <img src={mouImg2} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', objectFit: 'cover' }} />
+          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '3rem' }}>
+            <img src={mouImg1} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} />
+            <img src={mouImg2} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} />
           </div>
         </div>
       </section>
