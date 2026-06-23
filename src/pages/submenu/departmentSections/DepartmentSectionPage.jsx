@@ -150,7 +150,21 @@ const DepartmentSectionPage = () => {
                                   aria-label={`Open profile of ${faculty.name}`}
                                 >
                                   <div className="faculty-profile-head">
-                                    <div className="faculty-profile-avatar" aria-hidden="true">{initials}</div>
+                                    {faculty.image ? (
+                                      <img 
+                                        src={faculty.image} 
+                                        alt={faculty.name} 
+                                        style={{ 
+                                          width: '2.6rem', 
+                                          height: '2.6rem', 
+                                          borderRadius: '50%', 
+                                          objectFit: 'cover',
+                                          border: '1px solid rgba(16, 35, 63, 0.2)' 
+                                        }} 
+                                      />
+                                    ) : (
+                                      <div className="faculty-profile-avatar" aria-hidden="true">{initials}</div>
+                                    )}
                                     <span className="faculty-profile-cta">View Full Profile</span>
                                   </div>
                                   <div className="faculty-profile-body">
