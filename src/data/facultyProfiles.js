@@ -9,6 +9,7 @@ import niveditaPhoto from '../assets/new-assets/depatment/facalities/teachers/NA
 import reenaPhoto from '../assets/new-assets/depatment/facalities/teachers/REENADULL.jpg';
 import rituPhoto from '../assets/new-assets/depatment/facalities/teachers/RITU.jpg';
 import tusharPhoto from '../assets/new-assets/depatment/facalities/teachers/TUSHAR.jpg';
+import priyankaPhoto from '../assets/new-assets/depatment/facalities/teachers/priyanka.jpg';
 
 const ALL_DEPARTMENTS = [
   'cse',
@@ -174,7 +175,8 @@ const facultyImageBySlug = {
   'ms-monika': monikaPhoto,
   'er-tushar': tusharPhoto,
   'ms-ritu-kadiyan': rituPhoto,
-  'dr-divya-singla': divyaSinglaPhoto
+  'dr-divya-singla': divyaSinglaPhoto,
+  'mrs-priyanka-diwan-goyal': priyankaPhoto
 };
 
 export const facultyProfiles = facultyProfilesData.map((profile) => ({

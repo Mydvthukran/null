@@ -59,7 +59,7 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
 
                 <div className="teacher-profile-heading">
                   <p className="submenu-kicker">FACULTY PROFILE</p>
-                  <h1 className="submenu-title" style={{ fontSize: 'clamp(1.5rem, 3.4vw, 2.4rem)' }}>
+                  <h1 className="submenu-title" style={{ fontSize: 'clamp(1.5rem, 3.4vw, 2.4rem)', color: 'var(--ink-900)' }}>
                     {profile.name}
                   </h1>
                   <p className="teacher-profile-designation">{profile.designation}</p>
@@ -125,11 +125,6 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
                     </span>
                   ))}
                 </div>
-                <ol className="teacher-interest-detail-list">
-                  {interests.map((interest) => (
-                    <li key={`${profile.slug}-detail-${interest}`}>{interest}</li>
-                  ))}
-                </ol>
               </section>
 
               <section className="teacher-profile-links-panel">
