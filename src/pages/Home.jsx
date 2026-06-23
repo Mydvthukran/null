@@ -2,6 +2,7 @@ import React from 'react';
 import Hero from '../components/Hero';
 import mouImg1 from '../assets/new-assets/home/hero-home/iit-ropar-mou-1.jpeg';
 import mouImg2 from '../assets/new-assets/home/hero-home/iit-ropar-mou-2.jpeg';
+import mouPdf from '../assets/new-assets/home/hero-home/MoU for Academic Cooperation between IIT Ropar & SIET Panchkula (1).pdf';
 import AboutInstituteHome from '../components/AboutInstituteHome';
 import DirectorDesk from '../components/DirectorDesk';
 import VisionMissionHome from '../components/VisionMissionHome';
@@ -30,6 +31,17 @@ function Home() {
               IIT Ropar and SIET Panchkula Sign Landmark MoU for Academic, Faculty, and Student Exchange Cooperation
             </h2>
             <div className="title-underline"></div>
+            <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+              <a 
+                href={mouPdf} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn-primary"
+                style={{ padding: '0.8rem 2rem', fontSize: '1.1rem', fontWeight: 'bold' }}
+              >
+                View MoU Document
+              </a>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '3rem' }}>
             <img src={mouImg1} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} />
