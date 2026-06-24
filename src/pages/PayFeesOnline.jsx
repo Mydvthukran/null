@@ -1,4 +1,5 @@
 import React, { useLayoutEffect } from 'react';
+import sbiCollectPdf from '../assets/new-assets/student/pay fee online/SBI Collect.pdf';
 
 const PayFeesOnline = () => {
   useLayoutEffect(() => {
@@ -7,20 +8,7 @@ const PayFeesOnline = () => {
 
   return (
     <div className="submenu-page">
-      <section className="section submenu-hero">
-        <div className="container">
-          <div className="submenu-hero-surface">
-            <div className="submenu-hero-grid no-visual">
-              <div className="submenu-hero-copy">
-                <p className="submenu-kicker">ACADEMICS</p>
-                <h1 className="submenu-title">Pay Fees Online</h1>
-                <div className="title-underline" style={{ marginTop: '0.6rem' }}></div>
-                <p className="submenu-subtitle">Secure online fee payment via SBI Collect</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       <section className="section submenu-content-section">
         <div className="container">
@@ -59,15 +47,8 @@ const PayFeesOnline = () => {
                     </h3>
                   </div>
                   
-                  <div className="coc-preview-frame-wrap" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-soft)' }}>
-                    <div className="submenu-pdf-empty" style={{ color: '#0a192f', textAlign: 'center', padding: '2rem' }}>
-                      <p style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem' }}>Instruction PDF will be uploaded here.</p>
-                      <p style={{ fontSize: '0.9rem', color: 'var(--ink-500)' }}>Space reserved for the official step-by-step payment guide.</p>
-                    </div>
-                    {/* 
-                      TODO: When PDF is ready, replace the empty state above with:
-                      <iframe title="Payment Instructions" src={pdfUrl} className="coc-preview-frame" loading="lazy" />
-                    */}
+                  <div className="coc-preview-frame-wrap" style={{ minHeight: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-soft)', width: '100%' }}>
+                    <iframe title="Payment Instructions" src={sbiCollectPdf} className="coc-preview-frame" style={{ width: '100%', height: '600px', border: 'none' }} loading="lazy" />
                   </div>
                 </div>
               </div>
