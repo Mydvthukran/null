@@ -21,8 +21,8 @@ import firstYearSyllabusDoc from '../../assets/new-assets/student/syllabus/B.Tec
 import cseAimlCsSecondYearSyllabusDoc from '../../assets/new-assets/student/syllabus/B.Tech_CSE-AIML-CS_2ndyear_2025onwards.pdf';
 import roboticsAutomationSyllabusDoc from '../../assets/new-assets/student/syllabus/B.tech_syllabus_RoboticsAutomation (1).pdf';
 import aimlSemesterFiveSixSyllabusDoc from '../../assets/new-assets/student/syllabus/AIML-5-6-SEM (1).pdf';
-import beBtechBarchProspectusDoc from '../../assets/new-assets/student/admission prospectus/BE-BTech-BArch-Prospectus-2026.pdf';
-import btechLeetProspectusDoc from '../../assets/new-assets/student/admission prospectus/BTechLE-Prospectus-2026.pdf';
+import beBtechBarchProspectusDoc from '../../assets/new-assets/student/admission prospectus/BE-BTech-BArch-Prospectus-2026 (1).pdf';
+import btechLeetProspectusDoc from '../../assets/new-assets/student/admission prospectus/BTechLE-Prospectus-2026 (1).pdf';
 import createDepartmentDemoSections from './departmentDemoSections';
 
 const kukWebsiteUrl = 'https://kuk.ac.in/';

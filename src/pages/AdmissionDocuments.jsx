@@ -2,7 +2,9 @@ import React, { useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 import doc1 from '../assets/new-assets/student/addmission document/Documents_SIET B.Tech. Admissions 2026.pdf';
 import doc2 from '../assets/new-assets/student/addmission document/Miscllaneous Documents.pdf';
-import doc3 from '../assets/new-assets/student/addmission document/fees stucture 2026-27.pdf';
+import doc3 from '../assets/new-assets/student/addmission document/Fee Structure 2026-27.pdf';
+import doc4 from '../assets/new-assets/student/addmission document/SIET B.Tech. Admission Form 2026-27.pdf';
+import doc5 from '../assets/new-assets/student/addmission document/SIET Fee Refund Performa 2026-27.pdf';
 
 const AdmissionDocuments = () => {
   useLayoutEffect(() => {
@@ -127,7 +129,15 @@ const AdmissionDocuments = () => {
                     <span style={{ fontSize: '1.2rem' }}>📄</span>
                   </a>
                   <a href={doc3} target="_blank" rel="noopener noreferrer" className="document-link" style={{ padding: '1rem 1.5rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)', borderRadius: '8px', color: '#0a192f', textDecoration: 'none', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.3s ease' }} onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#f0e6d2'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }} onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#fcfaf2'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
-                    <span>Fee Structure 2026-27.pdf</span>
+                    <span>Fee Structure 2026-27</span>
+                    <span style={{ fontSize: '1.2rem' }}>📄</span>
+                  </a>
+                  <a href={doc4} target="_blank" rel="noopener noreferrer" className="document-link" style={{ padding: '1rem 1.5rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)', borderRadius: '8px', color: '#0a192f', textDecoration: 'none', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.3s ease' }} onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#f0e6d2'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }} onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#fcfaf2'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
+                    <span>SIET B.Tech. Admission Form 2026-27</span>
+                    <span style={{ fontSize: '1.2rem' }}>📄</span>
+                  </a>
+                  <a href={doc5} target="_blank" rel="noopener noreferrer" className="document-link" style={{ padding: '1rem 1.5rem', backgroundColor: '#fcfaf2', border: '1px solid rgba(197, 160, 89, 0.4)', borderRadius: '8px', color: '#0a192f', textDecoration: 'none', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.3s ease' }} onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#f0e6d2'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }} onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#fcfaf2'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
+                    <span>SIET Fee Refund Performa 2026-27</span>
                     <span style={{ fontSize: '1.2rem' }}>📄</span>
                   </a>
                 </div>
