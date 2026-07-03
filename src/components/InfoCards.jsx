@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { notificationsListData, noticesListData } from '../data/noticesData';
+import { ADMISSIONS_CONFIG } from '../config/admissions';
 
 const LOOP_DUPLICATE_COUNT = 3;
 
@@ -53,7 +54,7 @@ const ScrollableCardBody = ({ items, scrollRef, contentRef, pauseRef }) => (
       </div>
     ) : (
     <ul className="card-list scroll-list" ref={contentRef}>
-      {Array.from({ length: LOOP_DUPLICATE_COUNT }, () => items).flat().map((item, index) => (
+      {(items.length > 3 ? Array.from({ length: LOOP_DUPLICATE_COUNT }, () => items).flat() : items).map((item, index) => (
         <li key={`${item.id || item.title}-${index}`} className="card-list-item">
           {item.href ? (
             <a
@@ -93,6 +94,21 @@ const InfoCards = () => {
   const notifications = notificationsListData;
   const notices = noticesListData;
 
+  const news = [];
+  if (!ADMISSIONS_CONFIG.hstesOpen) {
+    news.push({
+      id: 'news-campus-counselling',
+      title: 'Offline Counselling form',
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      href: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
+      isNew: true
+    });
+  }
+
+  const newsScrollRef = useRef(null);
+  const newsContentRef = useRef(null);
+  const newsPauseRef = useRef(false);
+
   const notifScrollRef = useRef(null);
   const notifContentRef = useRef(null);
   const notifPauseRef = useRef(false);
@@ -101,6 +117,7 @@ const InfoCards = () => {
   const noticesContentRef = useRef(null);
   const noticesPauseRef = useRef(false);
 
+  useAutoScroll(newsScrollRef, newsContentRef, newsPauseRef);
   useAutoScroll(notifScrollRef, notifContentRef, notifPauseRef);
   useAutoScroll(noticesScrollRef, noticesContentRef, noticesPauseRef);
 
@@ -118,12 +135,12 @@ const InfoCards = () => {
               <div className="card-icon" aria-hidden="true">NEWS</div>
               <h3 className="card-title">News and Events</h3>
             </div>
-            <div className="card-body">
-              <div className="card-empty">
-                <p className="card-empty-title">No updates available</p>
-                <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
-              </div>
-            </div>
+            <ScrollableCardBody
+              items={news}
+              scrollRef={newsScrollRef}
+              contentRef={newsContentRef}
+              pauseRef={newsPauseRef}
+            />
             <div className="card-footer">
               <Link to="/all-notices" className="card-link">
                 View all news {'->'}

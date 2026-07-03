@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { popupSchedule } from '../data/popupSchedule';
+import { ADMISSIONS_CONFIG } from '../config/admissions';
 
 const isDateInRange = (dateString, startDateString, endDateString) => {
   const current = new Date(dateString);
@@ -15,13 +16,23 @@ const ScheduledPopup = () => {
   const activePopup = useMemo(() => {
     const now = new Date().toISOString();
 
-    return popupSchedule.find((item) => {
+    const popup = popupSchedule.find((item) => {
       if (!item.enabled) {
         return false;
       }
 
       return isDateInRange(now, item.startDate, item.endDate);
     });
+
+    if (popup && popup.type === 'admission' && !ADMISSIONS_CONFIG.hstesOpen) {
+      return {
+        ...popup,
+        ctaLink: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
+        ctaLabel: 'Offline Counselling'
+      };
+    }
+
+    return popup;
   }, []);
 
   const wasDismissed = useMemo(() => {

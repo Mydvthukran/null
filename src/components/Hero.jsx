@@ -4,6 +4,7 @@ import heroBg1 from '../assets/new-assets/home/hero-home/siet1.jpg';
 import heroBg2 from '../assets/new-assets/home/hero-home/siet2.jpg';
 import heroBg3 from '../assets/new-assets/home/hero-home/siet3.jpeg';
 import heroBg4 from '../assets/new-assets/home/hero-home/siet2.webp';
+import { ADMISSIONS_CONFIG } from '../config/admissions';
 /**
  * Hero Component
  * Hero banner with rotating backgrounds and quick actions
@@ -48,6 +49,16 @@ const Hero = () => {
               <Link to="/admission-form" className="btn btn-secondary">
                 Query Form
               </Link>
+              {!ADMISSIONS_CONFIG.hstesOpen && (
+                <a 
+                  href={ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="btn btn-secondary"
+                >
+                  Offline Counselling
+                </a>
+              )}
             </div>
           </div>
         </div>
