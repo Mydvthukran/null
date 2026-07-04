@@ -49,7 +49,7 @@ const Hero = () => {
               <Link to="/admission-form" className="btn btn-secondary">
                 Query Form
               </Link>
-              {!ADMISSIONS_CONFIG.hstesOpen && (
+              {/* {!ADMISSIONS_CONFIG.hstesOpen && (
                 <a 
                   href={ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL} 
                   target="_blank" 
@@ -58,7 +58,7 @@ const Hero = () => {
                 >
                   Offline Counselling
                 </a>
-              )}
+              )} */}
             </div>
           </div>
         </div>

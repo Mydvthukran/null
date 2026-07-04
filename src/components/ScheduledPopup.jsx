@@ -24,13 +24,13 @@ const ScheduledPopup = () => {
       return isDateInRange(now, item.startDate, item.endDate);
     });
 
-    if (popup && popup.type === 'admission' && !ADMISSIONS_CONFIG.hstesOpen) {
+    /* if (popup && popup.type === 'admission' && !ADMISSIONS_CONFIG.hstesOpen) {
       return {
         ...popup,
         ctaLink: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
         ctaLabel: 'Offline Counselling'
       };
-    }
+    } */
 
     return popup;
   }, []);
