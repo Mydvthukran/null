@@ -125,6 +125,41 @@ const Hostels = () => {
                   </a>
                 </div>
 
+                <div style={{
+                  marginTop: '4rem',
+                  borderTop: '1px solid rgba(16, 35, 63, 0.1)',
+                  paddingTop: '2.5rem'
+                }}>
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '700',
+                    color: 'var(--ink-900)',
+                    marginBottom: '1.2rem',
+                    textAlign: 'center'
+                  }}>
+                    Terms & Conditions
+                  </h3>
+                  <ol style={{
+                    maxWidth: '800px',
+                    margin: '0 auto',
+                    paddingLeft: '1.2rem',
+                    display: 'grid',
+                    gap: '0.75rem',
+                    color: 'var(--ink-700)',
+                    fontSize: '0.94rem',
+                    lineHeight: '1.65'
+                  }}>
+                    <li>Submission of the registration form does not guarantee hostel allotment.</li>
+                    <li>Students must provide accurate and complete information in the registration form. Any false information may result in cancellation of the application or hostel allotment.</li>
+                    <li>Students are required to follow all hostel rules and regulations issued by the institution.</li>
+                    <li>Any damage to hostel property caused by the student will be charged to the student.</li>
+                    <li>Ragging, smoking, alcohol consumption, drug use, violence, and any other form of misconduct are strictly prohibited inside the hostel premises.</li>
+                    <li>Students must maintain cleanliness, discipline, and respect the privacy of other residents.</li>
+                    <li>The hostel administration reserves the right to inspect rooms whenever necessary.</li>
+                    <li>The institution reserves the right to cancel hostel accommodation in case of misconduct or violation of hostel rules.</li>
+                  </ol>
+                </div>
+
               </div>
             </main>
           </div>
