@@ -106,7 +106,7 @@ const getReply = (message) => {
   }
   if (value.includes('hostel') || value.includes('library') || value.includes('sports') || value.includes('facility')) {
     return {
-      text: 'Campus facilities information is available in the Facilities submenu (Hostels, Library, Sports, Smart Classrooms, Labs, Cafeteria, Healthcare, Security).',
+      text: 'Campus facilities information is available in the Facilities submenu (Hostel, Library, Sports, Smart Classrooms, Labs, Cafeteria, Healthcare, Security).',
       links: [{ label: 'Facilities Overview', href: resourceLinks.facilities }],
     };
   }

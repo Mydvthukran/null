@@ -48,6 +48,7 @@ const CampusLife = React.lazy(() => import('./CampusLife'));
 const PhotoGallery = React.lazy(() => import('./PhotoGallery'));
 const VideoGallery = React.lazy(() => import('./VideoGallery'));
 const EventsActivities = React.lazy(() => import('./EventsActivities'));
+const Clubs = React.lazy(() => import('./Clubs'));
 
 const submenuComponents = {
   'about/history': History,
@@ -97,6 +98,8 @@ const submenuComponents = {
   'life-at-siet/photo-gallery': PhotoGallery,
   'life-at-siet/video-gallery': VideoGallery,
   'life-at-siet/events-activities': EventsActivities,
+  'life-at-siet/clubs': Clubs,
+  'academics/clubs': Clubs,
 };
 
 const SubmenuRouteHandler = () => {

@@ -93,7 +93,8 @@ export const navItems = [
       { name: 'Exam Schedule', href: '/academics/exam-schedule' },
       { name: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },
       { name: 'Code of Conduct', href: '/academics/code-of-conduct' },
-      { name: 'Anti-Ragging', href: '/academics/anti-ragging' }
+      { name: 'Anti-Ragging', href: '/academics/anti-ragging' },
+      { name: 'Clubs', href: '/life-at-siet/clubs' }
     ]
   },
   {
@@ -102,7 +103,7 @@ export const navItems = [
     submenu: [
       { name: 'Infrastructure', href: '/facilities/infrastructure' },
       { name: 'Library', href: '/facilities/library' },
-      { name: 'Hostels', href: '/facilities/hostels' },
+      { name: 'Hostel', href: '/facilities/hostels' },
       { name: 'Sports', href: '/facilities/sports' },
       { name: 'Smart Classrooms', href: '/facilities/smart-classrooms' },
       { name: 'Laboratories', href: '/facilities/laboratories' },
@@ -134,8 +135,8 @@ export const navItems = [
       { name: 'Events', href: '/events' },
       { name: 'Student Helpline', href: '/student-helpline' },
       { name: 'Top-Level Sections', href: '/top-level-sections' },
-      
-      { name: 'Content Differences', href: '/content-differences' }
+      { name: 'Content Differences', href: '/content-differences' },
+      { name: 'Clubs', href: '/life-at-siet/clubs' }
     ]
   },
   {

@@ -417,12 +417,12 @@ export const submenuData = {
   },
   'facilities/hostels': {
     sectionLabel: 'FACILITIES',
-    title: 'Hostels',
+    title: 'Hostel',
     image: facilitiesImage,
     points: [
-      'Separate hostels for boys and girls with warden supervision.',
-      'Mess, common room, and basic student amenities.',
-      'Hostel rules enforced for safety and discipline.'
+      'Warden-supervised hostel for girl students.',
+      'Mess with hygienic, nutritious meals, common room, and basic amenities.',
+      'Strict safety and discipline protocols enforced.'
     ]
   },
   'facilities/sports': {
