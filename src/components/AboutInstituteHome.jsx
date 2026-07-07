@@ -7,7 +7,7 @@ import ScrollReveal from './ScrollReveal';
 import chiefMinister from '../assets/new-assets/home/about-leadership/chiefminister.jpg';
 import educationMinister from '../assets/new-assets/home/about-leadership/mahipal-hq.png';
 import principalSecretary from '../assets/new-assets/home/about-leadership/apoorva-hq.jpg';
-import directorGeneral from '../assets/new-assets/home/about-leadership/prabhjot.png';
+import directorGeneral from '../assets/new-assets/home/about-leadership/SNarayanan.jpeg';
 import principalPhoto from '../assets/new-assets/home/principal-photo/prienciple.jpeg';
 
 const leaders = [
@@ -30,7 +30,7 @@ const leaders = [
     image: principalSecretary,
   },
   {
-    name: 'Sh. Prabhjot Singh IAS',
+    name: 'Shri S. Narayanan IFoS',
     designation: 'Director General',
     org: '(Directorate of Technical Education, Haryana)',
     image: directorGeneral,
