@@ -1,6 +1,7 @@
 import campusImage from '../../assets/new-assets/home/hero-home/siet1.jpg';
 import campusAltImage from '../../assets/new-assets/home/hero-home/siet2.jpg';
 import directorImage from '../../assets/new-assets/home/principal-photo/prienciple.jpeg';
+import registrarImage from '../../assets/new-assets/home/principal-photo/registrar.jpeg';
 import aiMlImage from '../../assets/new-assets/home/courses/AI-ML.jpg';
 import cyberImage from '../../assets/new-assets/home/courses/Cyber-Security.jpg';
 import roboticsImage from '../../assets/new-assets/home/courses/Robotics-Automation.jpg';
@@ -109,7 +110,25 @@ export const submenuData = {
       'We are confident that the students passing out from this college will be technically sound, confident and have good leadership skills. I wish all the best to all the prospective students.'
     ],
     points: [
-      '— Prof. Anil Kumar, Director-Principal'
+      'Prof. Anil Kumar Rose',
+      'Director-Principal',
+      'SIET, Panchkula'
+    ]
+  },
+  'about/registrars-message': {
+    sectionLabel: 'ABOUT US',
+    title: "Registrar's Desk",
+    image: registrarImage,
+    imageMode: 'portrait',
+    body: [
+      'Welcome to the State Institute of Engineering and Technology (SIET), Panchkula. As the Registrar, it is my privilege to welcome you to our vibrant academic community.',
+      "The Registrar's Office is dedicated to supporting the academic journey of our students from their initial enrollment through graduation. We manage admissions, academic records, registration, course scheduling, and examinations, ensuring the integrity and confidentiality of all student data. Our team works continuously to streamline administrative processes and provide efficient, student-friendly services.",
+      'At SIET Panchkula, we are committed to fostering an environment of academic excellence, innovation, and holistic development. We encourage our students to make the most of the opportunities available here and look forward to assisting you throughout your academic endeavors.'
+    ],
+    points: [
+      'Dr. Seema Rani',
+      'Registrar',
+      'SIET, Panchkula'
     ]
   },
   'about/quality-policy': {

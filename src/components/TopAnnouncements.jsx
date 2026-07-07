@@ -16,7 +16,7 @@ const TopAnnouncements = () => {
     }
   ];
 
-  if (!ADMISSIONS_CONFIG.hstesOpen) {
+  /* if (!ADMISSIONS_CONFIG.hstesOpen) {
     announcements.push({
       id: 'counselling-soon',
       content: (
@@ -41,7 +41,7 @@ const TopAnnouncements = () => {
         </>
       )
     });
-  }
+  } */
 
   return (
     <ScrollReveal>

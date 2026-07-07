@@ -9,6 +9,8 @@ const SubmenuTemplate = ({
   body = [],
   resources = [],
   nestedSections = [],
+  image,
+  imageMode,
 }) => {
   const location = useLocation();
 
@@ -39,7 +41,58 @@ const SubmenuTemplate = ({
                   <div className="title-underline"></div>
                 </div>
                 <div className="submenu-prose">
-                  <SubmenuBodyProse body={body} resources={resources} points={points} />
+                  {imageMode === 'portrait' ? (
+                    <div className="about-bottom-row" style={{ borderTop: 'none', paddingTop: 0 }}>
+                      <div className="about-leader-card about-principal-card" style={{ margin: 0, padding: '1rem 0' }}>
+                        <div className="about-leader-photo-wrap">
+                          <div className="about-leader-photo about-principal-photo">
+                            <img src={image} alt={points[0] || title} loading="lazy" />
+                          </div>
+                          <div className="about-leader-ring"></div>
+                        </div>
+                        <h3 className="about-leader-name">{points[0]}</h3>
+                        <p className="about-leader-designation">{points[1]}</p>
+                        <p className="about-leader-org">{points[2]}</p>
+                      </div>
+
+                      <div className="about-mission-block">
+                        <div className="about-mission-quote-icon">❝</div>
+                        {body.map((para, idx) => (
+                          <p key={idx} className="submenu-paragraph" style={{ marginBottom: '1rem' }}>
+                            {para}
+                          </p>
+                        ))}
+                        {resources.length > 0 && (
+                          <div className="submenu-resources" style={{ marginTop: '1.5rem' }}>
+                            <h3 className="submenu-subsection-title">Resources</h3>
+                            <ul className="submenu-resource-list">
+                              {resources.map((item, index) => (
+                                <li key={`${item.label}-${item.href}-${index}`}>
+                                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="submenu-resource-link">
+                                    {item.label}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {image && (
+                        <div className="submenu-feature-image-wrap">
+                          <img 
+                            src={image} 
+                            alt={title} 
+                            className={`submenu-feature-image ${imageMode || ''}`} 
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      <SubmenuBodyProse body={body} resources={resources} points={points} />
+                    </>
+                  )}
 
                   {nestedSections.length > 0 ? (
                     <>

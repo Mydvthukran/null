@@ -95,7 +95,7 @@ const InfoCards = () => {
   const notices = noticesListData;
 
   const news = [];
-  if (!ADMISSIONS_CONFIG.hstesOpen) {
+  /* if (!ADMISSIONS_CONFIG.hstesOpen) {
     news.push({
       id: 'news-campus-counselling',
       title: 'Offline Counselling form',
@@ -103,7 +103,7 @@ const InfoCards = () => {
       href: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
       isNew: true
     });
-  }
+  } */
 
   const newsScrollRef = useRef(null);
   const newsContentRef = useRef(null);

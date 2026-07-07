@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 const AboutInstitute = React.lazy(() => import('./AboutInstitute'));
 const VisionMission = React.lazy(() => import('./VisionMission'));
 const DirectorsMessage = React.lazy(() => import('./DirectorsMessage'));
+const RegistrarsMessage = React.lazy(() => import('./RegistrarsMessage'));
 const QualityPolicy = React.lazy(() => import('./QualityPolicy'));
 const Affiliations = React.lazy(() => import('./Affiliations'));
 const AntiRagging = React.lazy(() => import('./AntiRagging'));
@@ -55,6 +56,7 @@ const submenuComponents = {
   'about/about-institute': AboutInstitute,
   'about/vision-mission': VisionMission,
   'about/directors-message': DirectorsMessage,
+  'about/registrars-message': RegistrarsMessage,
   'about/quality-policy': QualityPolicy,
   'about/affiliations': Affiliations,
   'about/anti-ragging': AntiRagging,
