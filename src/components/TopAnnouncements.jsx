@@ -10,7 +10,7 @@ const TopAnnouncements = () => {
       content: (
         <>
           <span className="announcement-dot" aria-hidden="true"></span>
-          <p>The institute will remain open on 27.06.2026 (Saturday) and 29.06.2026 (Monday) for the smooth conduct of admissions for the academic session 2026-27.</p>
+          <p>2nd Counselling Reporting: 09/07/2026 to 11/07/2026 & 13/07/2026. Timings: 10:00 AM to 05:00 PM. The institute will remain closed on Sunday.</p>
         </>
       )
     }
