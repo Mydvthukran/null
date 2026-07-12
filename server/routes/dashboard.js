@@ -8,6 +8,18 @@ const mockData = require('../config/db');
 
 // GET /api/dashboard — Get all dashboard stats
 router.get('/', authMiddleware, (req, res) => {
+  const recentActivity = [];
+  
+  if (mockData.applications.length > 0) {
+    const app = mockData.applications[mockData.applications.length - 1];
+    recentActivity.push({ module: 'Admissions', description: `Application updated (#${app.id})`, date: app.date || 'Today', status: app.status });
+  }
+  
+  if (mockData.notices.length > 0) {
+    const notice = mockData.notices[mockData.notices.length - 1];
+    recentActivity.push({ module: 'Notices', description: notice.title, date: notice.date || 'Today', status: notice.status });
+  }
+
   res.json({
     stats: {
       totalVisitors: mockData.visitors.total,
@@ -15,11 +27,7 @@ router.get('/', authMiddleware, (req, res) => {
       activeNotices: mockData.notices.length,
       upcomingEvents: mockData.events.filter((e) => e.status === 'Upcoming').length,
     },
-    recentActivity: [
-      { module: 'Admissions', description: `New B.Tech CSE Application (#${mockData.applications[0]?.id})`, date: 'Today, 10:42 AM', status: 'Pending Review' },
-      { module: 'Notices', description: mockData.notices[0]?.title || 'No notices', date: 'Yesterday, 03:00 PM', status: 'Published' },
-      { module: 'Events', description: mockData.events[0]?.title || 'No events', date: 'Yesterday, 11:15 AM', status: 'Scheduled' },
-    ],
+    recentActivity,
   });
 });
 
