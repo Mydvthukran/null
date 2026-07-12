@@ -1,84 +1,109 @@
-/* Import a premium Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 .developers-page {
   padding: 8rem 1rem 5rem;
-  min-height: 80vh;
-  /* Very premium dark gradient background */
-  background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 70%);
-  font-family: 'Outfit', sans-serif !important;
+  min-height: 100vh;
+  background-color: #050505;
+  font-family: 'Space Grotesk', sans-serif !important;
   position: relative;
   overflow: hidden;
   color: #ffffff;
 }
 
-/* Elegant glowing orbs */
-.developers-page::before, .developers-page::after {
-  content: '';
-  position: absolute;
+/* Interactive mouse spotlight */
+.mouse-spotlight {
+  position: fixed; /* fixed so it tracks relative to screen like mouse event */
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
   border-radius: 50%;
-  filter: blur(120px);
-  z-index: 0;
   pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  mix-blend-mode: screen;
 }
 
-.developers-page::before {
-  width: 50vw;
-  height: 50vw;
-  background: rgba(99, 102, 241, 0.15); /* Indigo glow */
-  top: -20%;
-  left: -10%;
-  animation: pulse-glow 10s ease-in-out infinite alternate;
+/* Futuristic Tech Grid */
+.tech-grid-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+  opacity: 0.5;
+  transform: perspective(500px) rotateX(60deg) translateY(-100px) scale(3);
+  animation: gridMove 20s linear infinite;
 }
 
-.developers-page::after {
-  width: 40vw;
-  height: 40vw;
-  background: rgba(236, 72, 153, 0.1); /* Pink glow */
-  bottom: -10%;
-  right: -10%;
-  animation: pulse-glow 12s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes pulse-glow {
-  0% { transform: scale(1); opacity: 0.5; }
-  100% { transform: scale(1.2); opacity: 1; }
+@keyframes gridMove {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0) scale(3); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(40px) scale(3); }
 }
 
 .developers-header {
   text-align: center;
-  margin-bottom: 6rem;
+  margin-bottom: 7rem;
   position: relative;
   z-index: 1;
 }
 
+/* Glitch Heading Effect */
 .developers-header h1 {
-  font-size: 3.5rem;
-  font-weight: 800;
+  font-size: 4.5rem;
+  font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #e879f9 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -1px;
-  animation: shine 5s linear infinite, slideDown 0.8s ease-out backwards;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  position: relative;
+  display: inline-block;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+  animation: slideDown 0.8s ease-out backwards;
 }
 
-@keyframes shine {
-  to { background-position: 200% center; }
+.developers-header h1::before,
+.developers-header h1::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #050505;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
+.developers-header h1::before {
+  left: 3px;
+  text-shadow: -2px 0 red;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim 3s infinite linear alternate-reverse;
+}
+
+.developers-header h1::after {
+  left: -3px;
+  text-shadow: -2px 0 blue;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(20px, 9999px, 98px, 0); }
+  20% { clip: rect(62px, 9999px, 13px, 0); }
+  40% { clip: rect(34px, 9999px, 73px, 0); }
+  60% { clip: rect(78px, 9999px, 42px, 0); }
+  80% { clip: rect(12px, 9999px, 90px, 0); }
+  100% { clip: rect(93px, 9999px, 24px, 0); }
 }
 
 .developers-header p {
-  font-size: 1.25rem;
-  color: #94a3b8;
+  font-size: 1.3rem;
+  color: #8892b0;
   max-width: 600px;
   margin: 0 auto;
-  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   animation: slideDown 0.8s ease-out 0.2s backwards;
 }
 
@@ -86,8 +111,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2.5rem;
-  max-width: 1100px;
+  gap: 3.5rem;
+  max-width: 1200px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -95,88 +120,104 @@
 
 .tilt-wrapper {
   animation: cardEntrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
-  border-radius: 24px;
+  border-radius: 20px;
   position: relative;
+  width: 340px;
+  height: 520px; /* Fixed height for true trading card feel */
 }
 
 @keyframes cardEntrance {
-  from { opacity: 0; transform: translateY(80px) scale(0.9); }
+  from { opacity: 0; transform: translateY(100px) scale(0.8); }
   to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* The glowing border animation behind the card */
+.card-border-glow {
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  border-radius: 22px;
+  background: conic-gradient(from 0deg, transparent 0%, var(--card-theme) 50%, transparent 100%);
+  z-index: -1;
+  animation: spinGlow 4s linear infinite;
+  opacity: 0.5;
+  filter: blur(8px);
+  transition: opacity 0.3s;
+}
+
+.tilt-wrapper:hover .card-border-glow {
+  opacity: 1;
+  filter: blur(12px);
+}
+
+@keyframes spinGlow {
+  100% { transform: rotate(360deg); }
 }
 
 .card-glare {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 24px;
+  border-radius: 20px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s ease;
-  z-index: 10;
+  z-index: 20;
   mix-blend-mode: overlay;
 }
 
-/* Premium Dark Glass Card */
+/* The actual Card */
 .developer-card {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  width: 320px;
-  padding: 4.5rem 2rem 2.5rem;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+  padding: 4.5rem 2rem 2rem;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 60px;
   transform-style: preserve-3d;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+  overflow: visible; /* Let avatar pop out */
 }
 
-.developer-card:hover {
-  transform: translateY(-10px);
-  border-color: rgba(99, 102, 241, 0.3);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.15);
-  background: rgba(30, 41, 59, 0.7);
+/* A thematic top accent bar inside the card */
+.card-top-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, var(--card-theme) 0%, transparent 100%);
+  opacity: 0.15;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 .developer-image-container {
   position: absolute;
-  top: -60px;
+  top: -50px;
   left: 50%;
-  transform: translateX(-50%);
+  margin-left: -60px;
   width: 120px;
   height: 120px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid #0f172a; /* Matches card/background darkness */
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  background-color: #1e293b;
-  z-index: 2;
-  transition: transform 0.5s ease;
-}
-
-.developer-card:hover .developer-image-container {
-  transform: translateX(-50%) scale(1.05);
+  border: 3px solid var(--card-theme);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 20px var(--card-theme);
+  background-color: #000;
+  z-index: 5;
 }
 
 .developer-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.developer-card:hover .developer-image {
-  transform: scale(1.1);
+  filter: contrast(1.1) saturate(1.2);
 }
 
 .developer-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #4f46e5, #ec4899);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,82 +230,115 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
   align-items: center;
-  font-family: 'Outfit', sans-serif !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  z-index: 2;
 }
 
 .developer-info h3 {
-  font-size: 1.75rem;
-  color: #f8fafc;
+  font-size: 1.8rem;
+  color: #ffffff;
   margin: 0 0 0.5rem 0;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(255,255,255,0.2);
 }
 
 .developer-role {
   display: inline-block;
-  font-size: 0.85rem;
-  color: #ffffff;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   margin-bottom: 2rem;
-  background: linear-gradient(90deg, #4f46e5, #3b82f6);
-  padding: 0.3rem 1rem;
-  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Trading Card Stats */
+.dev-stats-container {
+  width: 100%;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dev-stat {
+  width: 100%;
+  text-align: left;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+  color: #ccd6f6;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+  font-weight: 600;
+}
+
+.stat-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .developer-links {
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
   justify-content: center;
   width: 100%;
-  flex-wrap: wrap;
+  margin-top: 1.5rem;
 }
 
 .dev-btn {
-  padding: 0.6rem 1.25rem;
-  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ffffff;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
   flex: 1;
-  min-width: 100px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.dev-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.dev-btn:hover::before {
+  left: 100%;
 }
 
 .dev-btn:hover {
-  transform: translateY(-2px);
-}
-
-/* Specific button hover states */
-.portfolio-btn:hover {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-}
-
-.github-btn:hover {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #0f172a;
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-}
-
-.linkedin-btn:hover {
-  background: #0ea5e9;
-  border-color: #0ea5e9;
-  color: white;
-  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+  background: var(--card-theme);
+  border-color: var(--card-theme);
+  box-shadow: 0 0 15px var(--card-theme);
+  color: #000;
 }
 
 @media (max-width: 768px) {
@@ -276,9 +350,10 @@
     font-size: 2.5rem;
   }
   
-  .developer-card {
+  .tilt-wrapper {
     width: 100%;
-    max-width: 320px;
-    margin-top: 50px;
+    max-width: 340px;
+    height: auto;
+    min-height: 500px;
   }
 }
