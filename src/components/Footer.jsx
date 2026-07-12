@@ -108,9 +108,12 @@ const Footer = React.memo(() => {
 
       <div className="footer-bottom">
         <div className="container">
-          <div className="footer-bottom-content">
+          <div className="footer-bottom-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <p className="copyright">
               &copy; {currentYear} State Institute of Engineering &amp; Technology, Panchkula. All rights reserved.
+            </p>
+            <p className="made-by" style={{ marginTop: '0.5rem', fontSize: '0.9rem', color: '#cbd5e1' }}>
+              Made by lot of love ❤️ and by <Link to="/developers" style={{ color: '#fff', textDecoration: 'underline' }}>Students</Link>
             </p>
           </div>
         </div>
