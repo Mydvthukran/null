@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import '../css/developers.css';
 import manishImg from '../assets/new-assets/collob/manish.jpeg';
 import aaditiyaImg from '../assets/new-assets/collob/additiya.jpg';
@@ -26,6 +26,52 @@ const developersData = [
   },
 ];
 
+const TiltCard = ({ children }) => {
+  const cardRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg rotation
+    const rotateY = ((x - centerX) / centerX) * 10;
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+  };
+
+  const handleMouseLeave = () => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+  };
+
+  const handleMouseEnter = () => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transition = 'transform 0.1s ease-out';
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+    >
+      {children}
+    </div>
+  );
+};
+
 const Developers = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -40,40 +86,42 @@ const Developers = () => {
 
       <div className="developers-container">
         {developersData.map((dev, index) => (
-          <div className="developer-card" key={index}>
-            <div className="developer-image-container">
-              {dev.image ? (
-                <img src={dev.image} alt={dev.name} className="developer-image" />
-              ) : (
-                <div className="developer-placeholder">
-                  {dev.name.charAt(0)}
-                </div>
-              )}
-            </div>
-            
-            <div className="developer-info">
-              <h3>{dev.name}</h3>
-              <span className="developer-role">{dev.role}</span>
-              
-              <div className="developer-links">
-                {dev.portfolio && (
-                  <a href={dev.portfolio} target="_blank" rel="noopener noreferrer" className="dev-btn portfolio-btn">
-                    Portfolio
-                  </a>
-                )}
-                {dev.github && (
-                  <a href={dev.github} target="_blank" rel="noopener noreferrer" className="dev-btn github-btn">
-                    GitHub
-                  </a>
-                )}
-                {dev.linkedin && (
-                  <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="dev-btn linkedin-btn">
-                    LinkedIn
-                  </a>
+          <TiltCard key={index}>
+            <div className="developer-card">
+              <div className="developer-image-container" style={{ transform: 'translateZ(50px)' }}>
+                {dev.image ? (
+                  <img src={dev.image} alt={dev.name} className="developer-image" />
+                ) : (
+                  <div className="developer-placeholder">
+                    {dev.name.charAt(0)}
+                  </div>
                 )}
               </div>
+              
+              <div className="developer-info" style={{ transform: 'translateZ(30px)' }}>
+                <h3>{dev.name}</h3>
+                <span className="developer-role">{dev.role}</span>
+                
+                <div className="developer-links" style={{ transform: 'translateZ(20px)' }}>
+                  {dev.portfolio && (
+                    <a href={dev.portfolio} target="_blank" rel="noopener noreferrer" className="dev-btn portfolio-btn">
+                      Portfolio
+                    </a>
+                  )}
+                  {dev.github && (
+                    <a href={dev.github} target="_blank" rel="noopener noreferrer" className="dev-btn github-btn">
+                      GitHub
+                    </a>
+                  )}
+                  {dev.linkedin && (
+                    <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="dev-btn linkedin-btn">
+                      LinkedIn
+                    </a>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
+          </TiltCard>
         ))}
       </div>
     </div>
