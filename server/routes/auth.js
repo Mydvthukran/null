@@ -1,0 +1,49 @@
+/**
+ * Auth Routes — Login / Logout
+ */
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const mockData = require('../config/db');
+
+// POST /api/auth/login
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
+    // Find admin user (FUTURE: query MySQL instead)
+    const admin = mockData.admins.find((a) => a.username === username);
+    if (!admin) {
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+
+    // Generate JWT token (expires in 24 hours)
+    const token = jwt.sign(
+      { id: admin.id, username: admin.username, name: admin.name },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Login successful',
+      token,
+      admin: { id: admin.id, username: admin.username, name: admin.name },
+    });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error during login.' });
+  }
+});
+
+module.exports = router;

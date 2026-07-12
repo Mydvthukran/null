@@ -1,14 +1,60 @@
+/**
+ * SIET Admin Backend Server
+ * =========================
+ * Express.js backend for the college admin dashboard.
+ * Currently uses in-memory mock data.
+ * 
+ * FUTURE INTEGRATIONS:
+ *   - MySQL database (via Hostinger)
+ *   - Hostinger Cloud Storage for document uploads
+ */
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+const path = require('path');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ============================================================
+// Middleware
+// ============================================================
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+}));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Basic health check route
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// ============================================================
+// API Routes
+// ============================================================
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/applications', require('./routes/applications'));
+app.use('/api/documents', require('./routes/documents'));
+app.use('/api/visitors', require('./routes/visitors'));
+
+// Health check
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', message: 'Server is running' });
+  res.status(200).json({ status: 'ok', message: 'SIET Admin Server is running' });
 });
 
+// ============================================================
+// Error Handling
+// ============================================================
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.message);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+// ============================================================
+// Start Server
+// ============================================================
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`✅ SIET Admin Server running on http://localhost:${PORT}`);
+  console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
 });
