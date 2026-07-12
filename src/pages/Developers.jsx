@@ -26,7 +26,7 @@ const developersData = [
   },
 ];
 
-const TiltCard = ({ children }) => {
+const TiltCard = ({ children, delay }) => {
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -40,10 +40,19 @@ const TiltCard = ({ children }) => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg rotation
-    const rotateY = ((x - centerX) / centerX) * 10;
+    const rotateX = ((y - centerY) / centerY) * -12; // Increased max rotation slightly
+    const rotateY = ((x - centerX) / centerX) * 12;
     
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+    // Calculate glare
+    const glareX = (x / rect.width) * 100;
+    const glareY = (y / rect.height) * 100;
+    const glare = card.querySelector('.card-glare');
+    if (glare) {
+      glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.2) 0%, transparent 60%)`;
+      glare.style.opacity = '1';
+    }
   };
 
   const handleMouseLeave = () => {
@@ -51,6 +60,11 @@ const TiltCard = ({ children }) => {
     if (!card) return;
     card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+
+    const glare = card.querySelector('.card-glare');
+    if (glare) {
+      glare.style.opacity = '0';
+    }
   };
 
   const handleMouseEnter = () => {
@@ -61,12 +75,14 @@ const TiltCard = ({ children }) => {
 
   return (
     <div
+      className="tilt-wrapper"
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
+      style={{ transformStyle: 'preserve-3d', willChange: 'transform', animationDelay: `${delay}s` }}
     >
+      <div className="card-glare"></div>
       {children}
     </div>
   );
@@ -86,7 +102,7 @@ const Developers = () => {
 
       <div className="developers-container">
         {developersData.map((dev, index) => (
-          <TiltCard key={index}>
+          <TiltCard key={index} delay={index * 0.2 + 0.3}>
             <div className="developer-card">
               <div className="developer-image-container" style={{ transform: 'translateZ(50px)' }}>
                 {dev.image ? (
