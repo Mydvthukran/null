@@ -1,29 +1,192 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../css/adminDashboard.css';
+
+const API_BASE = 'http://localhost:5000/api';
 
 /**
  * Premium Admin Dashboard Component for College Website
- * Includes a Login screen and specific features like Applications and Total Visitors.
+ * Connected to the Express.js backend via REST API.
  */
 const AdminDashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
+  const [adminName, setAdminName] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
+  const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
   
   // Login form state
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  // Data from API
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [documents, setDocuments] = useState([]);
+
+  // File upload ref
+  const fileInputRef = useRef(null);
 
   // Update document title
   useEffect(() => {
     document.title = isLoggedIn ? "College Admin Portal | SIET" : "Admin Login | SIET";
   }, [isLoggedIn]);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // Dummy login logic: accept any non-empty credentials for demo
-    if (username && password) {
+  // Check for saved token on mount
+  useEffect(() => {
+    const savedToken = localStorage.getItem('adminToken');
+    const savedName = localStorage.getItem('adminName');
+    if (savedToken) {
+      setToken(savedToken);
+      setAdminName(savedName || 'Admin');
       setIsLoggedIn(true);
     }
+  }, []);
+
+  // Fetch data when logged in or tab changes
+  useEffect(() => {
+    if (!isLoggedIn || !token) return;
+
+    if (activeTab === 'overview') {
+      fetchDashboardData();
+    } else if (activeTab === 'applications') {
+      fetchApplications();
+    } else if (activeTab === 'documents') {
+      fetchDocuments();
+    }
+  }, [isLoggedIn, token, activeTab]);
+
+  // --- API HELPER ---
+  const apiCall = async (endpoint, options = {}) => {
+    const headers = { ...options.headers };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (!(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+      if (res.status === 401 || res.status === 403) {
+        handleLogout();
+        return null;
+      }
+      return await res.json();
+    } catch (err) {
+      console.error('API Error:', err);
+      return null;
+    }
+  };
+
+  // --- LOGIN ---
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoginError(data.error || 'Login failed');
+        setLoading(false);
+        return;
+      }
+
+      setToken(data.token);
+      setAdminName(data.admin.name);
+      localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('adminName', data.admin.name);
+      setIsLoggedIn(true);
+    } catch (err) {
+      setLoginError('Cannot connect to server. Make sure the backend is running.');
+    }
+    setLoading(false);
+  };
+
+  // --- LOGOUT ---
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setToken(null);
+    setAdminName('');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminName');
+    setUsername('');
+    setPassword('');
+  };
+
+  // --- FETCH DASHBOARD ---
+  const fetchDashboardData = async () => {
+    const data = await apiCall('/dashboard');
+    if (data) {
+      setDashboardStats(data.stats);
+      setRecentActivity(data.recentActivity || []);
+    }
+  };
+
+  // --- FETCH APPLICATIONS ---
+  const fetchApplications = async () => {
+    const data = await apiCall('/applications');
+    if (data) setApplications(data.applications || []);
+  };
+
+  // --- FETCH DOCUMENTS ---
+  const fetchDocuments = async () => {
+    const data = await apiCall('/documents');
+    if (data) setDocuments(data.documents || []);
+  };
+
+  // --- UPDATE APPLICATION STATUS ---
+  const updateAppStatus = async (id, newStatus) => {
+    const data = await apiCall(`/applications/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (data) fetchApplications();
+  };
+
+  // --- UPLOAD DOCUMENT ---
+  const handleDocUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category', 'General');
+
+    const data = await apiCall('/documents', {
+      method: 'POST',
+      body: formData,
+    });
+    if (data) fetchDocuments();
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // --- DELETE DOCUMENT ---
+  const handleDocDelete = async (id) => {
+    const data = await apiCall(`/documents/${id}`, { method: 'DELETE' });
+    if (data) fetchDocuments();
+  };
+
+  // --- STATUS BADGE HELPER ---
+  const getStatusClass = (status) => {
+    const s = status?.toLowerCase();
+    if (['approved', 'published', 'completed', 'scheduled', 'success', 'verified'].includes(s)) return 'status-active';
+    if (['rejected'].includes(s)) return '';
+    return 'status-pending';
+  };
+
+  const getStatusStyle = (status) => {
+    if (status?.toLowerCase() === 'rejected') {
+      return { background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' };
+    }
+    return {};
   };
 
   // --- LOGIN SCREEN ---
@@ -43,6 +206,12 @@ const AdminDashboard = () => {
             <h2 style={{ margin: 0, color: '#f8fafc', fontSize: '1.5rem' }}>Admin Portal Login</h2>
             <p style={{ color: '#94a3b8', margin: '0.5rem 0 0 0', fontSize: '0.875rem' }}>Enter your credentials to access the dashboard</p>
           </div>
+
+          {loginError && (
+            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '0.75rem 1rem', borderRadius: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem', textAlign: 'center' }}>
+              {loginError}
+            </div>
+          )}
           
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
@@ -77,16 +246,17 @@ const AdminDashboard = () => {
             </div>
             <button 
               type="submit"
+              disabled={loading}
               style={{
-                background: 'linear-gradient(90deg, #38bdf8, #818cf8)',
+                background: loading ? '#64748b' : 'linear-gradient(90deg, #38bdf8, #818cf8)',
                 color: '#fff', border: 'none', padding: '0.875rem',
                 borderRadius: '0.5rem', fontSize: '1rem', fontWeight: 600,
-                cursor: 'pointer', marginTop: '0.5rem', transition: 'opacity 0.2s'
+                cursor: loading ? 'not-allowed' : 'pointer', marginTop: '0.5rem', transition: 'opacity 0.2s'
               }}
-              onMouseOver={(e) => e.currentTarget.style.opacity = '0.9'}
+              onMouseOver={(e) => !loading && (e.currentTarget.style.opacity = '0.9')}
               onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
             >
-              Sign In
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
         </div>
@@ -146,7 +316,7 @@ const AdminDashboard = () => {
           <div 
             className="admin-nav-item"
             style={{ marginTop: 'auto', color: '#ef4444' }}
-            onClick={() => setIsLoggedIn(false)}
+            onClick={handleLogout}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Logout
@@ -165,16 +335,16 @@ const AdminDashboard = () => {
             {activeTab === 'events' && 'Events & Seminars'}
           </h1>
           <div className="admin-user-profile">
-            <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>Admin</span>
+            <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{adminName}</span>
             <div className="admin-avatar">
-              AD
+              {adminName ? adminName.split(' ').map(w => w[0]).join('').substring(0, 2) : 'AD'}
             </div>
           </div>
         </header>
 
+        {/* === OVERVIEW TAB === */}
         {activeTab === 'overview' && (
           <>
-            {/* Stats Grid */}
             <div className="admin-stats-grid">
               <div className="admin-stat-card">
                 <div className="admin-stat-card-header">
@@ -183,14 +353,29 @@ const AdminDashboard = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   </div>
                 </div>
-                <div className="admin-stat-value">124,563</div>
+                <div className="admin-stat-value">
+                  {dashboardStats ? dashboardStats.totalVisitors.toLocaleString() : '—'}
+                </div>
                 <div className="admin-stat-trend trend-up">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                  +14.5% from last month
+                  Live from server
                 </div>
               </div>
 
-
+              <div className="admin-stat-card">
+                <div className="admin-stat-card-header">
+                  <span>Pending Applications</span>
+                  <div className="admin-stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  </div>
+                </div>
+                <div className="admin-stat-value">
+                  {dashboardStats ? dashboardStats.pendingApplications : '—'}
+                </div>
+                <div className="admin-stat-trend trend-up">
+                  Requires review
+                </div>
+              </div>
 
               <div className="admin-stat-card">
                 <div className="admin-stat-card-header">
@@ -199,10 +384,11 @@ const AdminDashboard = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
                   </div>
                 </div>
-                <div className="admin-stat-value">12</div>
+                <div className="admin-stat-value">
+                  {dashboardStats ? dashboardStats.activeNotices : '—'}
+                </div>
                 <div className="admin-stat-trend trend-up">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                  3 new this week
+                  From server
                 </div>
               </div>
 
@@ -213,9 +399,11 @@ const AdminDashboard = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   </div>
                 </div>
-                <div className="admin-stat-value">4</div>
+                <div className="admin-stat-value">
+                  {dashboardStats ? dashboardStats.upcomingEvents : '—'}
+                </div>
                 <div className="admin-stat-trend">
-                  Next: Tech Symposium
+                  From server
                 </div>
               </div>
             </div>
@@ -234,30 +422,16 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Admissions</td>
-                      <td>New B.Tech CSE Application (#APP-4029)</td>
-                      <td>Today, 10:42 AM</td>
-                      <td><span className="status-badge status-pending">Pending Review</span></td>
-                    </tr>
-                    <tr>
-                      <td>Notices</td>
-                      <td>Mid-Semester Exam Datesheet Published</td>
-                      <td>Yesterday, 03:00 PM</td>
-                      <td><span className="status-badge status-active">Published</span></td>
-                    </tr>
-                    <tr>
-                      <td>Events</td>
-                      <td>Guest Lecture by Industry Expert added</td>
-                      <td>Yesterday, 11:15 AM</td>
-                      <td><span className="status-badge status-active">Scheduled</span></td>
-                    </tr>
-                    <tr>
-                      <td>Academics</td>
-                      <td>CSE Department Lesson Plans Updated</td>
-                      <td>Oct 12, 09:30 AM</td>
-                      <td><span className="status-badge status-active">Completed</span></td>
-                    </tr>
+                    {recentActivity.length > 0 ? recentActivity.map((item, i) => (
+                      <tr key={i}>
+                        <td>{item.module}</td>
+                        <td>{item.description}</td>
+                        <td>{item.date}</td>
+                        <td><span className={`status-badge ${getStatusClass(item.status)}`} style={getStatusStyle(item.status)}>{item.status}</span></td>
+                      </tr>
+                    )) : (
+                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading activity data...</td></tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -265,7 +439,7 @@ const AdminDashboard = () => {
           </>
         )}
 
-        {/* Applications Tab */}
+        {/* === APPLICATIONS TAB === */}
         {activeTab === 'applications' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -291,79 +465,64 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>#APP-4029</td>
-                    <td>Rahul Sharma</td>
-                    <td>B.Tech Computer Science</td>
-                    <td>Oct 24, 2026</td>
-                    <td><span className="status-badge status-pending">Under Review</span></td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', textDecoration: 'underline' }}>View</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#APP-4028</td>
-                    <td>Priya Patel</td>
-                    <td>B.Tech Electronics</td>
-                    <td>Oct 23, 2026</td>
-                    <td><span className="status-badge status-active">Approved</span></td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', textDecoration: 'underline' }}>View</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#APP-4027</td>
-                    <td>Amit Kumar</td>
-                    <td>B.Tech Mechanical</td>
-                    <td>Oct 21, 2026</td>
-                    <td><span className="status-badge status-pending">Missing Docs</span></td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', textDecoration: 'underline' }}>View</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#APP-4026</td>
-                    <td>Neha Singh</td>
-                    <td>B.Tech Civil</td>
-                    <td>Oct 20, 2026</td>
-                    <td><span className="status-badge status-active">Approved</span></td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', textDecoration: 'underline' }}>View</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>#APP-4025</td>
-                    <td>Vikram Verma</td>
-                    <td>B.Tech Computer Science</td>
-                    <td>Oct 18, 2026</td>
-                    <td><span className="status-badge" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>Rejected</span></td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', textDecoration: 'underline' }}>View</button>
-                    </td>
-                  </tr>
+                  {applications.length > 0 ? applications.map((app) => (
+                    <tr key={app.id}>
+                      <td>#{app.id}</td>
+                      <td>{app.name}</td>
+                      <td>{app.course}</td>
+                      <td>{app.date}</td>
+                      <td>
+                        <span className={`status-badge ${getStatusClass(app.status)}`} style={getStatusStyle(app.status)}>
+                          {app.status}
+                        </span>
+                      </td>
+                      <td>
+                        <select
+                          value={app.status}
+                          onChange={(e) => updateAppStatus(app.id, e.target.value)}
+                          style={{
+                            background: 'rgba(15, 23, 42, 0.6)', color: '#38bdf8',
+                            border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.25rem',
+                            padding: '0.25rem 0.5rem', cursor: 'pointer', outline: 'none'
+                          }}
+                        >
+                          <option value="Under Review">Under Review</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Missing Docs">Missing Docs</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan="6" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading applications...</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         )}
 
-        {/* Document Manager Tab */}
+        {/* === DOCUMENTS TAB === */}
         {activeTab === 'documents' && (
           <div>
-            <div className="document-upload-area">
+            <div
+              className="document-upload-area"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleDocUpload}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                style={{ display: 'none' }}
+              />
               <svg className="document-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              <h3 style={{ color: '#f8fafc', marginBottom: '0.5rem', fontSize: '1.25rem' }}>Click or drag to upload new document</h3>
+              <h3 style={{ color: '#f8fafc', marginBottom: '0.5rem', fontSize: '1.25rem' }}>Click to upload a new document</h3>
               <p style={{ color: '#94a3b8', margin: 0 }}>Support for PDF, DOCX, XLSX (Max 10MB)</p>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <h2 className="admin-section-title" style={{ margin: 0 }}>Website Documents</h2>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <input type="text" placeholder="Search..." style={{
-                  padding: '0.5rem 1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.1)',
-                  background: 'rgba(15, 23, 42, 0.6)', color: '#fff', outline: 'none'
-                }} />
-              </div>
             </div>
 
             <div className="admin-activity-panel">
@@ -378,52 +537,36 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td><div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                      Academic_Calendar_2026.pdf
-                    </div></td>
-                    <td>Academics</td>
-                    <td>245 KB</td>
-                    <td>Oct 15, 2026</td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', marginRight: '0.5rem' }}>Replace</button>
-                      <button style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}>Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                      Admission_Brochure_2026.pdf
-                    </div></td>
-                    <td>Admissions</td>
-                    <td>4.2 MB</td>
-                    <td>Sep 20, 2026</td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', marginRight: '0.5rem' }}>Replace</button>
-                      <button style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}>Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                      Fee_Structure_BTech.xlsx
-                    </div></td>
-                    <td>Finance</td>
-                    <td>128 KB</td>
-                    <td>Aug 10, 2026</td>
-                    <td>
-                      <button style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', marginRight: '0.5rem' }}>Replace</button>
-                      <button style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}>Delete</button>
-                    </td>
-                  </tr>
+                  {documents.length > 0 ? documents.map((doc) => (
+                    <tr key={doc.id}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                          {doc.name}
+                        </div>
+                      </td>
+                      <td>{doc.category}</td>
+                      <td>{doc.size}</td>
+                      <td>{doc.updatedAt}</td>
+                      <td>
+                        <button
+                          onClick={() => handleDocDelete(doc.id)}
+                          style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan="5" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading documents...</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         )}
 
-        {/* Temporary placeholders for other tabs */}
+        {/* Placeholder for notices & events */}
         {(activeTab === 'notices' || activeTab === 'events') && (
           <div className="admin-activity-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
             <div style={{ marginBottom: '1.5rem', color: '#38bdf8' }}>
