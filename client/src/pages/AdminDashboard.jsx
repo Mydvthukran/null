@@ -22,6 +22,7 @@ const AdminDashboard = () => {
   const [adminName, setAdminName] = useState('');
   const [adminRole, setAdminRole] = useState('');
   const [adminPermissions, setAdminPermissions] = useState([]);
+  const [adminId, setAdminId] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,10 +52,12 @@ const AdminDashboard = () => {
     const savedName = localStorage.getItem('adminName');
     const savedRole = localStorage.getItem('adminRole');
     const savedPerms = localStorage.getItem('adminPermissions');
+    const savedId = localStorage.getItem('adminId');
     if (savedToken) {
       setToken(savedToken);
       setAdminName(savedName || 'Admin');
       setAdminRole(savedRole || 'editor');
+      if (savedId) setAdminId(parseInt(savedId));
       try { setAdminPermissions(JSON.parse(savedPerms || '[]')); } catch { setAdminPermissions([]); }
       setIsLoggedIn(true);
     }
@@ -123,10 +126,12 @@ const AdminDashboard = () => {
       setAdminName(data.admin.name);
       setAdminRole(data.admin.role || 'editor');
       setAdminPermissions(data.admin.permissions || []);
+      setAdminId(data.admin.id);
       localStorage.setItem('adminToken', data.token);
       localStorage.setItem('adminName', data.admin.name);
       localStorage.setItem('adminRole', data.admin.role || 'editor');
       localStorage.setItem('adminPermissions', JSON.stringify(data.admin.permissions || []));
+      localStorage.setItem('adminId', data.admin.id);
       setIsLoggedIn(true);
     } catch (err) {
       setLoginError('Cannot connect to server. Make sure the backend is running.');
@@ -141,10 +146,12 @@ const AdminDashboard = () => {
     setAdminName('');
     setAdminRole('');
     setAdminPermissions([]);
+    setAdminId(null);
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminName');
     localStorage.removeItem('adminRole');
     localStorage.removeItem('adminPermissions');
+    localStorage.removeItem('adminId');
     setUsername('');
     setPassword('');
   };

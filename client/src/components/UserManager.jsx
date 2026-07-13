@@ -15,7 +15,7 @@ const ALL_PERMISSIONS = [
   { key: 'menus', label: 'Navigation Menus' },
 ];
 
-const UserManager = ({ token }) => {
+const UserManager = ({ token, currentAdminId }) => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -191,7 +191,9 @@ const UserManager = ({ token }) => {
                 <td>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button onClick={() => handleOpenModal(user)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}>Edit</button>
-                    <button onClick={() => handleDelete(user.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem', color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)' }}>Delete</button>
+                    {user.id !== currentAdminId && (
+                      <button onClick={() => handleDelete(user.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem', color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)' }}>Delete</button>
+                    )}
                   </div>
                 </td>
               </tr>
