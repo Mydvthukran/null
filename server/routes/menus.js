@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const verifyAdmin = require('../middleware/auth');
+const { logActivity } = require('../utils/logger');
 
 // Helper to build tree
 const buildMenuTree = (items, parentId = null) => {
@@ -66,6 +67,9 @@ router.put('/', verifyAdmin, async (req, res) => {
     }
 
     await connection.commit();
+
+    await logActivity(req.admin, 'Menus', 'Update', 'Updated navigation menus layout');
+
     res.json({ success: true, message: 'Menus updated successfully' });
   } catch (error) {
     await connection.rollback();

@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
 
 // GET /api/applications — List all applications
 router.get('/', authMiddleware, async (req, res) => {
@@ -43,6 +44,9 @@ router.post('/', async (req, res) => {
       [name, course, date, 'Under Review']
     );
     
+    // Pass null for admin since this is public
+    await logActivity(null, 'Admissions', 'Create', `New application submitted by ${name}`);
+    
     res.json({ message: 'Application submitted successfully' });
   } catch (err) {
     console.error('Error submitting application:', err);
@@ -64,6 +68,8 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
     
     // Fetch updated app
     const [updatedRows] = await pool.query('SELECT * FROM applications WHERE id = ?', [req.params.id]);
+
+    await logActivity(req.admin, 'Admissions', 'Update', `Updated application status for ${rows[0].name} to ${status}`);
 
     res.json({ message: 'Status updated', application: updatedRows[0] });
   } catch (err) {

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const verifyAdmin = require('../middleware/auth');
+const { logActivity } = require('../utils/logger');
 
 // Get all settings
 router.get('/', async (req, res) => {
@@ -35,6 +36,9 @@ router.put('/', verifyAdmin, async (req, res) => {
     });
 
     await Promise.all(promises);
+
+    await logActivity(req.admin, 'Settings', 'Update', 'Updated system settings');
+
     res.json({ success: true, message: 'Settings updated successfully' });
   } catch (error) {
     console.error('Error updating settings:', error);

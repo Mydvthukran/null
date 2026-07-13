@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
 
 // Ensure uploads/gallery directory exists
 const galleryDir = path.join(__dirname, '..', 'uploads', 'gallery');
@@ -71,6 +72,8 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       [title, cat, imagePath]
     );
 
+    await logActivity(req.admin, 'Gallery', 'Create', `Uploaded image: ${title}`);
+
     res.json({ message: 'Image uploaded successfully', id: result.insertId });
   } catch (err) {
     console.error('Error uploading image:', err);
@@ -92,6 +95,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       'UPDATE gallery SET title = ?, category = ? WHERE id = ?',
       [title, cat, req.params.id]
     );
+    await logActivity(req.admin, 'Gallery', 'Update', `Updated image: ${title}`);
     res.json({ message: 'Image updated successfully' });
   } catch (err) {
     console.error('Error updating image:', err);
@@ -115,6 +119,8 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
 
     await pool.query('DELETE FROM gallery WHERE id = ?', [req.params.id]);
+
+    await logActivity(req.admin, 'Gallery', 'Delete', `Deleted image: ${img.title}`);
 
     res.json({ message: 'Image deleted successfully' });
   } catch (err) {

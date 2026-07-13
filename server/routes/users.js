@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 const authMiddleware = require('../middleware/auth');
 const { requireRole } = require('../middleware/auth');
+const { logActivity } = require('../utils/logger');
 
 // All routes require auth + super_admin role
 router.use(authMiddleware);
@@ -55,6 +56,8 @@ router.post('/', async (req, res) => {
       [username, hashedPassword, name, userRole, userPermissions]
     );
 
+    await logActivity(req.admin, 'Users', 'Create', `Created admin user: ${username}`);
+
     res.status(201).json({
       success: true,
       message: 'User created successfully',
@@ -96,6 +99,8 @@ router.put('/:id', async (req, res) => {
     values.push(id);
     await pool.execute(`UPDATE admins SET ${updates.join(', ')} WHERE id = ?`, values);
 
+    await logActivity(req.admin, 'Users', 'Update', `Updated admin user ID: ${id}`);
+
     res.json({ success: true, message: 'User updated successfully' });
   } catch (error) {
     console.error('Error updating user:', error);
@@ -114,6 +119,9 @@ router.delete('/:id', async (req, res) => {
     }
 
     await pool.execute('DELETE FROM admins WHERE id = ?', [id]);
+    
+    await logActivity(req.admin, 'Users', 'Delete', `Deleted admin user ID: ${id}`);
+
     res.json({ success: true, message: 'User deleted successfully' });
   } catch (error) {
     console.error('Error deleting user:', error);

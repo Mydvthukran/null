@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
 
 const uploadsDir = path.join(__dirname, '..', 'uploads', 'faculty');
 if (!fs.existsSync(uploadsDir)) {
@@ -100,6 +101,8 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       }
     }
 
+    await logActivity(req.admin, 'Faculty', 'Create', `Added faculty member: ${name}`);
+
     res.status(201).json({ message: 'Faculty created successfully', id: facultyId });
   } catch (err) {
     console.error('Error creating faculty:', err);
@@ -133,6 +136,8 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
       }
     }
 
+    await logActivity(req.admin, 'Faculty', 'Update', `Updated faculty member: ${name}`);
+
     res.json({ message: 'Faculty updated successfully' });
   } catch (err) {
     console.error('Error updating faculty:', err);
@@ -145,6 +150,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query('DELETE FROM faculty WHERE id = ?', [id]);
+    await logActivity(req.admin, 'Faculty', 'Delete', `Deleted faculty ID: ${id}`);
     res.json({ message: 'Faculty deleted successfully' });
   } catch (err) {
     console.error('Error deleting faculty:', err);

@@ -485,21 +485,30 @@ const AdminDashboard = () => {
                   <thead>
                     <tr>
                       <th>Module</th>
-                      <th>Activity Description</th>
+                      <th>Action</th>
+                      <th>Description</th>
+                      <th>User</th>
                       <th>Date & Time</th>
-                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {recentActivity.length > 0 ? recentActivity.map((item, i) => (
                       <tr key={i}>
                         <td>{item.module}</td>
+                        <td>
+                          <span className={`status-badge`} style={{
+                            background: item.action === 'Create' ? 'rgba(34, 197, 94, 0.1)' : item.action === 'Delete' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(56, 189, 248, 0.1)',
+                            color: item.action === 'Create' ? '#22c55e' : item.action === 'Delete' ? '#ef4444' : '#38bdf8'
+                          }}>
+                            {item.action}
+                          </span>
+                        </td>
                         <td>{item.description}</td>
-                        <td>{item.date}</td>
-                        <td><span className={`status-badge ${getStatusClass(item.status)}`} style={getStatusStyle(item.status)}>{item.status}</span></td>
+                        <td>{item.user}</td>
+                        <td>{new Date(item.date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</td>
                       </tr>
                     )) : (
-                      <tr><td colSpan="4" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading activity data...</td></tr>
+                      <tr><td colSpan="5" style={{ textAlign: 'center', color: '#94a3b8', padding: '1rem' }}>No recent activity.</td></tr>
                     )}
                   </tbody>
                 </table>

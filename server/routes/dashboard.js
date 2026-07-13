@@ -9,25 +9,25 @@ const pool = require('../config/db');
 // GET /api/dashboard — Get all dashboard stats
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const recentActivity = [];
-
-    // Applications
-    const [appRows] = await pool.query('SELECT * FROM applications ORDER BY id DESC LIMIT 1');
-    if (appRows.length > 0) {
-      const app = appRows[0];
-      recentActivity.push({ module: 'Admissions', description: `Application updated (#${app.id})`, date: app.date || 'Today', status: app.status });
-    }
-
-    // Notices
-    const [noticeRows] = await pool.query('SELECT * FROM notices ORDER BY id DESC LIMIT 1');
-    if (noticeRows.length > 0) {
-      const notice = noticeRows[0];
-      recentActivity.push({ module: 'Notices', description: notice.title, date: notice.date || 'Today', status: notice.status });
-    }
-
-    // Counts
-    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
+    // 1. Fetch recent activity from the activity_log table
+    const [recentActivityRows] = await pool.query(
+      'SELECT id, admin_name, module, action, description, timestamp FROM activity_log ORDER BY timestamp DESC LIMIT 10'
+    );
     
+    // Map to a nice format for the frontend
+    const recentActivity = recentActivityRows.map(row => ({
+      id: row.id,
+      module: row.module,
+      action: row.action,
+      description: row.description,
+      user: row.admin_name,
+      // Format as ISO string so frontend can format it nicely
+      date: row.timestamp,
+      status: row.action // frontend uses status for coloring
+    }));
+
+    // 2. Fetch Counts
+    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
     const [[pendingAppCount]] = await pool.query('SELECT COUNT(*) as count FROM applications WHERE status IN ("Under Review", "Missing Docs")');
     const [[activeNoticeCount]] = await pool.query('SELECT COUNT(*) as count FROM notices');
     const [[upcomingEventCount]] = await pool.query('SELECT COUNT(*) as count FROM events WHERE status = "Upcoming"');

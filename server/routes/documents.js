@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
 
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -79,6 +80,8 @@ router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
       'UPDATE documents SET size=?, updatedAt=?, filePath=? WHERE document_key=?',
       [sizeLabel, updatedAt, filePath, req.params.key]
     );
+
+    await logActivity(req.admin, 'Documents', 'Update', `Replaced document: ${doc.name}`);
 
     res.json({ message: 'Document replaced successfully', filePath });
   } catch (err) {

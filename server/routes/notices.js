@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
 
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -64,6 +65,7 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
       'INSERT INTO notices (title, date, status, category, file_path, publish_date) VALUES (?, ?, ?, ?, ?, ?)',
       [title, date || new Date().toISOString().split('T')[0], status || 'Active', category || 'Notice', filePath, pubDate]
     );
+    await logActivity(req.admin, 'Notices', 'Create', `Added notice: ${title}`);
     res.status(201).json({ message: 'Notice created successfully', id: result.insertId });
   } catch (err) {
     console.error('Error creating notice:', err);
@@ -89,6 +91,7 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
     }
 
     await pool.query(query, params);
+    await logActivity(req.admin, 'Notices', 'Update', `Updated notice: ${title}`);
     res.json({ message: 'Notice updated successfully' });
   } catch (err) {
     console.error('Error updating notice:', err);
@@ -102,6 +105,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     // Optionally delete the physical file here if needed (skipping for simplicity/archival)
     await pool.query('DELETE FROM notices WHERE id = ?', [id]);
+    await logActivity(req.admin, 'Notices', 'Delete', `Deleted notice ID: ${id}`);
     res.json({ message: 'Notice deleted successfully' });
   } catch (err) {
     console.error('Error deleting notice:', err);
