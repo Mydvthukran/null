@@ -7,7 +7,7 @@ export const DocumentProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/documents')
+    fetch('https://null-e3uj.onrender.com/api/documents')
       .then(res => res.json())
       .then(data => {
         setDocuments(data.documents || []);
@@ -23,7 +23,7 @@ export const DocumentProvider = ({ children }) => {
   const getDocUrl = (key, fallback = '#') => {
     const doc = documents.find(d => d.document_key === key);
     if (doc && doc.filePath) {
-      return `http://localhost:5000${doc.filePath}`;
+      return `https://null-e3uj.onrender.com${doc.filePath}`;
     }
     return fallback;
   };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://null-e3uj.onrender.com/api';
 
 const MenuItemEditor = ({ item, onChange, onRemove, onAddSubmenu, level }) => {
   return (

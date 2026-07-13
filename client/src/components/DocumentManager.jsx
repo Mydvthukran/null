@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://null-e3uj.onrender.com/api';
 
 const DocumentManager = ({ token }) => {
   const [documents, setDocuments] = useState([]);
@@ -95,7 +95,7 @@ const DocumentManager = ({ token }) => {
                     <span style={{ fontWeight: 500, color: '#f8fafc' }}>{doc.name}</span>
                   </div>
                   {doc.filePath ? (
-                    <a href={`http://localhost:5000${doc.filePath}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
+                    <a href={`https://null-e3uj.onrender.com${doc.filePath}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
                   ) : (
                     <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.25rem', display: 'inline-block' }}>No file attached</span>
                   )}

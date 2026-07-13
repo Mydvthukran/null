@@ -7,7 +7,7 @@ const BannerCarousel = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/gallery')
+    fetch('https://null-e3uj.onrender.com/api/gallery')
       .then(res => res.json())
       .then(data => {
         // Only use images tagged as "Home Carousel"
@@ -62,7 +62,7 @@ const BannerCarousel = () => {
                     aria-hidden={index !== activeIndex}
                   >
                     <img
-                      src={`http://localhost:5000${banner.imagePath}`}
+                      src={`https://null-e3uj.onrender.com${banner.imagePath}`}
                       alt={banner.title}
                       loading="lazy"
                     />

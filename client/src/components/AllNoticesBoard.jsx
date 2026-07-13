@@ -5,7 +5,7 @@ const AllNoticesBoard = () => {
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/notices')
+    fetch('https://null-e3uj.onrender.com/api/notices')
       .then(res => res.json())
       .then(data => {
         // Filter out any that are 'Archived' if needed, or show all
@@ -33,7 +33,7 @@ const AllNoticesBoard = () => {
                 <p className="all-notice-date">Posted: {notice.date}</p>
                 <div className="all-notice-actions">
                   {notice.file_path ? (
-                    <a href={`http://localhost:5000${notice.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
+                    <a href={`https://null-e3uj.onrender.com${notice.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
                       View Document
                     </a>
                   ) : (

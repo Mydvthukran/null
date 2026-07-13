@@ -18,7 +18,7 @@ export const SettingsProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/settings')
+    fetch('https://null-e3uj.onrender.com/api/settings')
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {

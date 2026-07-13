@@ -8,7 +8,7 @@ const LifeAtSIET = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/gallery')
+    fetch('https://null-e3uj.onrender.com/api/gallery')
       .then(res => res.json())
       .then(data => {
         // Filter out Home Carousel images if you want, or just show everything else
@@ -38,7 +38,7 @@ const LifeAtSIET = () => {
             ) : galleryImages.length > 0 ? (
               galleryImages.map((image) => (
                 <div key={image.id} className="gallery-item">
-                  <img src={`http://localhost:5000${image.imagePath}`} alt={image.title} loading="lazy" />
+                  <img src={`https://null-e3uj.onrender.com${image.imagePath}`} alt={image.title} loading="lazy" />
                   <div className="gallery-overlay">
                     <p className="gallery-title">{image.title}</p>
                     <span className="gallery-category">{image.category}</span>

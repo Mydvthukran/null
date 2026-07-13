@@ -43,7 +43,7 @@ const ExternalPlacementRedirect = () => {
 function App() {
   useEffect(() => {
     if (!sessionStorage.getItem('siet_visited')) {
-      fetch('http://localhost:5000/api/visitors/hit', { method: 'POST' })
+      fetch('https://null-e3uj.onrender.com/api/visitors/hit', { method: 'POST' })
         .then(() => sessionStorage.setItem('siet_visited', 'true'))
         .catch(err => console.error('Failed to register visit:', err));
     }

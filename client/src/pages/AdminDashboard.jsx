@@ -10,7 +10,7 @@ import MenuManager from '../components/MenuManager';
 import UserManager from '../components/UserManager';
 import '../css/adminDashboard.css';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://null-e3uj.onrender.com/api';
 
 /**
  * Premium Admin Dashboard Component for College Website

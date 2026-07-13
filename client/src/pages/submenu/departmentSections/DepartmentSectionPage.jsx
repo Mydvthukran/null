@@ -34,7 +34,7 @@ const DepartmentSectionPage = () => {
 
   useEffect(() => {
     if (!deptSlug) return;
-    fetch(`http://localhost:5000/api/faculty/department/${deptSlug}`)
+    fetch(`https://null-e3uj.onrender.com/api/faculty/department/${deptSlug}`)
       .then(res => res.json())
       .then(data => setFacultyMembers(data))
       .catch(err => console.error('Error fetching faculty:', err));
@@ -157,7 +157,7 @@ const DepartmentSectionPage = () => {
                                   <div className="faculty-profile-head">
                                     {faculty.image_path ? (
                                       <img 
-                                        src={`http://localhost:5000${faculty.image_path}`} 
+                                        src={`https://null-e3uj.onrender.com${faculty.image_path}`} 
                                         alt={faculty.name} 
                                         style={{ 
                                           width: '2.6rem', 

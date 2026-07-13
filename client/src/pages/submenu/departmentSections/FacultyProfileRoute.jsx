@@ -17,7 +17,7 @@ const FacultyProfileRoute = () => {
     }
 
     setLoading(true);
-    fetch(`http://localhost:5000/api/faculty/${teacherSlug}`)
+    fetch(`https://null-e3uj.onrender.com/api/faculty/${teacherSlug}`)
       .then((res) => {
         if (!res.ok) throw new Error('Not found');
         return res.json();

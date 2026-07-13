@@ -16,7 +16,7 @@ const GalleryManager = ({ token }) => {
 
   const fetchGallery = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/gallery');
+      const res = await fetch('https://null-e3uj.onrender.com/api/gallery');
       const data = await res.json();
       if (res.ok) setImages(data.images || []);
     } catch (err) {
@@ -37,7 +37,7 @@ const GalleryManager = ({ token }) => {
     formData.append('category', category);
 
     try {
-      const res = await fetch('http://localhost:5000/api/gallery', {
+      const res = await fetch('https://null-e3uj.onrender.com/api/gallery', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -63,7 +63,7 @@ const GalleryManager = ({ token }) => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/gallery/${id}`, {
+      const res = await fetch(`https://null-e3uj.onrender.com/api/gallery/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -78,7 +78,7 @@ const GalleryManager = ({ token }) => {
 
   const handleEditSave = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/gallery/${id}`, {
+      const res = await fetch(`https://null-e3uj.onrender.com/api/gallery/${id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -190,7 +190,7 @@ const GalleryManager = ({ token }) => {
           }}>
             <div style={{ height: '180px', overflow: 'hidden' }}>
               <img 
-                src={`http://localhost:5000${img.imagePath}`} 
+                src={`https://null-e3uj.onrender.com${img.imagePath}`} 
                 alt={img.title} 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />

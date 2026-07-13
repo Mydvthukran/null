@@ -95,7 +95,7 @@ const InfoCards = () => {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/notices')
+    fetch('https://null-e3uj.onrender.com/api/notices')
       .then(res => res.json())
       .then(data => {
         const activeData = data.filter(n => n.status !== 'Archived');
@@ -105,7 +105,7 @@ const InfoCards = () => {
           id: n.id,
           title: n.title,
           date: n.date,
-          href: n.file_path ? `http://localhost:5000${n.file_path}` : null,
+          href: n.file_path ? `https://null-e3uj.onrender.com${n.file_path}` : null,
           isNew: n.status === 'Active' // or based on date if you prefer
         });
 
