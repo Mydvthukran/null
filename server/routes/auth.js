@@ -1,5 +1,5 @@
 /**
- * Auth Routes — Login / Logout
+ * Auth Routes — Login
  */
 const express = require('express');
 const router = express.Router();
@@ -29,9 +29,23 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
+    // Parse permissions
+    let permissions = [];
+    try {
+      permissions = JSON.parse(admin.permissions || '[]');
+    } catch (e) {
+      permissions = [];
+    }
+
     // Generate JWT token (expires in 24 hours)
     const token = jwt.sign(
-      { id: admin.id, username: admin.username, name: admin.name },
+      {
+        id: admin.id,
+        username: admin.username,
+        name: admin.name,
+        role: admin.role || 'editor',
+        permissions
+      },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
@@ -39,7 +53,13 @@ router.post('/login', async (req, res) => {
     res.json({
       message: 'Login successful',
       token,
-      admin: { id: admin.id, username: admin.username, name: admin.name },
+      admin: {
+        id: admin.id,
+        username: admin.username,
+        name: admin.name,
+        role: admin.role || 'editor',
+        permissions
+      },
     });
   } catch (err) {
     console.error('Login error:', err);

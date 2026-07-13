@@ -22,4 +22,18 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+/**
+ * Role-based access middleware factory.
+ * Usage: requireRole('super_admin')
+ */
+const requireRole = (...roles) => {
+  return (req, res, next) => {
+    if (!req.admin || !roles.includes(req.admin.role)) {
+      return res.status(403).json({ error: 'Insufficient permissions.' });
+    }
+    next();
+  };
+};
+
 module.exports = authMiddleware;
+module.exports.requireRole = requireRole;
