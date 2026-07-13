@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Navigate, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Navbar from './components/Navbar';
@@ -39,6 +39,14 @@ const ExternalPlacementRedirect = () => {
  * Combines all sections to create the complete college website with routing
  */
 function App() {
+  useEffect(() => {
+    if (!sessionStorage.getItem('siet_visited')) {
+      fetch('http://localhost:5000/api/visitors/hit', { method: 'POST' })
+        .then(() => sessionStorage.setItem('siet_visited', 'true'))
+        .catch(err => console.error('Failed to register visit:', err));
+    }
+  }, []);
+
   return (
     <div className="App">
       <ScheduledPopup />

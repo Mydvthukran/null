@@ -29,6 +29,27 @@ router.get('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// POST /api/applications — Submit a new application (public)
+router.post('/', async (req, res) => {
+  try {
+    const { name, course } = req.body;
+    if (!name || !course) {
+      return res.status(400).json({ error: 'Name and course are required.' });
+    }
+    const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    await pool.query(
+      'INSERT INTO applications (name, course, date, status) VALUES (?, ?, ?, ?)',
+      [name, course, date, 'Under Review']
+    );
+    
+    res.json({ message: 'Application submitted successfully' });
+  } catch (err) {
+    console.error('Error submitting application:', err);
+    res.status(500).json({ error: 'Server error submitting application' });
+  }
+});
+
 // PUT /api/applications/:id/status — Update application status
 router.put('/:id/status', authMiddleware, async (req, res) => {
   try {

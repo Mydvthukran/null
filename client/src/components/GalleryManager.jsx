@@ -5,6 +5,9 @@ const GalleryManager = ({ token }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Campus');
   const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editCategory, setEditCategory] = useState('Campus');
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -71,6 +74,34 @@ const GalleryManager = ({ token }) => {
       console.error(err);
       alert('Error deleting image.');
     }
+  };
+
+  const handleEditSave = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/gallery/${id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ title: editTitle, category: editCategory }),
+      });
+      if (res.ok) {
+        setEditingId(null);
+        fetchGallery();
+      } else {
+        alert('Failed to update image.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error updating image.');
+    }
+  };
+
+  const startEditing = (img) => {
+    setEditingId(img.id);
+    setEditTitle(img.title);
+    setEditCategory(img.category);
   };
 
   return (
@@ -165,27 +196,84 @@ const GalleryManager = ({ token }) => {
               />
             </div>
             <div style={{ padding: '1rem', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <div>
-                <h4 style={{ margin: '0 0 0.25rem 0', color: '#f8fafc', fontSize: '1.1rem' }}>{img.title}</h4>
-                <span style={{ 
-                  display: 'inline-block',
-                  background: 'rgba(56, 189, 248, 0.1)', 
-                  color: '#38bdf8',
-                  padding: '0.2rem 0.6rem', 
-                  borderRadius: '1rem', 
-                  fontSize: '0.75rem',
-                  marginBottom: '1rem'
-                }}>
-                  {img.category}
-                </span>
-              </div>
-              <button 
-                onClick={() => handleDelete(img.id)}
-                className="admin-btn outline"
-                style={{ width: '100%', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
-              >
-                Delete Image
-              </button>
+              {editingId === img.id ? (
+                <div style={{ marginBottom: '1rem' }}>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    style={{
+                      width: '100%', padding: '0.5rem', borderRadius: '0.25rem',
+                      background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#fff', outline: 'none', marginBottom: '0.5rem'
+                    }}
+                  />
+                  <select
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value)}
+                    style={{
+                      width: '100%', padding: '0.5rem', borderRadius: '0.25rem',
+                      background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#fff', outline: 'none', marginBottom: '0.5rem'
+                    }}
+                  >
+                    <option value="Campus">Campus</option>
+                    <option value="Academics">Academics</option>
+                    <option value="Events">Events</option>
+                    <option value="Home Carousel">Home Carousel</option>
+                  </select>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button 
+                      onClick={() => handleEditSave(img.id)}
+                      className="admin-btn primary"
+                      style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', flex: 1 }}
+                    >
+                      Save
+                    </button>
+                    <button 
+                      onClick={() => setEditingId(null)}
+                      className="admin-btn outline"
+                      style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', flex: 1 }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <h4 style={{ margin: '0 0 0.25rem 0', color: '#f8fafc', fontSize: '1.1rem' }}>{img.title}</h4>
+                  <span style={{ 
+                    display: 'inline-block',
+                    background: 'rgba(56, 189, 248, 0.1)', 
+                    color: '#38bdf8',
+                    padding: '0.2rem 0.6rem', 
+                    borderRadius: '1rem', 
+                    fontSize: '0.75rem',
+                    marginBottom: '1rem'
+                  }}>
+                    {img.category}
+                  </span>
+                </div>
+              )}
+              
+              {editingId !== img.id && (
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button 
+                    onClick={() => startEditing(img)}
+                    className="admin-btn outline"
+                    style={{ flex: 1, padding: '0.5rem', fontSize: '0.875rem' }}
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(img.id)}
+                    className="admin-btn outline"
+                    style={{ flex: 1, padding: '0.5rem', fontSize: '0.875rem', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )) : (

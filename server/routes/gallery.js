@@ -79,6 +79,26 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   }
 });
 
+// PUT /api/gallery/:id — Update image title and category
+router.put('/:id', authMiddleware, async (req, res) => {
+  const { title, category } = req.body;
+  if (!title) {
+    return res.status(400).json({ error: 'Image title is required.' });
+  }
+
+  try {
+    const cat = category || 'general';
+    await pool.query(
+      'UPDATE gallery SET title = ?, category = ? WHERE id = ?',
+      [title, cat, req.params.id]
+    );
+    res.json({ message: 'Image updated successfully' });
+  } catch (err) {
+    console.error('Error updating image:', err);
+    res.status(500).json({ error: 'Server error updating image' });
+  }
+});
+
 // DELETE /api/gallery/:id — Delete an image
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {

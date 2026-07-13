@@ -64,24 +64,25 @@ const Admission = () => {
       return;
     }
 
-    // You will replace this with your actual Google Script URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEAHCOQvSEfxPOyVkFVx82iVL8fdYBLKD6IBr5OOPz2QJ0SdQrW_Lb_C0GzCmDGcfn/exec';
-
-    const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
-    }
-
     try {
-      await fetch(scriptURL, {
+      const res = await fetch('http://localhost:5000/api/applications', {
         method: 'POST',
-        body: data,
-        mode: 'no-cors' // Required for Google Scripts
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.studentName,
+          course: 'B.Tech' // Default course since form doesn't have course field right now
+        })
       });
 
-      setErrors({});
-      setIsSubmitted(true);
-      setFormData(initialFormData);
+      if (res.ok) {
+        setErrors({});
+        setIsSubmitted(true);
+        setFormData(initialFormData);
+      } else {
+        throw new Error('Failed to submit');
+      }
     } catch (error) {
       console.error('Error!', error.message);
       alert('There was a problem submitting the form. Please try again.');
