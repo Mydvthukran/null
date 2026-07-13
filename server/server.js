@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 // ============================================================
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://null-livid.vercel.app'],
   credentials: true,
 }));
 app.use(express.json());
