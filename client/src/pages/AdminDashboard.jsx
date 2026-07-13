@@ -31,6 +31,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Login form state
   const [username, setUsername] = useState('');
@@ -233,13 +234,21 @@ const AdminDashboard = () => {
   // --- DASHBOARD SCREEN ---
   return (
     <div className="admin-dashboard-container">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && <div className="admin-sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+      
       {/* Sidebar Navigation */}
-      <aside className="admin-sidebar">
-        <div className="admin-sidebar-header">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-          SIET Portal
+      <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="admin-sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            SIET Portal
+          </div>
+          <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         </div>
         
         <nav className="admin-nav">
@@ -348,7 +357,11 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <main className="admin-main-content">
         <header className="admin-header">
-          <h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <h1>
             {activeTab === 'overview' && 'Dashboard Overview'}
             {activeTab === 'applications' && 'Admission'}
             {activeTab === 'notices' && 'Manage Notices'}
@@ -360,6 +373,7 @@ const AdminDashboard = () => {
             {activeTab === 'menus' && 'Navigation Menus Management'}
             {activeTab === 'users' && 'User Management'}
           </h1>
+          </div>
           <div className="admin-user-profile">
             <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{adminName}</span>
             <div className="admin-avatar">
