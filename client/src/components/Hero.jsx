@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSettings } from '../context/SettingsContext';
 import heroBg1 from '../assets/new-assets/home/hero-home/siet1.jpg';
 import heroBg2 from '../assets/new-assets/home/hero-home/siet2.jpg';
 import heroBg3 from '../assets/new-assets/home/hero-home/siet3.jpeg';
@@ -10,6 +11,7 @@ import { ADMISSIONS_CONFIG } from '../config/admissions';
  * Hero banner with rotating backgrounds and quick actions
  */
 const Hero = () => {
+  const settings = useSettings();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const heroImages = [heroBg1, heroBg2, heroBg3, heroBg4];
 
@@ -37,10 +39,10 @@ const Hero = () => {
           <div className="hero-text">
             <p className="hero-eyebrow">Admissions Open for 2026-27 Session</p>
             <h1 className="hero-title">
-              Engineering Education Built for Real-World Impact
+              {settings?.welcome_title || 'Engineering Education Built for Real-World Impact'}
             </h1>
             <p className="hero-subtitle">
-              Learn from faculty mentors, build in modern labs, and graduate with the confidence to lead in AI, Cyber Security, Robotics, Computer Science (Core), Electrical Engineering, and Electronics Engineering (VLSI Design).
+              {settings?.welcome_subtitle || 'Learn from faculty mentors, build in modern labs, and graduate with the confidence to lead in AI, Cyber Security, Robotics, Computer Science (Core), Electrical Engineering, and Electronics Engineering (VLSI Design).'}
             </p>
             <div className="hero-buttons">
               <a href="https://techadmissionshry.gov.in/" target="_blank" rel="noopener noreferrer" className="btn btn-primary">

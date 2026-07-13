@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSettings } from '../context/SettingsContext';
+
 /**
  * Footer Component
  * Institute info, links, and contact details with social media integration
  */
 const Footer = React.memo(() => {
+  const settings = useSettings();
   const currentYear = new Date().getFullYear();
   const quickLinks = [
     { label: 'Home', to: '/' },
@@ -74,13 +77,12 @@ const Footer = React.memo(() => {
               <div className="contact-info">
                 <div className="contact-item">
                   <div>
-                    <p><a href="mailto:sietpkl@gmail.com">sietpkl@gmail.com</a></p>
-                    <p style={{ marginTop: '0.2rem' }}><a href="mailto:admissions@sietpanchkula.ac.in">admissions@sietpanchkula.ac.in</a></p>
+                    <p><a href={`mailto:${settings?.contact_email || 'sietpkl@gmail.com'}`}>{settings?.contact_email || 'sietpkl@gmail.com'}</a></p>
                   </div>
                 </div>
                 <div className="contact-item">
                   <div>
-                    <p><a href="tel:01722979887">0172-2979887</a></p>
+                    <p><a href={`tel:${settings?.contact_phone || '0172-2979887'}`}>{settings?.contact_phone || '0172-2979887'}</a></p>
                   </div>
                 </div>
                 <div className="contact-item">

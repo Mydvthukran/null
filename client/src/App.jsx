@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import ChatbotWidget from './components/ChatbotWidget';
 import ScheduledPopup from './components/ScheduledPopup';
 import SocialMediaBar from './components/SocialMediaBar';
+import { SettingsProvider } from './context/SettingsContext';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const LifeAtSIET = React.lazy(() => import('./pages/LifeAtSIET'));
@@ -49,62 +50,64 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <ScheduledPopup />
+    <SettingsProvider>
+      <div className="App">
+        <ScheduledPopup />
 
-      {/* Top Header with College Name and Logo */}
-      <Header />
+        {/* Top Header with College Name and Logo */}
+        <Header />
 
-      {/* Sticky Navigation Bar */}
-      <Navbar />
+        {/* Sticky Navigation Bar */}
+        <Navbar />
 
-      {/* Main Content Routes */}
-      <Suspense fallback={<div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center' }}>Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<Navigate to="/about/about-institute" replace />} />
-          <Route path="/about/:subSection" element={<SubmenuRouteHandler />} />
-          <Route path="/departments" element={<Navigate to="/departments/cse" replace />} />
-          <Route path="/departments/:deptSlug" element={<DepartmentSectionPage />} />
-          <Route path="/departments/:deptSlug/about-department" element={<Navigate to="../#about-department" replace />} />
-          <Route path="/departments/:deptSlug/vision-mission" element={<Navigate to="../#vision-mission" replace />} />
-          <Route path="/departments/:deptSlug/faculty" element={<Navigate to="../#faculty" replace />} />
-          <Route path="/departments/:deptSlug/faculty/:teacherSlug" element={<FacultyProfileRoute />} />
-          <Route path="/departments/:deptSlug/lesson-plans" element={<Navigate to="../#lesson-plans" replace />} />
-          <Route path="/departments/:deptSlug/time-table" element={<Navigate to="../#time-table" replace />} />
-          <Route path="/academics" element={<Navigate to="/academics/academic-calendar" replace />} />
-          <Route path="/academics/:subSection" element={<SubmenuRouteHandler />} />
-          <Route path="/facilities" element={<Navigate to="/facilities/infrastructure" replace />} />
-          <Route path="/facilities/:subSection" element={<SubmenuRouteHandler />} />
-          <Route path="/placements" element={<ExternalPlacementRedirect />} />
-          <Route path="/placements/:subSection" element={<ExternalPlacementRedirect />} />
-          <Route path="/alumni" element={<Navigate to="/alumni/alumni-directory" replace />} />
-          <Route path="/alumni/:subSection" element={<SubmenuRouteHandler />} />
-          <Route path="/life-at-siet" element={<LifeAtSIET />} />
-          <Route path="/life-at-siet/:subSection" element={<SubmenuRouteHandler />} />
-          <Route path="/all-notices" element={<AllNotices />} />
-          <Route path="/admission-form" element={<Admission />} />
-          <Route path="/top-level-sections" element={<TopLevelSections />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/student-helpline" element={<StudentHelpline />} />
-          <Route path="/content-differences" element={<ContentDifferences />} />
-          <Route path="/staff" element={<Staff />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/admission-helpline" element={<AdmissionHelpline />} />
-          <Route path="/pay-fees-online" element={<PayFeesOnline />} />
-          <Route path="/admission-documents" element={<AdmissionDocuments />} />
-          <Route path="/developers" element={<Developers />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/contact" element={<ContactUs />} />
-        </Routes>
-      </Suspense>
+        {/* Main Content Routes */}
+        <Suspense fallback={<div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center' }}>Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<Navigate to="/about/about-institute" replace />} />
+            <Route path="/about/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/departments" element={<Navigate to="/departments/cse" replace />} />
+            <Route path="/departments/:deptSlug" element={<DepartmentSectionPage />} />
+            <Route path="/departments/:deptSlug/about-department" element={<Navigate to="../#about-department" replace />} />
+            <Route path="/departments/:deptSlug/vision-mission" element={<Navigate to="../#vision-mission" replace />} />
+            <Route path="/departments/:deptSlug/faculty" element={<Navigate to="../#faculty" replace />} />
+            <Route path="/departments/:deptSlug/faculty/:teacherSlug" element={<FacultyProfileRoute />} />
+            <Route path="/departments/:deptSlug/lesson-plans" element={<Navigate to="../#lesson-plans" replace />} />
+            <Route path="/departments/:deptSlug/time-table" element={<Navigate to="../#time-table" replace />} />
+            <Route path="/academics" element={<Navigate to="/academics/academic-calendar" replace />} />
+            <Route path="/academics/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/facilities" element={<Navigate to="/facilities/infrastructure" replace />} />
+            <Route path="/facilities/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/placements" element={<ExternalPlacementRedirect />} />
+            <Route path="/placements/:subSection" element={<ExternalPlacementRedirect />} />
+            <Route path="/alumni" element={<Navigate to="/alumni/alumni-directory" replace />} />
+            <Route path="/alumni/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/life-at-siet" element={<LifeAtSIET />} />
+            <Route path="/life-at-siet/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/all-notices" element={<AllNotices />} />
+            <Route path="/admission-form" element={<Admission />} />
+            <Route path="/top-level-sections" element={<TopLevelSections />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/student-helpline" element={<StudentHelpline />} />
+            <Route path="/content-differences" element={<ContentDifferences />} />
+            <Route path="/staff" element={<Staff />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/admission-helpline" element={<AdmissionHelpline />} />
+            <Route path="/pay-fees-online" element={<PayFeesOnline />} />
+            <Route path="/admission-documents" element={<AdmissionDocuments />} />
+            <Route path="/developers" element={<Developers />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/contact" element={<ContactUs />} />
+          </Routes>
+        </Suspense>
 
-      <ChatbotWidget />
-      <SocialMediaBar />
+        <ChatbotWidget />
+        <SocialMediaBar />
 
-      {/* Footer with Links and Contact Info */}
-      <Footer />
-    </div>
+        {/* Footer with Links and Contact Info */}
+        <Footer />
+      </div>
+    </SettingsProvider>
   );
 }
 

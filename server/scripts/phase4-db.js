@@ -1,4 +1,9 @@
-export const navItems = [
+require('dotenv').config({ path: '../.env' });
+const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
+
+const navItems = [
   {
     name: 'Home',
     href: '/',
@@ -151,3 +156,62 @@ export const navItems = [
     ]
   }
 ];
+
+const dbConfig = {
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'siet_db',
+};
+
+async function insertMenuRecursive(connection, items, parentId = null) {
+  let order = 1;
+  for (const item of items) {
+    const isExternal = item.external ? 1 : 0;
+    const [result] = await connection.execute(
+      'INSERT INTO navigation_menus (parent_id, name, href, is_external, sort_order) VALUES (?, ?, ?, ?, ?)',
+      [parentId, item.name, item.href || '', isExternal, order]
+    );
+    const newId = result.insertId;
+    
+    if (item.submenu && Array.isArray(item.submenu) && item.submenu.length > 0) {
+      await insertMenuRecursive(connection, item.submenu, newId);
+    }
+    order++;
+  }
+}
+
+async function runMigration() {
+  const connection = await mysql.createConnection(dbConfig);
+  try {
+    console.log('Creating navigation_menus table...');
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS navigation_menus (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        parent_id INT DEFAULT NULL,
+        name VARCHAR(255) NOT NULL,
+        href VARCHAR(500) DEFAULT '',
+        is_external TINYINT(1) DEFAULT 0,
+        sort_order INT DEFAULT 0,
+        FOREIGN KEY (parent_id) REFERENCES navigation_menus(id) ON DELETE CASCADE
+      )
+    `);
+
+    // Check if empty
+    const [rows] = await connection.query('SELECT COUNT(*) as count FROM navigation_menus');
+    if (rows[0].count === 0) {
+      console.log('Inserting default navigation data...');
+      await insertMenuRecursive(connection, navItems);
+    } else {
+      console.log('navigation_menus table already has data. Skipping insert.');
+    }
+
+    console.log('Phase 4 DB Migration Complete!');
+  } catch (error) {
+    console.error('Migration failed:', error);
+  } finally {
+    await connection.end();
+  }
+}
+
+runMigration();

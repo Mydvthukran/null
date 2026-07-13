@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import NoticeManager from '../components/NoticeManager';
-import DocumentManager from '../components/DocumentManager';
 import EventManager from '../components/EventManager';
 import GalleryManager from '../components/GalleryManager';
 import FormManager from '../components/FormManager';
 import FacultyManager from '../components/FacultyManager';
+import DocumentManager from '../components/DocumentManager';
+import SettingsManager from '../components/SettingsManager';
+import MenuManager from '../components/MenuManager';
 import '../css/adminDashboard.css';
 
 const API_BASE = 'http://localhost:5000/api';
@@ -59,8 +61,6 @@ const AdminDashboard = () => {
       fetchDashboardData();
     } else if (activeTab === 'applications') {
       fetchApplications();
-    } else if (activeTab === 'documents') {
-      fetchDocuments();
     }
   }, [isLoggedIn, token, activeTab]);
 
@@ -143,12 +143,6 @@ const AdminDashboard = () => {
     if (data) setApplications(data.applications || []);
   };
 
-  // --- FETCH DOCUMENTS ---
-  const fetchDocuments = async () => {
-    const data = await apiCall('/documents');
-    if (data) setDocuments(data.documents || []);
-  };
-
   // --- UPDATE APPLICATION STATUS ---
   const updateAppStatus = async (id, newStatus) => {
     const data = await apiCall(`/applications/${id}/status`, {
@@ -156,24 +150,6 @@ const AdminDashboard = () => {
       body: JSON.stringify({ status: newStatus }),
     });
     if (data) fetchApplications();
-  };
-
-  // --- UPLOAD/REPLACE DOCUMENT ---
-  const handleDocUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file || !uploadingDocKey) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const data = await apiCall(`/documents/${uploadingDocKey}`, {
-      method: 'PUT',
-      body: formData,
-    });
-    if (data) fetchDocuments();
-    
-    setUploadingDocKey(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   // --- STATUS BADGE HELPER ---
@@ -335,6 +311,20 @@ const AdminDashboard = () => {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             Form Submissions
           </div>
+          <div 
+            className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            System Settings
+          </div>
+          <div 
+            className={`admin-nav-item ${activeTab === 'menus' ? 'active' : ''}`}
+            onClick={() => setActiveTab('menus')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            Navigation Menus
+          </div>
           
           <div 
             className="admin-nav-item"
@@ -359,6 +349,8 @@ const AdminDashboard = () => {
             {activeTab === 'gallery' && 'Gallery Manager'}
             {activeTab === 'faculty' && 'Faculty Manager'}
             {activeTab === 'forms' && 'Form Submissions'}
+            {activeTab === 'settings' && 'System Settings & Branding'}
+            {activeTab === 'menus' && 'Navigation Menus Management'}
           </h1>
           <div className="admin-user-profile">
             <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{adminName}</span>
@@ -530,77 +522,7 @@ const AdminDashboard = () => {
 
         {/* === DOCUMENTS TAB === */}
         {activeTab === 'documents' && (
-          <div>
-            <div
-              className="document-upload-area"
-              style={{ background: 'rgba(56, 189, 248, 0.05)', borderColor: 'rgba(56, 189, 248, 0.2)' }}
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleDocUpload}
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-                style={{ display: 'none' }}
-              />
-              <svg className="document-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              <h3 style={{ color: '#f8fafc', marginBottom: '0.5rem', fontSize: '1.25rem' }}>System Document Manager</h3>
-              <p style={{ color: '#94a3b8', margin: 0, maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
-                Manage the permanent, structural documents of the website (e.g. Fee Structures, Syllabuses, Timetables). Click "Update File" on a row below to replace it globally.
-              </p>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-              <h2 className="admin-section-title" style={{ margin: 0 }}>Website Documents</h2>
-            </div>
-
-            <div className="admin-activity-panel">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Document Name</th>
-                    <th>Category</th>
-                    <th>Size</th>
-                    <th>Last Updated</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {documents.length > 0 ? documents.map((doc) => (
-                    <tr key={doc.document_key}>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                          <span style={{ fontWeight: 500, color: '#f8fafc' }}>{doc.name}</span>
-                        </div>
-                        {doc.filePath ? (
-                          <a href={`http://localhost:5000${doc.filePath}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
-                        ) : (
-                          <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.25rem', display: 'inline-block' }}>No file attached</span>
-                        )}
-                      </td>
-                      <td>{doc.category}</td>
-                      <td>{doc.size}</td>
-                      <td>{doc.updatedAt}</td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            setUploadingDocKey(doc.document_key);
-                            fileInputRef.current?.click();
-                          }}
-                          className="admin-btn outline"
-                          style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem' }}
-                        >
-                          Update File
-                        </button>
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan="5" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading documents...</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <DocumentManager token={token} />
         )}
 
         {/* Notice Board */}
@@ -626,6 +548,16 @@ const AdminDashboard = () => {
         {/* Forms */}
         {activeTab === 'forms' && (
           <FormManager token={token} />
+        )}
+
+        {/* Settings */}
+        {activeTab === 'settings' && (
+          <SettingsManager token={token} />
+        )}
+
+        {/* Menus */}
+        {activeTab === 'menus' && (
+          <MenuManager token={token} />
         )}
       </main>
     </div>
