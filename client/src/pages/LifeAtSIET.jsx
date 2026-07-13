@@ -1,22 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 /**
  * Life @ SIET Page Component
  * Media section and gallery
  */
 const LifeAtSIET = () => {
-  const galleryPool = import.meta.glob('../assets/new-assets/life at siet/gallery/**/*.{jpg,jpeg,png,webp}', {
-    eager: true,
-    import: 'default'
-  });
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const galleryImages = Object.values(galleryPool)
-    .slice(0, 12)
-    .map((image, index) => ({
-      id: index + 1,
-      src: image,
-      title: `Campus Moment ${index + 1}`,
-      category: index % 3 === 0 ? 'campus' : index % 3 === 1 ? 'academics' : 'events'
-    }));
+  useEffect(() => {
+    fetch('http://localhost:5000/api/gallery')
+      .then(res => res.json())
+      .then(data => {
+        // Filter out Home Carousel images if you want, or just show everything else
+        const filtered = (data.images || []).filter(img => img.category !== 'Home Carousel');
+        setGalleryImages(filtered);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch gallery', err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="life-at-siet-page">
@@ -27,15 +31,25 @@ const LifeAtSIET = () => {
             <div className="title-underline"></div>
           </div>
           <div className="gallery-grid">
-            {galleryImages.map((image) => (
-              <div key={image.id} className="gallery-item">
-                <img src={image.src} alt={image.title} loading="lazy" />
-                <div className="gallery-overlay">
-                  <p className="gallery-title">{image.title}</p>
-                  <span className="gallery-category">{image.category}</span>
-                </div>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '2rem', width: '100%', color: '#94a3b8' }}>
+                Loading gallery...
               </div>
-            ))}
+            ) : galleryImages.length > 0 ? (
+              galleryImages.map((image) => (
+                <div key={image.id} className="gallery-item">
+                  <img src={`http://localhost:5000${image.imagePath}`} alt={image.title} loading="lazy" />
+                  <div className="gallery-overlay">
+                    <p className="gallery-title">{image.title}</p>
+                    <span className="gallery-category">{image.category}</span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div style={{ textAlign: 'center', padding: '2rem', width: '100%', color: '#94a3b8' }}>
+                No images available in the gallery.
+              </div>
+            )}
           </div>
         </div>
       </section>

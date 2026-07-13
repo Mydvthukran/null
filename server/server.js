@@ -39,6 +39,7 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/notices', require('./routes/notices'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/visitors', require('./routes/visitors'));
+app.use('/api/gallery', require('./routes/gallery'));
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import NoticeManager from '../components/NoticeManager';
 import EventManager from '../components/EventManager';
+import GalleryManager from '../components/GalleryManager';
 import '../css/adminDashboard.css';
 
 const API_BASE = 'http://localhost:5000/api';
@@ -310,6 +311,13 @@ const AdminDashboard = () => {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             Announcements
           </div>
+          <div 
+            className={`admin-nav-item ${activeTab === 'gallery' ? 'active' : ''}`}
+            onClick={() => setActiveTab('gallery')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Gallery
+          </div>
           
           <div 
             className="admin-nav-item"
@@ -328,9 +336,10 @@ const AdminDashboard = () => {
           <h1>
             {activeTab === 'overview' && 'Dashboard Overview'}
             {activeTab === 'applications' && 'Student Applications'}
-            {activeTab === 'notices' && 'Notice Board Editor'}
+            {activeTab === 'notices' && 'Manage Notices'}
             {activeTab === 'documents' && 'Document Manager'}
             {activeTab === 'events' && 'Announcements'}
+            {activeTab === 'gallery' && 'Gallery Manager'}
           </h1>
           <div className="admin-user-profile">
             <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{adminName}</span>
@@ -583,6 +592,11 @@ const AdminDashboard = () => {
         {/* Events & Seminars */}
         {activeTab === 'events' && (
           <EventManager token={token} />
+        )}
+
+        {/* Gallery */}
+        {activeTab === 'gallery' && (
+          <GalleryManager token={token} />
         )}
       </main>
     </div>
