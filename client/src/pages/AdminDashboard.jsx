@@ -41,6 +41,9 @@ const AdminDashboard = () => {
   const fileInputRef = useRef(null);
   const [uploadingDocKey, setUploadingDocKey] = useState(null);
 
+  // Application view state
+  const [viewingApp, setViewingApp] = useState(null);
+
   // Update document title
   useEffect(() => {
     document.title = isLoggedIn ? "College Admin Portal | SIET" : "Admin Login | SIET";
@@ -169,6 +172,31 @@ const AdminDashboard = () => {
   const fetchApplications = async () => {
     const data = await apiCall('/applications');
     if (data) setApplications(data.applications || []);
+  };
+
+  // --- EXPORT APPLICATIONS ---
+  const exportApplicationsToCSV = () => {
+    if (applications.length === 0) return;
+    const headers = ['App ID', 'Applicant Name', 'Course Applied', 'Date Submitted', 'Status'];
+    const csvContent = [
+      headers.join(','),
+      ...applications.map(app => [
+        app.id,
+        `"${app.name}"`,
+        `"${app.course}"`,
+        `"${app.date}"`,
+        app.status
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `SIET_Applications_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // --- UPDATE APPLICATION STATUS ---
@@ -529,10 +557,13 @@ const AdminDashboard = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 className="admin-section-title" style={{ margin: 0 }}>Recent Applications</h2>
-              <button style={{
-                background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid #38bdf8',
-                padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 500
-              }}>
+              <button 
+                onClick={exportApplicationsToCSV}
+                style={{
+                  background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid #38bdf8',
+                  padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 500
+                }}
+              >
                 Export to CSV
               </button>
             </div>
@@ -562,20 +593,29 @@ const AdminDashboard = () => {
                         </span>
                       </td>
                       <td>
-                        <select
-                          value={app.status}
-                          onChange={(e) => updateAppStatus(app.id, e.target.value)}
-                          style={{
-                            background: 'rgba(15, 23, 42, 0.6)', color: '#38bdf8',
-                            border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.25rem',
-                            padding: '0.25rem 0.5rem', cursor: 'pointer', outline: 'none'
-                          }}
-                        >
-                          <option value="Under Review">Under Review</option>
-                          <option value="Approved">Approved</option>
-                          <option value="Missing Docs">Missing Docs</option>
-                          <option value="Rejected">Rejected</option>
-                        </select>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                          <button
+                            onClick={() => setViewingApp(app)}
+                            className="admin-btn outline"
+                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}
+                          >
+                            View
+                          </button>
+                          <select
+                            value={app.status}
+                            onChange={(e) => updateAppStatus(app.id, e.target.value)}
+                            style={{
+                              background: 'rgba(15, 23, 42, 0.6)', color: '#38bdf8',
+                              border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.25rem',
+                              padding: '0.25rem 0.5rem', cursor: 'pointer', outline: 'none'
+                            }}
+                          >
+                            <option value="Under Review">Under Review</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Missing Docs">Missing Docs</option>
+                            <option value="Rejected">Rejected</option>
+                          </select>
+                        </div>
                       </td>
                     </tr>
                   )) : (
@@ -583,6 +623,43 @@ const AdminDashboard = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* View Application Modal */}
+        {viewingApp && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+            <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.75rem', width: '500px', maxWidth: '95%', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h3 style={{ color: '#f8fafc', margin: 0, fontSize: '1.25rem' }}>Application Details</h3>
+                <button onClick={() => setViewingApp(null)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.5rem' }}>&times;</button>
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', color: '#cbd5e1' }}>
+                <div style={{ fontWeight: 600, color: '#94a3b8' }}>App ID:</div>
+                <div>#{viewingApp.id}</div>
+                
+                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Applicant Name:</div>
+                <div>{viewingApp.name}</div>
+                
+                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Course Applied:</div>
+                <div>{viewingApp.course}</div>
+                
+                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Date Submitted:</div>
+                <div>{viewingApp.date}</div>
+                
+                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Current Status:</div>
+                <div>
+                  <span className={`status-badge ${getStatusClass(viewingApp.status)}`} style={getStatusStyle(viewingApp.status)}>
+                    {viewingApp.status}
+                  </span>
+                </div>
+              </div>
+              
+              <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+                <button onClick={() => setViewingApp(null)} className="admin-btn">Close</button>
+              </div>
             </div>
           </div>
         )}
