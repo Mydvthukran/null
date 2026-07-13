@@ -29,6 +29,7 @@ const AdminDashboard = () => {
 
   // File upload ref
   const fileInputRef = useRef(null);
+  const [uploadingDocKey, setUploadingDocKey] = useState(null);
 
   // Update document title
   useEffect(() => {
@@ -153,27 +154,22 @@ const AdminDashboard = () => {
     if (data) fetchApplications();
   };
 
-  // --- UPLOAD DOCUMENT ---
+  // --- UPLOAD/REPLACE DOCUMENT ---
   const handleDocUpload = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file || !uploadingDocKey) return;
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('category', 'General');
 
-    const data = await apiCall('/documents', {
-      method: 'POST',
+    const data = await apiCall(`/documents/${uploadingDocKey}`, {
+      method: 'PUT',
       body: formData,
     });
     if (data) fetchDocuments();
+    
+    setUploadingDocKey(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  // --- DELETE DOCUMENT ---
-  const handleDocDelete = async (id) => {
-    const data = await apiCall(`/documents/${id}`, { method: 'DELETE' });
-    if (data) fetchDocuments();
   };
 
   // --- STATUS BADGE HELPER ---
@@ -509,7 +505,7 @@ const AdminDashboard = () => {
           <div>
             <div
               className="document-upload-area"
-              onClick={() => fileInputRef.current?.click()}
+              style={{ background: 'rgba(56, 189, 248, 0.05)', borderColor: 'rgba(56, 189, 248, 0.2)' }}
             >
               <input
                 type="file"
@@ -518,9 +514,11 @@ const AdminDashboard = () => {
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                 style={{ display: 'none' }}
               />
-              <svg className="document-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              <h3 style={{ color: '#f8fafc', marginBottom: '0.5rem', fontSize: '1.25rem' }}>Click to upload a new document</h3>
-              <p style={{ color: '#94a3b8', margin: 0 }}>Support for PDF, DOCX, XLSX (Max 10MB)</p>
+              <svg className="document-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <h3 style={{ color: '#f8fafc', marginBottom: '0.5rem', fontSize: '1.25rem' }}>System Document Manager</h3>
+              <p style={{ color: '#94a3b8', margin: 0, maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+                Manage the permanent, structural documents of the website (e.g. Fee Structures, Syllabuses, Timetables). Click "Update File" on a row below to replace it globally.
+              </p>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -540,22 +538,31 @@ const AdminDashboard = () => {
                 </thead>
                 <tbody>
                   {documents.length > 0 ? documents.map((doc) => (
-                    <tr key={doc.id}>
+                    <tr key={doc.document_key}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                          {doc.name}
+                          <span style={{ fontWeight: 500, color: '#f8fafc' }}>{doc.name}</span>
                         </div>
+                        {doc.filePath ? (
+                          <a href={`http://localhost:5000${doc.filePath}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
+                        ) : (
+                          <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.25rem', display: 'inline-block' }}>No file attached</span>
+                        )}
                       </td>
                       <td>{doc.category}</td>
                       <td>{doc.size}</td>
                       <td>{doc.updatedAt}</td>
                       <td>
                         <button
-                          onClick={() => handleDocDelete(doc.id)}
-                          style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                          onClick={() => {
+                            setUploadingDocKey(doc.document_key);
+                            fileInputRef.current?.click();
+                          }}
+                          className="admin-btn outline"
+                          style={{ padding: '0.25rem 0.75rem', fontSize: '0.875rem' }}
                         >
-                          Delete
+                          Update File
                         </button>
                       </td>
                     </tr>

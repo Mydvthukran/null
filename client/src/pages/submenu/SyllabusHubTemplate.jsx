@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getSectionHome } from './submenuTemplateShared';
 import SubmenuBodyProse from './SubmenuBodyProse';
+import { useDocuments } from '../../context/DocumentContext';
 
 const normalize = (value) => String(value || '').toLowerCase().trim();
 
@@ -21,18 +22,22 @@ const SyllabusHubTemplate = ({
   const sectionHome = getSectionHome(sectionLabel);
   const [query, setQuery] = useState('');
   const [activeKey, setActiveKey] = useState(courses[0]?.key || courses[0]?.label || '');
+  const { getDocUrl } = useDocuments();
 
   const normalizedCourses = useMemo(
     () =>
       (courses || [])
         .filter((c) => c && (c.key || c.label))
-        .map((c) => ({
-          key: c.key || c.label,
-          label: c.label || c.key,
-          pdfUrl: c.pdfUrl || '',
-          hasFile: Boolean(c.pdfUrl),
-        })),
-    [courses]
+        .map((c) => {
+          const pdfUrl = c.pdfUrl || (c.pdfKey ? getDocUrl(c.pdfKey) : '');
+          return {
+            key: c.key || c.label,
+            label: c.label || c.key,
+            pdfUrl,
+            hasFile: Boolean(pdfUrl && pdfUrl !== '#'),
+          };
+        }),
+    [courses, getDocUrl]
   );
 
   const filtered = useMemo(() => {

@@ -6,13 +6,17 @@ import './css/base.css'
 import App from './App.jsx'
 import ErrorBoundary from './app/ErrorBoundary.jsx'
 
+import { DocumentProvider } from './context/DocumentContext'
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ErrorBoundary>
       <HelmetProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <DocumentProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </DocumentProvider>
       </HelmetProvider>
     </ErrorBoundary>
   </StrictMode>,

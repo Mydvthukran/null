@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getSectionHome } from './submenuTemplateShared';
 import SubmenuBodyProse from './SubmenuBodyProse';
+import { useDocuments } from '../../context/DocumentContext';
 
 const SubmenuWithPdfDropdown = ({
   sectionLabel,
@@ -13,12 +14,16 @@ const SubmenuWithPdfDropdown = ({
   resources = [],
 }) => {
   const sectionHome = getSectionHome(sectionLabel);
+  const { getDocUrl } = useDocuments();
   const normalizedOptions = useMemo(
     () =>
       (pdfOptions || [])
         .filter((opt) => opt && opt.label)
-        .map((opt) => ({ label: opt.label, pdfUrl: opt.pdfUrl || '' })),
-    [pdfOptions]
+        .map((opt) => {
+          const resolvedPdfUrl = opt.pdfUrl || (opt.pdfKey ? getDocUrl(opt.pdfKey) : '');
+          return { label: opt.label, pdfUrl: resolvedPdfUrl };
+        }),
+    [pdfOptions, getDocUrl]
   );
 
   const [selectedLabel, setSelectedLabel] = useState(normalizedOptions[0]?.label || '');
