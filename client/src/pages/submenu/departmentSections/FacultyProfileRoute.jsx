@@ -1,27 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { facultyBySlug } from '../../../data/facultyProfiles';
 import { departmentSectionCatalog } from '../departmentSectionCatalog';
-import facultyProfileComponentMap from './facultyProfiles';
+import TeacherProfileTemplate from './facultyProfiles/TeacherProfileTemplate';
 
 const FacultyProfileRoute = () => {
   const { deptSlug, teacherSlug } = useParams();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!teacherSlug) {
+      setLoading(false);
+      setError(true);
+      return;
+    }
+
+    setLoading(true);
+    fetch(`http://localhost:5000/api/faculty/${teacherSlug}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then((data) => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching profile:', err);
+        setError(true);
+        setLoading(false);
+      });
+  }, [teacherSlug]);
 
   if (!departmentSectionCatalog[deptSlug]) {
     return <Navigate to="/departments/cse" replace />;
   }
 
-  if (!teacherSlug || !facultyBySlug[teacherSlug]) {
+  if (loading) {
+    return <div style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading profile...</div>;
+  }
+
+  if (error || !profile) {
     return <Navigate to={`/departments/${deptSlug}#faculty`} replace />;
   }
 
-  const ProfileComponent = facultyProfileComponentMap[teacherSlug];
-
-  if (!ProfileComponent) {
-    return <Navigate to={`/departments/${deptSlug}#faculty`} replace />;
-  }
-
-  return <ProfileComponent deptSlug={deptSlug} />;
+  return <TeacherProfileTemplate deptSlug={deptSlug} profile={profile} />;
 };
 
 export default FacultyProfileRoute;
