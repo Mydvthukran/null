@@ -25,4 +25,7 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/setupTests.js',
   },
+  build: {
+    outDir: 'client/dist'
+  }
 })
