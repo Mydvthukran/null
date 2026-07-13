@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Link, Navigate, useParams, useLocation } from 'react-router-dom';
 import { departmentSectionCatalog, departmentSectionTitles } from '../departmentSectionCatalog';
 import computerScienceSections from './content/computerScience';
@@ -7,7 +7,6 @@ import cyberSecuritySections from './content/cyberSecurity';
 import roboticsSections from './content/robotics';
 import electricalEngineeringSections from './content/electricalEngineering';
 import electronicsVlsiSections from './content/electronicsVlsi';
-import { getFacultyByDepartment } from '../../../data/facultyProfiles';
 
 const departmentSectionContent = {
   cse: computerScienceSections,
@@ -31,10 +30,18 @@ const DepartmentSectionPage = () => {
   const { deptSlug } = useParams();
   const { hash } = useLocation();
   const config = departmentSectionCatalog[deptSlug];
+  const [facultyMembers, setFacultyMembers] = useState([]);
+
+  useEffect(() => {
+    if (!deptSlug) return;
+    fetch(`http://localhost:5000/api/faculty/department/${deptSlug}`)
+      .then(res => res.json())
+      .then(data => setFacultyMembers(data))
+      .catch(err => console.error('Error fetching faculty:', err));
+  }, [deptSlug]);
 
   const sections = useMemo(() => {
     const baseSections = departmentSectionContent[deptSlug] || [];
-    const facultyMembers = getFacultyByDepartment(deptSlug);
 
     return baseSections.map((section) => {
       if (section.id !== 'faculty') {
@@ -48,7 +55,7 @@ const DepartmentSectionPage = () => {
         facultyMembers
       };
     });
-  }, [deptSlug]);
+  }, [deptSlug, facultyMembers]);
 
   useEffect(() => {
     if (hash) {
@@ -63,7 +70,7 @@ const DepartmentSectionPage = () => {
     } else {
        window.scrollTo({ top: 0, behavior: 'auto' });
     }
-  }, [hash, deptSlug]);
+  }, [hash, deptSlug, facultyMembers]);
 
   if (!config) {
     return <Navigate to="/departments/cse" replace />;
@@ -129,11 +136,9 @@ const DepartmentSectionPage = () => {
                         {section.facultyMembers?.length > 0 ? (
                           <div className="faculty-card-grid submenu-mt-10">
                             {section.facultyMembers.map((faculty) => {
-                              const interests = faculty.areaOfInterest
-                                .split(',')
-                                .map((item) => item.trim())
-                                .filter(Boolean)
-                                .slice(0, 3);
+                              const interests = faculty.area_of_interest
+                                ? faculty.area_of_interest.split(',').map((item) => item.trim()).filter(Boolean).slice(0, 3)
+                                : [];
                               const initials = faculty.name
                                 .split(' ')
                                 .map((word) => word.trim())
@@ -150,9 +155,9 @@ const DepartmentSectionPage = () => {
                                   aria-label={`Open profile of ${faculty.name}`}
                                 >
                                   <div className="faculty-profile-head">
-                                    {faculty.image ? (
+                                    {faculty.image_path ? (
                                       <img 
-                                        src={faculty.image} 
+                                        src={`http://localhost:5000${faculty.image_path}`} 
                                         alt={faculty.name} 
                                         style={{ 
                                           width: '2.6rem', 

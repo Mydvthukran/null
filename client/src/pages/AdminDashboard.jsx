@@ -4,6 +4,7 @@ import DocumentManager from '../components/DocumentManager';
 import EventManager from '../components/EventManager';
 import GalleryManager from '../components/GalleryManager';
 import FormManager from '../components/FormManager';
+import FacultyManager from '../components/FacultyManager';
 import '../css/adminDashboard.css';
 
 const API_BASE = 'http://localhost:5000/api';
@@ -321,6 +322,13 @@ const AdminDashboard = () => {
             Gallery
           </div>
           <div 
+            className={`admin-nav-item ${activeTab === 'faculty' ? 'active' : ''}`}
+            onClick={() => setActiveTab('faculty')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Faculty Manager
+          </div>
+          <div 
             className={`admin-nav-item ${activeTab === 'forms' ? 'active' : ''}`}
             onClick={() => setActiveTab('forms')}
           >
@@ -349,6 +357,7 @@ const AdminDashboard = () => {
             {activeTab === 'documents' && 'Document Manager'}
             {activeTab === 'events' && 'Announcements'}
             {activeTab === 'gallery' && 'Gallery Manager'}
+            {activeTab === 'faculty' && 'Faculty Manager'}
             {activeTab === 'forms' && 'Form Submissions'}
           </h1>
           <div className="admin-user-profile">
@@ -607,6 +616,11 @@ const AdminDashboard = () => {
         {/* Gallery */}
         {activeTab === 'gallery' && (
           <GalleryManager token={token} />
+        )}
+
+        {/* Faculty */}
+        {activeTab === 'faculty' && (
+          <FacultyManager token={token} />
         )}
 
         {/* Forms */}

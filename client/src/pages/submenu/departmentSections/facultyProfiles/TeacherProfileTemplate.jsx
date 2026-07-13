@@ -21,12 +21,11 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
         .map((item) => item.trim())
         .filter(Boolean)
     : ['Qualification details will be updated.'];
-  const interests = profile.areaOfInterest
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const interests = profile.area_of_interest
+    ? profile.area_of_interest.split(',').map((item) => item.trim()).filter(Boolean)
+    : [];
   const coreExpertise = interests.slice(0, 4);
-  const vidwanProfileId = profile.vidwan ? profile.vidwan.split('/').filter(Boolean).pop() : '';
+  const vidwanProfileId = profile.vidwan_link ? profile.vidwan_link.split('/').filter(Boolean).pop() : '';
 
   return (
     <div className="submenu-page teacher-profile-page">
@@ -38,7 +37,7 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
                 Back to Faculty
               </Link>
               <a
-                href={profile.vidwan}
+                href={profile.vidwan_link}
                 target="_blank"
                 rel="noreferrer"
                 className="submenu-action-btn"
@@ -50,8 +49,8 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
             <article className="teacher-profile-surface">
               <header className="teacher-profile-header">
                 <div className="teacher-profile-photo-wrap">
-                  {profile.image ? (
-                    <img src={profile.image} alt={profile.name} className="teacher-profile-photo" loading="eager" />
+                  {profile.image_path ? (
+                    <img src={`http://localhost:5000${profile.image_path}`} alt={profile.name} className="teacher-profile-photo" loading="eager" />
                   ) : (
                     <div className="teacher-profile-no-file">No photo</div>
                   )}
@@ -135,9 +134,11 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
                   <a href={`mailto:${profile.email}`} className="teacher-inline-link">
                     Email: {profile.email}
                   </a>
-                  <a href={profile.vidwan} target="_blank" rel="noreferrer" className="teacher-inline-link">
-                    VIDWAN: {profile.vidwan}
-                  </a>
+                  {profile.vidwan_link && (
+                    <a href={profile.vidwan_link} target="_blank" rel="noreferrer" className="teacher-inline-link">
+                      VIDWAN: {profile.vidwan_link}
+                    </a>
+                  )}
                 </div>
                 <p className="teacher-profile-note-text">VIDWAN ID: {vidwanProfileId}</p>
               </section>
