@@ -96,4 +96,35 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// POST /api/events/register — Register for an event
+router.post('/register', async (req, res) => {
+  const { event_id, name, email, phone, student_id } = req.body;
+  if (!event_id || !name || !email) {
+    return res.status(400).json({ error: 'Event ID, Name, and Email are required.' });
+  }
+  const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  
+  try {
+    await pool.query(
+      'INSERT INTO event_registrations (event_id, name, email, phone, student_id, date) VALUES (?, ?, ?, ?, ?, ?)',
+      [event_id, name, email, phone, student_id, date]
+    );
+    res.json({ message: 'Successfully registered for the event' });
+  } catch (err) {
+    console.error('Error registering for event:', err);
+    res.status(500).json({ error: 'Server error registering for event' });
+  }
+});
+
+// GET /api/events/registrations/:id — Get registrations for an event (admin)
+router.get('/registrations/:id', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM event_registrations WHERE event_id = ? ORDER BY id DESC', [req.params.id]);
+    res.json({ registrations: rows });
+  } catch (err) {
+    console.error('Error fetching registrations:', err);
+    res.status(500).json({ error: 'Server error fetching registrations' });
+  }
+});
+
 module.exports = router;
