@@ -3,7 +3,7 @@ import '../css/adminDashboard.css';
 
 const API_BASE = 'http://localhost:5000/api';
 
-const FormManager = ({ token }) => {
+const FormManager = ({ token, title = 'Form Submissions (Contact Us)' }) => {
   const [inquiries, setInquiries] = useState([]);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const FormManager = ({ token }) => {
   return (
     <div className="admin-activity-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, color: '#f8fafc' }}>Form Submissions (Contact Us)</h2>
+        <h2 style={{ margin: 0, color: '#f8fafc' }}>{title}</h2>
       </div>
 
       <div className="table-responsive">

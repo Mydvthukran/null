@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import NoticeManager from '../components/NoticeManager';
 import EventManager from '../components/EventManager';
 import GalleryManager from '../components/GalleryManager';
@@ -17,12 +17,17 @@ const API_BASE = 'http://localhost:5000/api';
  * Connected to the Express.js backend via REST API.
  */
 const AdminDashboard = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState(null);
-  const [adminName, setAdminName] = useState('');
-  const [adminRole, setAdminRole] = useState('');
-  const [adminPermissions, setAdminPermissions] = useState([]);
-  const [adminId, setAdminId] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('adminToken'));
+  const [adminName, setAdminName] = useState(() => localStorage.getItem('adminName') || '');
+  const [adminRole, setAdminRole] = useState(() => localStorage.getItem('adminRole') || '');
+  const [adminPermissions, setAdminPermissions] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('adminPermissions') || '[]'); } catch { return []; }
+  });
+  const [adminId, setAdminId] = useState(() => {
+    const savedId = localStorage.getItem('adminId');
+    return savedId ? parseInt(savedId) : null;
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('adminToken')));
   const [activeTab, setActiveTab] = useState('overview');
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,37 +39,16 @@ const AdminDashboard = () => {
   // Data from API
   const [dashboardStats, setDashboardStats] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
-  const [applications, setApplications] = useState([]);
   const [documents, setDocuments] = useState([]);
 
   // File upload ref
   const fileInputRef = useRef(null);
   const [uploadingDocKey, setUploadingDocKey] = useState(null);
 
-  // Application view state
-  const [viewingApp, setViewingApp] = useState(null);
-
   // Update document title
   useEffect(() => {
     document.title = isLoggedIn ? "College Admin Portal | SIET" : "Admin Login | SIET";
   }, [isLoggedIn]);
-
-  // Check for saved token on mount
-  useEffect(() => {
-    const savedToken = localStorage.getItem('adminToken');
-    const savedName = localStorage.getItem('adminName');
-    const savedRole = localStorage.getItem('adminRole');
-    const savedPerms = localStorage.getItem('adminPermissions');
-    const savedId = localStorage.getItem('adminId');
-    if (savedToken) {
-      setToken(savedToken);
-      setAdminName(savedName || 'Admin');
-      setAdminRole(savedRole || 'editor');
-      if (savedId) setAdminId(parseInt(savedId));
-      try { setAdminPermissions(JSON.parse(savedPerms || '[]')); } catch { setAdminPermissions([]); }
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   // Helper: check if user has a specific permission
   const hasPermission = (tab) => {
@@ -72,19 +56,25 @@ const AdminDashboard = () => {
     return adminPermissions.includes(tab);
   };
 
-  // Fetch data when logged in or tab changes
-  useEffect(() => {
-    if (!isLoggedIn || !token) return;
-
-    if (activeTab === 'overview') {
-      fetchDashboardData();
-    } else if (activeTab === 'applications') {
-      fetchApplications();
-    }
-  }, [isLoggedIn, token, activeTab]);
+  // --- LOGOUT ---
+  const handleLogout = useCallback(() => {
+    setIsLoggedIn(false);
+    setToken(null);
+    setAdminName('');
+    setAdminRole('');
+    setAdminPermissions([]);
+    setAdminId(null);
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminName');
+    localStorage.removeItem('adminRole');
+    localStorage.removeItem('adminPermissions');
+    localStorage.removeItem('adminId');
+    setUsername('');
+    setPassword('');
+  }, []);
 
   // --- API HELPER ---
-  const apiCall = async (endpoint, options = {}) => {
+  const apiCall = useCallback(async (endpoint, options = {}) => {
     const headers = { ...options.headers };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     if (!(options.body instanceof FormData)) {
@@ -102,7 +92,29 @@ const AdminDashboard = () => {
       console.error('API Error:', err);
       return null;
     }
-  };
+  }, [token, handleLogout]);
+
+  // --- FETCH DASHBOARD ---
+  const fetchDashboardData = useCallback(async () => {
+    const data = await apiCall('/dashboard');
+    if (data) {
+      setDashboardStats(data.stats);
+      setRecentActivity(data.recentActivity || []);
+    }
+  }, [apiCall]);
+
+  // Fetch data when logged in or tab changes
+  useEffect(() => {
+    if (!isLoggedIn || !token) return;
+
+    const timeoutId = window.setTimeout(() => {
+      if (activeTab === 'overview') {
+        fetchDashboardData();
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isLoggedIn, token, activeTab, fetchDashboardData]);
 
   // --- LOGIN ---
   const handleLogin = async (e) => {
@@ -136,91 +148,11 @@ const AdminDashboard = () => {
       localStorage.setItem('adminPermissions', JSON.stringify(data.admin.permissions || []));
       localStorage.setItem('adminId', data.admin.id);
       setIsLoggedIn(true);
-    } catch (err) {
+    } catch (loginErr) {
+      console.error('Login error:', loginErr);
       setLoginError('Cannot connect to server. Make sure the backend is running.');
     }
     setLoading(false);
-  };
-
-  // --- LOGOUT ---
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setToken(null);
-    setAdminName('');
-    setAdminRole('');
-    setAdminPermissions([]);
-    setAdminId(null);
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminName');
-    localStorage.removeItem('adminRole');
-    localStorage.removeItem('adminPermissions');
-    localStorage.removeItem('adminId');
-    setUsername('');
-    setPassword('');
-  };
-
-  // --- FETCH DASHBOARD ---
-  const fetchDashboardData = async () => {
-    const data = await apiCall('/dashboard');
-    if (data) {
-      setDashboardStats(data.stats);
-      setRecentActivity(data.recentActivity || []);
-    }
-  };
-
-  // --- FETCH APPLICATIONS ---
-  const fetchApplications = async () => {
-    const data = await apiCall('/applications');
-    if (data) setApplications(data.applications || []);
-  };
-
-  // --- EXPORT APPLICATIONS ---
-  const exportApplicationsToCSV = () => {
-    if (applications.length === 0) return;
-    const headers = ['App ID', 'Applicant Name', 'Course Applied', 'Date Submitted', 'Status'];
-    const csvContent = [
-      headers.join(','),
-      ...applications.map(app => [
-        app.id,
-        `"${app.name}"`,
-        `"${app.course}"`,
-        `"${app.date}"`,
-        app.status
-      ].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `SIET_Applications_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // --- UPDATE APPLICATION STATUS ---
-  const updateAppStatus = async (id, newStatus) => {
-    const data = await apiCall(`/applications/${id}/status`, {
-      method: 'PUT',
-      body: JSON.stringify({ status: newStatus }),
-    });
-    if (data) fetchApplications();
-  };
-
-  // --- STATUS BADGE HELPER ---
-  const getStatusClass = (status) => {
-    const s = status?.toLowerCase();
-    if (['approved', 'published', 'completed', 'scheduled', 'success', 'verified'].includes(s)) return 'status-active';
-    if (['rejected'].includes(s)) return '';
-    return 'status-pending';
-  };
-
-  const getStatusStyle = (status) => {
-    if (status?.toLowerCase() === 'rejected') {
-      return { background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' };
-    }
-    return {};
   };
 
   // --- LOGIN SCREEN ---
@@ -326,7 +258,7 @@ const AdminDashboard = () => {
             onClick={() => setActiveTab('applications')}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Applications
+            Admission
           </div>
           )}
           {hasPermission('notices') && (
@@ -374,15 +306,6 @@ const AdminDashboard = () => {
             Faculty Manager
           </div>
           )}
-          {hasPermission('forms') && (
-          <div 
-            className={`admin-nav-item ${activeTab === 'forms' ? 'active' : ''}`}
-            onClick={() => setActiveTab('forms')}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            Public Queries
-          </div>
-          )}
           {hasPermission('settings') && (
           <div 
             className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
@@ -427,13 +350,12 @@ const AdminDashboard = () => {
         <header className="admin-header">
           <h1>
             {activeTab === 'overview' && 'Dashboard Overview'}
-            {activeTab === 'applications' && 'Student Applications'}
+            {activeTab === 'applications' && 'Admission'}
             {activeTab === 'notices' && 'Manage Notices'}
             {activeTab === 'documents' && 'Document Manager'}
             {activeTab === 'events' && 'Announcements'}
             {activeTab === 'gallery' && 'Gallery Manager'}
             {activeTab === 'faculty' && 'Faculty Manager'}
-            {activeTab === 'forms' && 'Public Queries'}
             {activeTab === 'settings' && 'System Settings & Branding'}
             {activeTab === 'menus' && 'Navigation Menus Management'}
             {activeTab === 'users' && 'User Management'}
@@ -554,114 +476,7 @@ const AdminDashboard = () => {
 
         {/* === APPLICATIONS TAB === */}
         {activeTab === 'applications' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 className="admin-section-title" style={{ margin: 0 }}>Recent Applications</h2>
-              <button 
-                onClick={exportApplicationsToCSV}
-                style={{
-                  background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid #38bdf8',
-                  padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 500
-                }}
-              >
-                Export to CSV
-              </button>
-            </div>
-            
-            <div className="admin-activity-panel">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>App ID</th>
-                    <th>Applicant Name</th>
-                    <th>Course Applied</th>
-                    <th>Date Submitted</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {applications.length > 0 ? applications.map((app) => (
-                    <tr key={app.id}>
-                      <td>#{app.id}</td>
-                      <td>{app.name}</td>
-                      <td>{app.course}</td>
-                      <td>{app.date}</td>
-                      <td>
-                        <span className={`status-badge ${getStatusClass(app.status)}`} style={getStatusStyle(app.status)}>
-                          {app.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                          <button
-                            onClick={() => setViewingApp(app)}
-                            className="admin-btn outline"
-                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}
-                          >
-                            View
-                          </button>
-                          <select
-                            value={app.status}
-                            onChange={(e) => updateAppStatus(app.id, e.target.value)}
-                            style={{
-                              background: 'rgba(15, 23, 42, 0.6)', color: '#38bdf8',
-                              border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.25rem',
-                              padding: '0.25rem 0.5rem', cursor: 'pointer', outline: 'none'
-                            }}
-                          >
-                            <option value="Under Review">Under Review</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Missing Docs">Missing Docs</option>
-                            <option value="Rejected">Rejected</option>
-                          </select>
-                        </div>
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan="6" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading applications...</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* View Application Modal */}
-        {viewingApp && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.75rem', width: '500px', maxWidth: '95%', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ color: '#f8fafc', margin: 0, fontSize: '1.25rem' }}>Application Details</h3>
-                <button onClick={() => setViewingApp(null)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '1.5rem' }}>&times;</button>
-              </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', color: '#cbd5e1' }}>
-                <div style={{ fontWeight: 600, color: '#94a3b8' }}>App ID:</div>
-                <div>#{viewingApp.id}</div>
-                
-                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Applicant Name:</div>
-                <div>{viewingApp.name}</div>
-                
-                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Course Applied:</div>
-                <div>{viewingApp.course}</div>
-                
-                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Date Submitted:</div>
-                <div>{viewingApp.date}</div>
-                
-                <div style={{ fontWeight: 600, color: '#94a3b8' }}>Current Status:</div>
-                <div>
-                  <span className={`status-badge ${getStatusClass(viewingApp.status)}`} style={getStatusStyle(viewingApp.status)}>
-                    {viewingApp.status}
-                  </span>
-                </div>
-              </div>
-              
-              <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
-                <button onClick={() => setViewingApp(null)} className="admin-btn">Close</button>
-              </div>
-            </div>
-          </div>
+          <FormManager token={token} title="Admission Query Responses" />
         )}
 
         {/* === DOCUMENTS TAB === */}
@@ -689,11 +504,6 @@ const AdminDashboard = () => {
           <FacultyManager token={token} />
         )}
 
-        {/* Forms */}
-        {activeTab === 'forms' && (
-          <FormManager token={token} />
-        )}
-
         {/* Settings */}
         {activeTab === 'settings' && (
           <SettingsManager token={token} />
@@ -706,7 +516,7 @@ const AdminDashboard = () => {
 
         {/* User Management (Super Admin only) */}
         {activeTab === 'users' && adminRole === 'super_admin' && (
-          <UserManager token={token} />
+          <UserManager token={token} currentAdminId={adminId} />
         )}
       </main>
     </div>

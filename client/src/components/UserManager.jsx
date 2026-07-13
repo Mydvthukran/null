@@ -10,7 +10,6 @@ const ALL_PERMISSIONS = [
   { key: 'events', label: 'Announcements' },
   { key: 'gallery', label: 'Gallery' },
   { key: 'faculty', label: 'Faculty Manager' },
-  { key: 'forms', label: 'Public Queries' },
   { key: 'settings', label: 'System Settings' },
   { key: 'menus', label: 'Navigation Menus' },
 ];
