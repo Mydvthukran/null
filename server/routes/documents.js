@@ -8,7 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
-const mockData = require('../config/db');
+const pool = require('../config/db');
 
 // ============================================================
 // File Upload Config (local for now)
@@ -42,73 +42,112 @@ const upload = multer({
 });
 
 // GET /api/documents — List all documents
-router.get('/', authMiddleware, (req, res) => {
-  res.json({ documents: mockData.documents });
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM documents ORDER BY id DESC');
+    res.json({ documents: rows });
+  } catch (err) {
+    console.error('Error fetching documents:', err);
+    res.status(500).json({ error: 'Server error fetching documents' });
+  }
 });
 
 // POST /api/documents — Upload a new document
-router.post('/', authMiddleware, upload.single('file'), (req, res) => {
+router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }
 
-  const { category } = req.body;
-  const fileSizeKB = (req.file.size / 1024).toFixed(0);
-  const sizeLabel = req.file.size > 1024 * 1024
-    ? (req.file.size / (1024 * 1024)).toFixed(1) + ' MB'
-    : fileSizeKB + ' KB';
-
-  const newDoc = {
-    id: mockData.documents.length + 1,
-    name: req.file.originalname,
-    category: category || 'General',
-    size: sizeLabel,
-    updatedAt: new Date().toISOString().split('T')[0],
-    filePath: '/uploads/' + req.file.filename,
-  };
-
-  mockData.documents.push(newDoc);
-  res.status(201).json({ message: 'Document uploaded', document: newDoc });
-});
-
-// PUT /api/documents/:id — Replace a document file
-router.put('/:id', authMiddleware, upload.single('file'), (req, res) => {
-  const doc = mockData.documents.find((d) => d.id === parseInt(req.params.id));
-  if (!doc) return res.status(404).json({ error: 'Document not found.' });
-
-  if (req.file) {
-    // Delete old file from local storage
-    const oldPath = path.join(uploadsDir, path.basename(doc.filePath));
-    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-
+  try {
+    const { category } = req.body;
     const fileSizeKB = (req.file.size / 1024).toFixed(0);
     const sizeLabel = req.file.size > 1024 * 1024
       ? (req.file.size / (1024 * 1024)).toFixed(1) + ' MB'
       : fileSizeKB + ' KB';
 
-    doc.name = req.file.originalname;
-    doc.size = sizeLabel;
-    doc.filePath = '/uploads/' + req.file.filename;
-    doc.updatedAt = new Date().toISOString().split('T')[0];
+    const name = req.file.originalname;
+    const cat = category || 'General';
+    const updatedAt = new Date().toISOString().split('T')[0];
+    const filePath = '/uploads/' + req.file.filename;
+
+    const [result] = await pool.query(
+      'INSERT INTO documents (name, category, size, updatedAt, filePath) VALUES (?, ?, ?, ?, ?)',
+      [name, cat, sizeLabel, updatedAt, filePath]
+    );
+
+    const newDoc = {
+      id: result.insertId,
+      name,
+      category: cat,
+      size: sizeLabel,
+      updatedAt,
+      filePath,
+    };
+
+    res.status(201).json({ message: 'Document uploaded', document: newDoc });
+  } catch (err) {
+    console.error('Error uploading document:', err);
+    res.status(500).json({ error: 'Server error saving document metadata' });
   }
+});
 
-  if (req.body.category) doc.category = req.body.category;
+// PUT /api/documents/:id — Replace a document file
+router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM documents WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Document not found.' });
+    
+    let doc = rows[0];
 
-  res.json({ message: 'Document replaced', document: doc });
+    if (req.file) {
+      // Delete old file from local storage
+      const oldPath = path.join(uploadsDir, path.basename(doc.filePath));
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+
+      const fileSizeKB = (req.file.size / 1024).toFixed(0);
+      const sizeLabel = req.file.size > 1024 * 1024
+        ? (req.file.size / (1024 * 1024)).toFixed(1) + ' MB'
+        : fileSizeKB + ' KB';
+
+      doc.name = req.file.originalname;
+      doc.size = sizeLabel;
+      doc.filePath = '/uploads/' + req.file.filename;
+      doc.updatedAt = new Date().toISOString().split('T')[0];
+    }
+
+    if (req.body.category) doc.category = req.body.category;
+
+    await pool.query(
+      'UPDATE documents SET name=?, category=?, size=?, updatedAt=?, filePath=? WHERE id=?',
+      [doc.name, doc.category, doc.size, doc.updatedAt, doc.filePath, req.params.id]
+    );
+
+    res.json({ message: 'Document replaced', document: doc });
+  } catch (err) {
+    console.error('Error updating document:', err);
+    res.status(500).json({ error: 'Server error updating document metadata' });
+  }
 });
 
 // DELETE /api/documents/:id — Delete a document
-router.delete('/:id', authMiddleware, (req, res) => {
-  const index = mockData.documents.findIndex((d) => d.id === parseInt(req.params.id));
-  if (index === -1) return res.status(404).json({ error: 'Document not found.' });
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM documents WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Document not found.' });
 
-  const doc = mockData.documents[index];
-  // Delete file from local storage
-  const filePath = path.join(uploadsDir, path.basename(doc.filePath));
-  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    const doc = rows[0];
+    
+    // Delete file from local storage
+    const oldPath = path.join(uploadsDir, path.basename(doc.filePath));
+    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
 
-  mockData.documents.splice(index, 1);
-  res.json({ message: 'Document deleted' });
+    await pool.query('DELETE FROM documents WHERE id = ?', [req.params.id]);
+    
+    res.json({ message: 'Document deleted' });
+  } catch (err) {
+    console.error('Error deleting document:', err);
+    res.status(500).json({ error: 'Server error deleting document' });
+  }
 });
 
 module.exports = router;

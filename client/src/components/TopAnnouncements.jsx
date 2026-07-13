@@ -1,47 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
 import { ADMISSIONS_CONFIG } from '../config/admissions';
 
 const TopAnnouncements = () => {
-  const announcements = [
-    {
-      id: 'open-days',
-      content: (
-        <>
-          <span className="announcement-dot" aria-hidden="true"></span>
-          <p>2nd Counselling Reporting: 09/07/2026 to 11/07/2026 & 13/07/2026. Timings: 10:00 AM to 05:00 PM. The institute will remain closed on Sunday.</p>
-        </>
-      )
-    }
-  ];
+  const [events, setEvents] = useState([]);
 
-  /* if (!ADMISSIONS_CONFIG.hstesOpen) {
+  useEffect(() => {
+    // Fetch live events for the scrolling marquee
+    fetch('http://localhost:5000/api/events')
+      .then(res => res.json())
+      .then(data => setEvents(data))
+      .catch(err => console.error('Error fetching events:', err));
+  }, []);
+
+  // Convert fetched events into announcement content
+  const announcements = events.map(e => ({
+    id: e.id,
+    content: (
+      <>
+        <span className="announcement-dot" aria-hidden="true"></span>
+        <p>
+          {e.title} {e.date && `(${e.date})`}
+          {e.file_path && (
+            <a 
+              href={`http://localhost:5000${e.file_path}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
+            >
+              View Document
+            </a>
+          )}
+        </p>
+      </>
+    )
+  }));
+
+  // Fallback if there are no events in the database
+  if (announcements.length === 0) {
     announcements.push({
-      id: 'counselling-soon',
+      id: 'default',
       content: (
         <>
           <span className="announcement-dot" aria-hidden="true"></span>
-          <p>
-            Offline campus counselling will start soon.{" "}
-            <a 
-              href={ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              style={{ 
-                color: '#c5a059', 
-                textDecoration: 'underline', 
-                fontWeight: 'bold',
-                marginLeft: '0.3rem'
-              }}
-            >
-              Book Now
-            </a>
-          </p>
+          <p>Welcome to SIET Panchkula. Check back later for upcoming events!</p>
         </>
       )
     });
-  } */
+  }
 
   return (
     <ScrollReveal>

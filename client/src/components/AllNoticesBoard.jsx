@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ScrollReveal from './ScrollReveal';
-import { noticesBoardData } from '../data/noticesData';
 
 const AllNoticesBoard = () => {
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/notices')
+      .then(res => res.json())
+      .then(data => {
+        // Filter out any that are 'Archived' if needed, or show all
+        setNotices(data.filter(n => n.status !== 'Archived'));
+      })
+      .catch(err => console.error('Error fetching notices:', err));
+  }, []);
+
   return (
     <ScrollReveal>
       <section className="all-notices section" id="all-notices" aria-label="All notices board">
@@ -13,21 +24,27 @@ const AllNoticesBoard = () => {
           </div>
 
           <div className="all-notices-grid">
-            {noticesBoardData.map((notice) => (
+            {notices.map((notice) => (
               <article key={notice.id} className="all-notice-card">
                 <div className="all-notice-meta">
-                  <span className="all-notice-category">{notice.category}</span>
-                  <span className={`all-notice-priority ${notice.priority.toLowerCase()}`}>{notice.priority}</span>
+                  <span className="all-notice-category">{notice.category || 'Notice'}</span>
                 </div>
                 <h3>{notice.title}</h3>
                 <p className="all-notice-date">Posted: {notice.date}</p>
-                <p className="all-notice-details">{notice.details}</p>
                 <div className="all-notice-actions">
-                  <a href={notice.downloadUrl} target="_blank" rel="noopener noreferrer" className="notice-btn secondary">Download</a>
-                  <a href={notice.readMoreUrl} target="_blank" rel="noopener noreferrer" className="notice-btn primary">Read More</a>
+                  {notice.file_path ? (
+                    <a href={`http://localhost:5000${notice.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
+                      View Document
+                    </a>
+                  ) : (
+                    <span className="notice-btn secondary" style={{ opacity: 0.5 }}>No Attachment</span>
+                  )}
                 </div>
               </article>
             ))}
+            {notices.length === 0 && (
+              <p style={{ textAlign: 'center', width: '100%', padding: '2rem' }}>No active notices found.</p>
+            )}
           </div>
         </div>
       </section>

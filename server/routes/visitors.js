@@ -1,21 +1,32 @@
 /**
  * Visitors Routes — Track and retrieve visitor analytics
- * FUTURE: Store visitor hits in MySQL and aggregate
  */
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const mockData = require('../config/db');
+const pool = require('../config/db');
 
 // GET /api/visitors — Get visitor stats (admin only)
-router.get('/', authMiddleware, (req, res) => {
-  res.json({ visitors: mockData.visitors });
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
+    res.json({ visitors: { total: visitorCount ? visitorCount.total : 0, monthly: [] } });
+  } catch (err) {
+    console.error('Error fetching visitors:', err);
+    res.status(500).json({ error: 'Server error fetching visitors' });
+  }
 });
 
 // POST /api/visitors/hit — Increment visitor count (public, called from frontend)
-router.post('/hit', (req, res) => {
-  mockData.visitors.total += 1;
-  res.json({ total: mockData.visitors.total });
+router.post('/hit', async (req, res) => {
+  try {
+    await pool.query('UPDATE visitors SET total = total + 1 WHERE id = 1');
+    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
+    res.json({ total: visitorCount.total });
+  } catch (err) {
+    console.error('Error updating visitors:', err);
+    res.status(500).json({ error: 'Server error updating visitors' });
+  }
 });
 
 module.exports = router;

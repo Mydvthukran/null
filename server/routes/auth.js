@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mockData = require('../config/db');
+const pool = require('../config/db');
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -16,11 +16,12 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    // Find admin user (FUTURE: query MySQL instead)
-    const admin = mockData.admins.find((a) => a.username === username);
-    if (!admin) {
+    // Find admin user in MySQL
+    const [rows] = await pool.query('SELECT * FROM admins WHERE username = ?', [username]);
+    if (rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
+    const admin = rows[0];
 
     // Compare password
     const isMatch = await bcrypt.compare(password, admin.password);

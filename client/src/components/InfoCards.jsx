@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { notificationsListData, noticesListData } from '../data/noticesData';
 import { ADMISSIONS_CONFIG } from '../config/admissions';
 
 const LOOP_DUPLICATE_COUNT = 3;
@@ -91,19 +90,38 @@ const ScrollableCardBody = ({ items, scrollRef, contentRef, pauseRef }) => (
  * Three auto-scrolling information cards
  */
 const InfoCards = () => {
-  const notifications = notificationsListData;
-  const notices = noticesListData;
+  const [notifications, setNotifications] = useState([]);
+  const [notices, setNotices] = useState([]);
+  const [news, setNews] = useState([]);
 
-  const news = [];
-  /* if (!ADMISSIONS_CONFIG.hstesOpen) {
-    news.push({
-      id: 'news-campus-counselling',
-      title: 'Offline Counselling form',
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      href: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
-      isNew: true
-    });
-  } */
+  useEffect(() => {
+    fetch('http://localhost:5000/api/notices')
+      .then(res => res.json())
+      .then(data => {
+        const activeData = data.filter(n => n.status !== 'Archived');
+        
+        // Map database row to component format
+        const mapItem = (n) => ({
+          id: n.id,
+          title: n.title,
+          date: n.date,
+          href: n.file_path ? `http://localhost:5000${n.file_path}` : null,
+          isNew: n.status === 'Active' // or based on date if you prefer
+        });
+
+        const notifs = activeData
+          .filter(n => ['Admission', 'Academic', 'Fee', 'Policy', 'Regulation', 'Guideline'].includes(n.category))
+          .map(mapItem);
+          
+        const notes = activeData
+          .filter(n => ['Notice', 'Event'].includes(n.category))
+          .map(mapItem);
+          
+        setNotifications(notifs);
+        setNotices(notes);
+      })
+      .catch(err => console.error('Error fetching notices:', err));
+  }, []);
 
   const newsScrollRef = useRef(null);
   const newsContentRef = useRef(null);

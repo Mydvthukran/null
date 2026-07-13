@@ -8,7 +8,7 @@
  *   - MySQL database (via Hostinger)
  *   - Hostinger Cloud Storage for document uploads
  */
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -36,6 +36,8 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/applications', require('./routes/applications'));
 app.use('/api/documents', require('./routes/documents'));
+app.use('/api/notices', require('./routes/notices'));
+app.use('/api/events', require('./routes/events'));
 app.use('/api/visitors', require('./routes/visitors'));
 
 // Health check
