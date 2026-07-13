@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
-const { verifyAdmin } = require('../middleware/auth');
+const verifyAdmin = require('../middleware/auth');
 
 // Helper to build tree
 const buildMenuTree = (items, parentId = null) => {
