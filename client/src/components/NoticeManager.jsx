@@ -7,7 +7,7 @@ const NoticeManager = ({ token }) => {
   const [notices, setNotices] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ title: '', date: '', status: 'Active', category: 'Notice' });
+  const [formData, setFormData] = useState({ title: '', date: '', status: 'Active', category: 'Notice', publish_date: '' });
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -33,17 +33,19 @@ const NoticeManager = ({ token }) => {
   };
 
   const fetchNotices = async () => {
-    const data = await apiCall('/notices');
+    const data = await apiCall('/notices/admin');
     if (data) setNotices(data);
   };
 
   const handleOpenModal = (notice = null) => {
     if (notice) {
       setEditingId(notice.id);
-      setFormData({ title: notice.title, date: notice.date, status: notice.status, category: notice.category });
+      // Ensure publish_date is formatted properly for datetime-local input if it exists
+      const pDate = notice.publish_date ? new Date(notice.publish_date).toISOString().slice(0, 16) : '';
+      setFormData({ title: notice.title, date: notice.date, status: notice.status, category: notice.category, publish_date: pDate });
     } else {
       setEditingId(null);
-      setFormData({ title: '', date: '', status: 'Active', category: 'Notice' });
+      setFormData({ title: '', date: '', status: 'Active', category: 'Notice', publish_date: '' });
     }
     setFile(null);
     setShowModal(true);
@@ -56,6 +58,7 @@ const NoticeManager = ({ token }) => {
     data.append('date', formData.date);
     data.append('status', formData.status);
     data.append('category', formData.category);
+    data.append('publish_date', formData.publish_date);
     if (file) data.append('file', file);
 
     const method = editingId ? 'PUT' : 'POST';
@@ -88,6 +91,7 @@ const NoticeManager = ({ token }) => {
               <th>Title</th>
               <th>Category</th>
               <th>Date</th>
+              <th>Publish Date</th>
               <th>Status</th>
               <th>File</th>
               <th>Actions</th>
@@ -100,6 +104,7 @@ const NoticeManager = ({ token }) => {
                 <td>{n.title}</td>
                 <td>{n.category}</td>
                 <td>{n.date}</td>
+                <td>{n.publish_date ? new Date(n.publish_date).toLocaleString() : 'Immediate'}</td>
                 <td><span className={`status-badge ${n.status === 'Active' ? 'status-active' : 'status-pending'}`}>{n.status}</span></td>
                 <td>
                   {n.file_path ? <a href={`http://localhost:5000${n.file_path}`} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
@@ -130,6 +135,10 @@ const NoticeManager = ({ token }) => {
                 <option value="Academic">Academic</option>
                 <option value="Fee">Fee</option>
               </select>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', color: '#94a3b8' }}>Scheduled Publish Date (Optional)</label>
+                <input type="datetime-local" value={formData.publish_date} onChange={e => setFormData({...formData, publish_date: e.target.value})} className="admin-input" style={{ width: '100%' }} />
+              </div>
               <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="admin-input">
                 <option value="Active">Active</option>
                 <option value="Archived">Archived</option>

@@ -10,6 +10,10 @@ const EventManager = ({ token }) => {
   const [formData, setFormData] = useState({ title: '', date: '', status: 'Upcoming', category: 'Event' });
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
+  
+  const [showRegModal, setShowRegModal] = useState(false);
+  const [selectedEventForReg, setSelectedEventForReg] = useState(null);
+  const [eventRegistrations, setEventRegistrations] = useState([]);
 
   useEffect(() => {
     fetchEvents();
@@ -73,6 +77,13 @@ const EventManager = ({ token }) => {
     }
   };
 
+  const handleViewRegistrations = async (event) => {
+    setSelectedEventForReg(event);
+    const data = await apiCall(`/events/registrations/${event.id}`);
+    if (data) setEventRegistrations(data.registrations || []);
+    setShowRegModal(true);
+  };
+
   return (
     <div className="admin-activity-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -105,6 +116,7 @@ const EventManager = ({ token }) => {
                   {e.file_path ? <a href={`http://localhost:5000${e.file_path}`} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
                 </td>
                 <td>
+                  <button onClick={() => handleViewRegistrations(e)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem', color: '#10b981', borderColor: '#10b981' }}>Registrations</button>
                   <button onClick={() => handleOpenModal(e)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem' }}>Edit</button>
                   <button onClick={() => handleDelete(e.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', borderColor: '#ef4444', color: '#ef4444' }}>Delete</button>
                 </td>
@@ -140,6 +152,44 @@ const EventManager = ({ token }) => {
                 <button type="button" onClick={() => setShowModal(false)} className="admin-btn outline" style={{ flex: 1 }}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showRegModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.5rem', width: '600px', maxWidth: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ color: '#fff', margin: 0 }}>Registrations for "{selectedEventForReg?.title}"</h3>
+              <button onClick={() => setShowRegModal(false)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem' }}>Close</button>
+            </div>
+            
+            {eventRegistrations.length === 0 ? (
+              <p style={{ color: '#94a3b8' }}>No registrations yet.</p>
+            ) : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Student ID</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventRegistrations.map((reg) => (
+                    <tr key={reg.id}>
+                      <td>{reg.name}</td>
+                      <td>{reg.email}</td>
+                      <td>{reg.phone || '-'}</td>
+                      <td>{reg.student_id || '-'}</td>
+                      <td>{reg.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       )}

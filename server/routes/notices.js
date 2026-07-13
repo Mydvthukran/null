@@ -27,8 +27,19 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
-// GET /api/notices — Fetch all notices
+// GET /api/notices — Fetch published notices (public)
 router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM notices WHERE publish_date IS NULL OR publish_date <= NOW() ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching notices:', err);
+    res.status(500).json({ error: 'Server error fetching notices' });
+  }
+});
+
+// GET /api/notices/admin — Fetch all notices (admin)
+router.get('/admin', authMiddleware, async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM notices ORDER BY id DESC');
     res.json(rows);
@@ -40,7 +51,7 @@ router.get('/', async (req, res) => {
 
 // POST /api/notices — Add a new notice
 router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
-  const { title, date, status, category } = req.body;
+  const { title, date, status, category, publish_date } = req.body;
   const filePath = req.file ? `/uploads/${req.file.filename}` : null;
 
   if (!title) {
@@ -48,9 +59,10 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
   }
 
   try {
+    const pubDate = publish_date ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') : null;
     const [result] = await pool.query(
-      'INSERT INTO notices (title, date, status, category, file_path) VALUES (?, ?, ?, ?, ?)',
-      [title, date || new Date().toISOString().split('T')[0], status || 'Active', category || 'Notice', filePath]
+      'INSERT INTO notices (title, date, status, category, file_path, publish_date) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, date || new Date().toISOString().split('T')[0], status || 'Active', category || 'Notice', filePath, pubDate]
     );
     res.status(201).json({ message: 'Notice created successfully', id: result.insertId });
   } catch (err) {
@@ -62,17 +74,18 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
 // PUT /api/notices/:id — Update a notice
 router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
   const { id } = req.params;
-  const { title, date, status, category } = req.body;
+  const { title, date, status, category, publish_date } = req.body;
   
   try {
+    const pubDate = publish_date ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') : null;
     // If a new file is uploaded, update file_path, otherwise keep old
-    let query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ? WHERE id = ?';
-    let params = [title, date, status, category, id];
+    let query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ? WHERE id = ?';
+    let params = [title, date, status, category, pubDate, id];
 
     if (req.file) {
       const filePath = `/uploads/${req.file.filename}`;
-      query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, file_path = ? WHERE id = ?';
-      params = [title, date, status, category, filePath, id];
+      query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ?, file_path = ? WHERE id = ?';
+      params = [title, date, status, category, pubDate, filePath, id];
     }
 
     await pool.query(query, params);
