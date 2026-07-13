@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import NoticeManager from '../components/NoticeManager';
+import DocumentManager from '../components/DocumentManager';
 import EventManager from '../components/EventManager';
 import GalleryManager from '../components/GalleryManager';
+import FormManager from '../components/FormManager';
 import '../css/adminDashboard.css';
 
 const API_BASE = 'http://localhost:5000/api';
@@ -318,6 +320,13 @@ const AdminDashboard = () => {
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             Gallery
           </div>
+          <div 
+            className={`admin-nav-item ${activeTab === 'forms' ? 'active' : ''}`}
+            onClick={() => setActiveTab('forms')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Form Submissions
+          </div>
           
           <div 
             className="admin-nav-item"
@@ -340,6 +349,7 @@ const AdminDashboard = () => {
             {activeTab === 'documents' && 'Document Manager'}
             {activeTab === 'events' && 'Announcements'}
             {activeTab === 'gallery' && 'Gallery Manager'}
+            {activeTab === 'forms' && 'Form Submissions'}
           </h1>
           <div className="admin-user-profile">
             <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{adminName}</span>
@@ -597,6 +607,11 @@ const AdminDashboard = () => {
         {/* Gallery */}
         {activeTab === 'gallery' && (
           <GalleryManager token={token} />
+        )}
+
+        {/* Forms */}
+        {activeTab === 'forms' && (
+          <FormManager token={token} />
         )}
       </main>
     </div>

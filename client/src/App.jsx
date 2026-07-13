@@ -25,6 +25,7 @@ const PayFeesOnline = React.lazy(() => import('./pages/PayFeesOnline'));
 const AdmissionDocuments = React.lazy(() => import('./pages/AdmissionDocuments'));
 const Developers = React.lazy(() => import('./pages/Developers'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const ContactUs = React.lazy(() => import('./pages/ContactUs'));
 
 const ExternalPlacementRedirect = () => {
   React.useEffect(() => {
@@ -94,6 +95,7 @@ function App() {
           <Route path="/admission-documents" element={<AdmissionDocuments />} />
           <Route path="/developers" element={<Developers />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/contact" element={<ContactUs />} />
         </Routes>
       </Suspense>
 
