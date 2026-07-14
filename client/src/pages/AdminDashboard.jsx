@@ -17,17 +17,17 @@ const API_BASE = 'https://null-e3uj.onrender.com/api';
  * Connected to the Express.js backend via REST API.
  */
 const AdminDashboard = () => {
-  const [token, setToken] = useState(() => localStorage.getItem('adminToken'));
-  const [adminName, setAdminName] = useState(() => localStorage.getItem('adminName') || '');
-  const [adminRole, setAdminRole] = useState(() => localStorage.getItem('adminRole') || '');
+  const [token, setToken] = useState(() => sessionStorage.getItem('adminToken'));
+  const [adminName, setAdminName] = useState(() => sessionStorage.getItem('adminName') || '');
+  const [adminRole, setAdminRole] = useState(() => sessionStorage.getItem('adminRole') || '');
   const [adminPermissions, setAdminPermissions] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('adminPermissions') || '[]'); } catch { return []; }
+    try { return JSON.parse(sessionStorage.getItem('adminPermissions') || '[]'); } catch { return []; }
   });
   const [adminId, setAdminId] = useState(() => {
-    const savedId = localStorage.getItem('adminId');
+    const savedId = sessionStorage.getItem('adminId');
     return savedId ? parseInt(savedId) : null;
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('adminToken')));
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(sessionStorage.getItem('adminToken')));
   const [activeTab, setActiveTab] = useState('overview');
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,11 +65,11 @@ const AdminDashboard = () => {
     setAdminRole('');
     setAdminPermissions([]);
     setAdminId(null);
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminName');
-    localStorage.removeItem('adminRole');
-    localStorage.removeItem('adminPermissions');
-    localStorage.removeItem('adminId');
+    sessionStorage.removeItem('adminToken');
+    sessionStorage.removeItem('adminName');
+    sessionStorage.removeItem('adminRole');
+    sessionStorage.removeItem('adminPermissions');
+    sessionStorage.removeItem('adminId');
     setUsername('');
     setPassword('');
   }, []);
@@ -143,11 +143,11 @@ const AdminDashboard = () => {
       setAdminRole(data.admin.role || 'editor');
       setAdminPermissions(data.admin.permissions || []);
       setAdminId(data.admin.id);
-      localStorage.setItem('adminToken', data.token);
-      localStorage.setItem('adminName', data.admin.name);
-      localStorage.setItem('adminRole', data.admin.role || 'editor');
-      localStorage.setItem('adminPermissions', JSON.stringify(data.admin.permissions || []));
-      localStorage.setItem('adminId', data.admin.id);
+      sessionStorage.setItem('adminToken', data.token);
+      sessionStorage.setItem('adminName', data.admin.name);
+      sessionStorage.setItem('adminRole', data.admin.role || 'editor');
+      sessionStorage.setItem('adminPermissions', JSON.stringify(data.admin.permissions || []));
+      sessionStorage.setItem('adminId', data.admin.id);
       setIsLoggedIn(true);
     } catch (loginErr) {
       console.error('Login error:', loginErr);
