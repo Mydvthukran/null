@@ -25,18 +25,7 @@ const Navbar = () => {
     fetch('https://null-e3uj.onrender.com/api/menus')
       .then(res => res.json())
       .then(data => {
-        if (data && Array.isArray(data)) {
-          // Inject Physical Counselling into Admissions menu
-          const admissionsMenu = data.find(item => item.name && item.name.toLowerCase() === 'admissions');
-          if (admissionsMenu) {
-            if (!admissionsMenu.submenu) admissionsMenu.submenu = [];
-            const hasPhysicalCounselling = admissionsMenu.submenu.some(sub => sub.name === 'Physical Counselling');
-            if (!hasPhysicalCounselling) {
-              admissionsMenu.submenu.push({ name: 'Physical Counselling', href: '/physical-counselling' });
-            }
-          }
-          setNavItems(data);
-        }
+        if (data && Array.isArray(data)) setNavItems(data);
       })
       .catch(err => console.error('Error fetching menus:', err));
 

@@ -14,49 +14,44 @@ const TopAnnouncements = () => {
       .catch(err => console.error('Error fetching events:', err));
   }, []);
 
-  // Add static announcements for counselling
-  const staticAnnouncements = [
-    {
-      id: 'open-days',
-      content: (
+  // Parse markdown-style links in title: [text](href)
+  const renderTitle = (title) => {
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/;
+    const match = title.match(linkRegex);
+    if (match) {
+      const before = title.substring(0, match.index);
+      const linkText = match[1];
+      const linkHref = match[2];
+      const after = title.substring(match.index + match[0].length);
+      return (
         <>
-          <span className="announcement-dot" aria-hidden="true"></span>
-          <p>2nd Counselling Reporting: 09/07/2026 to 11/07/2026 & 13/07/2026. | Timings: 10:00 AM to 05:00 PM | The institute will remain closed on Sunday.</p>
+          {before}
+          <Link 
+            to={linkHref}
+            style={{ 
+              color: '#c5a059', 
+              textDecoration: 'underline', 
+              fontWeight: 'bold',
+              marginLeft: '0.3rem'
+            }}
+          >
+            {linkText}
+          </Link>
+          {after}
         </>
-      )
-    },
-    {
-      id: 'counselling-soon',
-      content: (
-        <>
-          <span className="announcement-dot" aria-hidden="true"></span>
-          <p>
-            Physical counselling has started.{" "}
-            <Link 
-              to="/physical-counselling"
-              style={{ 
-                color: '#c5a059', 
-                textDecoration: 'underline', 
-                fontWeight: 'bold',
-                marginLeft: '0.3rem'
-              }}
-            >
-              Apply Now
-            </Link>
-          </p>
-        </>
-      )
+      );
     }
-  ];
+    return title;
+  };
 
   // Convert fetched events into announcement content
-  const dynamicAnnouncements = events.map(e => ({
+  const announcements = events.map(e => ({
     id: e.id,
     content: (
       <>
         <span className="announcement-dot" aria-hidden="true"></span>
         <p>
-          {e.title} {e.date && `(${e.date})`}
+          {renderTitle(e.title)} {e.date && `(${e.date})`}
           {e.file_path && (
             <a 
               href={`https://null-e3uj.onrender.com${e.file_path}`} 
@@ -72,9 +67,7 @@ const TopAnnouncements = () => {
     )
   }));
 
-  const announcements = [...staticAnnouncements, ...dynamicAnnouncements];
-
-  // Fallback if there are no events in the database (this will rarely run now due to static announcements)
+  // Fallback if there are no events in the database
   if (announcements.length === 0) {
     announcements.push({
       id: 'default',
