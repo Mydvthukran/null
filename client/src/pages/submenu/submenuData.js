@@ -298,6 +298,9 @@ export const submenuData = {
     title: 'Academic Calendar',
     image: academicCalendarImage,
     showHeroImage: false,
+    documents: [
+      { key: 'academic-calendar-2025', label: 'Academic Calendar 2025-26', pdfKey: 'academic_calendar' }
+    ],
     body: [
       'Refer to the official Kurukshetra University website for the latest academic calendar, session dates, and semester timelines.'
     ],

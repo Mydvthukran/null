@@ -123,7 +123,7 @@ const SyllabusHubTemplate = ({
                 <div className="coc-panel syllabus-preview-panel">
                   <div className="coc-preview-head syllabus-preview-head">
                     <h3 className="submenu-subsection-title syllabus-preview-title">{active?.label || 'Curriculum Preview'}</h3>
-                    {active?.pdfUrl && (
+                    {active?.hasFile && (
                       <a href={active.pdfUrl} target="_blank" rel="noopener noreferrer" className="doc-panel-download">
                         Download PDF
                       </a>
@@ -131,7 +131,7 @@ const SyllabusHubTemplate = ({
                   </div>
 
                   <div className="coc-preview-frame-wrap syllabus-preview-frame-wrap">
-                    {active?.pdfUrl ? (
+                    {active?.hasFile ? (
                       <iframe
                         key={active.pdfUrl}
                         title={`${title} PDF preview`}
