@@ -20,6 +20,15 @@ import inspectionImage from '../../assets/new-assets/life at siet/gallery/Inspec
 import teacherImage from '../../assets/new-assets/depatment/facalities/teachers/anil-kumar.jpg';
 import createDepartmentDemoSections from './departmentDemoSections';
 
+// Local PDF Imports
+import btechProspectusDoc from '../../assets/new-assets/home/notices/BTech-Prospectus-2025-26-1.pdf';
+import btechLeetDoc from '../../assets/new-assets/home/notices/B.Tech_LEET.pdf';
+import academicCalendarDoc from '../../assets/new-assets/home/notices/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
+import syllabusAIML56 from '../../assets/new-assets/student/syllabus/AIML-5-6-SEM (1).pdf';
+import syllabus1stYear from '../../assets/new-assets/student/syllabus/B.Tech_.-1st-Year-Common-Syllabus-1 (1).pdf';
+import syllabusCSE2ndYear from '../../assets/new-assets/student/syllabus/B.Tech_CSE-AIML-CS_2ndyear_2025onwards.pdf';
+import syllabusRobotics from '../../assets/new-assets/student/syllabus/B.tech_syllabus_RoboticsAutomation (1).pdf';
+
 const kukWebsiteUrl = 'https://kuk.ac.in/';
 const kukDateSheetUrl = 'https://kuk.ac.in/date-sheet/';
 
@@ -299,7 +308,7 @@ export const submenuData = {
     image: academicCalendarImage,
     showHeroImage: false,
     documents: [
-      { key: 'academic-calendar-2025', label: 'Academic Calendar 2025-26', pdfKey: 'academic_calendar' }
+      { key: 'academic-calendar-2025', label: 'Academic Calendar 2025-26', pdfUrl: academicCalendarDoc }
     ],
     body: [
       'Refer to the official Kurukshetra University website for the latest academic calendar, session dates, and semester timelines.'
@@ -317,11 +326,11 @@ export const submenuData = {
     title: 'Syllabus',
     subtitle: 'Search and open the syllabus PDF for your program.',
     courses: [
-      { key: 'btech-1st', label: 'B.tech 1st year', pdfKey: 'BTECH_SYLLABUS_1ST_YEAR' },
-      { key: 'btech-cse-aiml-2nd', label: 'B.tech CSE AIML-2nd year', pdfKey: 'BTECH_SYLLABUS_CSE_AIML_2ND_YEAR' },
-      { key: 'btech-cse-cs-2nd', label: 'B.tech CSE CS-2nd year', pdfKey: 'BTECH_SYLLABUS_CSE_AIML_2ND_YEAR' },
-      { key: 'btech-ra-2nd', label: 'B.tech Robotics & Automation-2nd year', pdfKey: 'BTECH_SYLLABUS_ROBOTICS' },
-      { key: 'btech-cse-aiml-3rd', label: 'B.tech CSE AIML-3rd year', pdfKey: 'BTECH_SYLLABUS_AIML_5_6_SEM' },
+      { key: 'btech-1st', label: 'B.tech 1st year', pdfUrl: syllabus1stYear },
+      { key: 'btech-cse-aiml-2nd', label: 'B.tech CSE AIML-2nd year', pdfUrl: syllabusCSE2ndYear },
+      { key: 'btech-cse-cs-2nd', label: 'B.tech CSE CS-2nd year', pdfUrl: syllabusCSE2ndYear },
+      { key: 'btech-ra-2nd', label: 'B.tech Robotics & Automation-2nd year', pdfUrl: syllabusRobotics },
+      { key: 'btech-cse-aiml-3rd', label: 'B.tech CSE AIML-3rd year', pdfUrl: syllabusAIML56 },
       { key: 'btech-cse-cs-3rd', label: 'B.tech CSE CS-3rd year', pdfKey: null },
       { key: 'btech-ra-3rd', label: 'B.tech Robotics & Automation-3rd year', pdfKey: null },
       { key: 'btech-cse-aiml-4th', label: 'B.tech CSE AIML-4th year', pdfKey: null },
@@ -338,8 +347,8 @@ export const submenuData = {
     title: 'Admission Prospectus',
     subtitle: 'Select a prospectus document to preview.',
     documents: [
-      { key: 'be-btech-barch', label: 'BE / B.Tech / B.Arch Prospectus (2026-27)', pdfKey: 'PROSPECTUS_BE_BTECH_BARCH' },
-      { key: 'btech-leet', label: 'B.Tech LEET Prospectus (2026-27)', pdfKey: 'PROSPECTUS_BTECH_LEET' }
+      { key: 'be-btech-barch', label: 'BE / B.Tech / B.Arch Prospectus (2026-27)', pdfUrl: btechProspectusDoc },
+      { key: 'btech-leet', label: 'B.Tech LEET Prospectus (2026-27)', pdfUrl: btechLeetDoc }
     ],
     resources: [
       { label: 'HSTES Admissions Portal', href: 'https://www.hstes.org.in/' }
