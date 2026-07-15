@@ -6,6 +6,13 @@ const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
+const rateLimit = require('express-rate-limit');
+
+const appLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 requests per IP
+  message: { error: 'Too many applications submitted from this IP, please try again later.' }
+});
 
 // GET /api/applications — List all applications
 router.get('/', authMiddleware, async (req, res) => {
@@ -31,7 +38,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 });
 
 // POST /api/applications — Submit a new application (public)
-router.post('/', async (req, res) => {
+router.post('/', appLimiter, async (req, res) => {
   try {
     const { name, course } = req.body;
     if (!name || !course) {
@@ -58,6 +65,10 @@ router.post('/', async (req, res) => {
 router.put('/:id/status', authMiddleware, async (req, res) => {
   try {
     const { status } = req.body;
+    const validStatuses = ['Under Review', 'Missing Docs', 'Accepted', 'Rejected', 'Waitlisted'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid application status.' });
+    }
     
     // Check if application exists
     const [rows] = await pool.query('SELECT * FROM applications WHERE id = ?', [req.params.id]);

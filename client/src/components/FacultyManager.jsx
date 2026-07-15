@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../css/adminDashboard.css';
 
-const API_BASE = 'https://null-e3uj.onrender.com/api';
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const ALL_DEPARTMENTS = [
   { id: 'cse', name: 'Computer Science' },
@@ -130,7 +130,7 @@ const FacultyManager = ({ token }) => {
               <tr key={f.id}>
                 <td>
                   {f.image_path ? (
-                    <img src={`https://null-e3uj.onrender.com${f.image_path}`} alt={f.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <img src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${f.image_path}`} alt={f.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{f.name.charAt(0)}</div>
                   )}

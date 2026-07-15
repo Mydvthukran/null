@@ -65,7 +65,7 @@ const Admission = () => {
     }
 
     try {
-      const res = await fetch('https://null-e3uj.onrender.com/api/applications', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/applications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

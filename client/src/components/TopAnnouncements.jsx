@@ -8,7 +8,7 @@ const TopAnnouncements = () => {
 
   useEffect(() => {
     // Fetch live events for the scrolling marquee
-    fetch('https://null-e3uj.onrender.com/api/events')
+    fetch(import.meta.env.VITE_API_URL + '/events')
       .then(res => res.json())
       .then(data => setEvents(data))
       .catch(err => console.error('Error fetching events:', err));
@@ -54,7 +54,7 @@ const TopAnnouncements = () => {
           {renderTitle(e.title)} {e.date && `(${e.date})`}
           {e.file_path && (
             <a 
-              href={`https://null-e3uj.onrender.com${e.file_path}`} 
+              href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${e.file_path}`} 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}

@@ -56,7 +56,12 @@ router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
 
   try {
     const [rows] = await pool.query('SELECT * FROM documents WHERE document_key = ?', [req.params.key]);
-    if (rows.length === 0) return res.status(404).json({ error: 'System document key not found.' });
+    if (rows.length === 0) {
+      if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(404).json({ error: 'System document key not found.' });
+    }
     
     let doc = rows[0];
 
@@ -86,6 +91,9 @@ router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
     res.json({ message: 'Document replaced successfully', filePath });
   } catch (err) {
     console.error('Error replacing document:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error replacing document' });
   }
 });

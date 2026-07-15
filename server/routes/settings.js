@@ -21,28 +21,32 @@ router.get('/', async (req, res) => {
 
 // Update multiple settings (Admin only)
 router.put('/', verifyAdmin, async (req, res) => {
+  const connection = await pool.getConnection();
   try {
     const updates = req.body;
-    
-    // We expect req.body to be an object: { 'welcome_title': '...', 'contact_email': '...' }
     const keys = Object.keys(updates);
     if (keys.length === 0) return res.json({ success: true });
 
-    const promises = keys.map(key => {
-      return pool.query(
+    await connection.beginTransaction();
+
+    for (const key of keys) {
+      await connection.query(
         'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
         [key, updates[key], updates[key]]
       );
-    });
+    }
 
-    await Promise.all(promises);
+    await connection.commit();
 
     await logActivity(req.admin, 'Settings', 'Update', 'Updated system settings');
 
     res.json({ success: true, message: 'Settings updated successfully' });
   } catch (error) {
+    await connection.rollback();
     console.error('Error updating settings:', error);
     res.status(500).json({ error: 'Failed to update settings' });
+  } finally {
+    connection.release();
   }
 });
 

@@ -1,0 +1,1194 @@
+﻿/**
+ * Applications Routes â€” CRUD for student admission applications
+ */
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
+
+// GET /api/applications â€” List all applications
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM applications ORDER BY id DESC');
+    res.json({ applications: rows });
+  } catch (err) {
+    console.error('Error fetching applications:', err);
+    res.status(500).json({ error: 'Server error fetching applications' });
+  }
+});
+
+// GET /api/applications/:id â€” Get single application
+router.get('/:id', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM applications WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Application not found.' });
+    res.json({ application: rows[0] });
+  } catch (err) {
+    console.error('Error fetching application:', err);
+    res.status(500).json({ error: 'Server error fetching application' });
+  }
+});
+
+// POST /api/applications â€” Submit a new application (public)
+router.post('/', async (req, res) => {
+  try {
+    const { name, course } = req.body;
+    if (!name || !course) {
+      return res.status(400).json({ error: 'Name and course are required.' });
+    }
+    const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    await pool.query(
+      'INSERT INTO applications (name, course, date, status) VALUES (?, ?, ?, ?)',
+      [name, course, date, 'Under Review']
+    );
+    
+    // Pass null for admin since this is public
+    await logActivity(null, 'Admissions', 'Create', `New application submitted by ${name}`);
+    
+    res.json({ message: 'Application submitted successfully' });
+  } catch (err) {
+    console.error('Error submitting application:', err);
+    res.status(500).json({ error: 'Server error submitting application' });
+  }
+});
+
+// PUT /api/applications/:id/status â€” Update application status
+router.put('/:id/status', authMiddleware, async (req, res) => {
+  try {
+    const { status } = req.body;
+    
+    // Check if application exists
+    const [rows] = await pool.query('SELECT * FROM applications WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Application not found.' });
+
+    // Update status
+    await pool.query('UPDATE applications SET status = ? WHERE id = ?', [status, req.params.id]);
+    
+    // Fetch updated app
+    const [updatedRows] = await pool.query('SELECT * FROM applications WHERE id = ?', [req.params.id]);
+
+    await logActivity(req.admin, 'Admissions', 'Update', `Updated application status for ${rows[0].name} to ${status}`);
+
+    res.json({ message: 'Status updated', application: updatedRows[0] });
+  } catch (err) {
+    console.error('Error updating application status:', err);
+    res.status(500).json({ error: 'Server error updating status' });
+  }
+});
+
+module.exports = router;
+/**
+ * Auth Routes â€” Login
+ */
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const pool = require('../config/db');
+
+// POST /api/auth/login
+router.post('/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required.' });
+    }
+
+    // Find admin user in MySQL
+    const [rows] = await pool.query('SELECT * FROM admins WHERE username = ?', [username]);
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+    const admin = rows[0];
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials.' });
+    }
+
+    // Parse permissions
+    let permissions = [];
+    try {
+      permissions = JSON.parse(admin.permissions || '[]');
+    } catch (e) {
+      permissions = [];
+    }
+
+    // Generate JWT token (expires in 24 hours)
+    const token = jwt.sign(
+      {
+        id: admin.id,
+        username: admin.username,
+        name: admin.name,
+        role: admin.role || 'editor',
+        permissions
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Login successful',
+      token,
+      admin: {
+        id: admin.id,
+        username: admin.username,
+        name: admin.name,
+        role: admin.role || 'editor',
+        permissions
+      },
+    });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error during login.' });
+  }
+});
+
+module.exports = router;
+/**
+ * Contact & Inquiry Routes â€” Handle public contact forms
+ */
+const express = require('express');
+const router = express.Router();
+const pool = require('../config/db');
+const authMiddleware = require('../middleware/auth');
+
+// POST /api/contact â€” Submit a new contact inquiry (public)
+router.post('/', async (req, res) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required.' });
+    }
+    const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    await pool.query(
+      'INSERT INTO contact_submissions (name, email, phone, subject, message, date, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [name, email, phone, subject, message, date, 'New']
+    );
+    
+    res.json({ message: 'Inquiry submitted successfully' });
+  } catch (err) {
+    console.error('Error submitting contact form:', err);
+    res.status(500).json({ error: 'Server error submitting inquiry' });
+  }
+});
+
+// GET /api/contact â€” List all contact inquiries (admin)
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM contact_submissions ORDER BY id DESC');
+    res.json({ inquiries: rows });
+  } catch (err) {
+    console.error('Error fetching inquiries:', err);
+    res.status(500).json({ error: 'Server error fetching inquiries' });
+  }
+});
+
+// PUT /api/contact/:id/status â€” Update status
+router.put('/:id/status', authMiddleware, async (req, res) => {
+  try {
+    const { status } = req.body;
+    await pool.query('UPDATE contact_submissions SET status = ? WHERE id = ?', [status, req.params.id]);
+    res.json({ message: 'Status updated' });
+  } catch (err) {
+    console.error('Error updating status:', err);
+    res.status(500).json({ error: 'Server error updating status' });
+  }
+});
+
+module.exports = router;
+/**
+ * Dashboard Routes â€” Aggregated stats for the admin overview
+ */
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+
+// GET /api/dashboard â€” Get all dashboard stats
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    // 1. Fetch recent activity from the activity_log table
+    const [recentActivityRows] = await pool.query(
+      'SELECT id, admin_name, module, action, description, timestamp FROM activity_log ORDER BY timestamp DESC LIMIT 10'
+    );
+    
+    // Map to a nice format for the frontend
+    const recentActivity = recentActivityRows.map(row => ({
+      id: row.id,
+      module: row.module,
+      action: row.action,
+      description: row.description,
+      user: row.admin_name,
+      // Format as ISO string so frontend can format it nicely
+      date: row.timestamp,
+      status: row.action // frontend uses status for coloring
+    }));
+
+    // 2. Fetch Counts
+    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
+    const [[pendingAppCount]] = await pool.query('SELECT COUNT(*) as count FROM applications WHERE status IN ("Under Review", "Missing Docs")');
+    const [[activeNoticeCount]] = await pool.query('SELECT COUNT(*) as count FROM notices');
+    const [[upcomingEventCount]] = await pool.query('SELECT COUNT(*) as count FROM events WHERE status = "Upcoming"');
+
+    res.json({
+      stats: {
+        totalVisitors: visitorCount ? visitorCount.total : 0,
+        pendingApplications: pendingAppCount.count,
+        activeNotices: activeNoticeCount.count,
+        upcomingEvents: upcomingEventCount.count,
+      },
+      recentActivity,
+    });
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    res.status(500).json({ error: 'Server error retrieving dashboard stats' });
+  }
+});
+
+module.exports = router;
+/**
+ * Documents Routes â€” Manage System Documents
+ */
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
+
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX files are allowed.'));
+    }
+  },
+});
+
+// GET /api/documents â€” List all system documents
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM documents ORDER BY category, name');
+    res.json({ documents: rows });
+  } catch (err) {
+    console.error('Error fetching documents:', err);
+    res.status(500).json({ error: 'Server error fetching documents' });
+  }
+});
+
+// PUT /api/documents/:key â€” Replace a specific system document
+router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+
+  try {
+    const [rows] = await pool.query('SELECT * FROM documents WHERE document_key = ?', [req.params.key]);
+    if (rows.length === 0) {
+      if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      return res.status(404).json({ error: 'System document key not found.' });
+    }
+    
+    let doc = rows[0];
+
+    // Optionally delete old file from local storage
+    if (doc.filePath) {
+      const oldPath = path.join(uploadsDir, path.basename(doc.filePath));
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
+    const fileSizeKB = (req.file.size / 1024).toFixed(0);
+    const sizeLabel = req.file.size > 1024 * 1024
+      ? (req.file.size / (1024 * 1024)).toFixed(1) + ' MB'
+      : fileSizeKB + ' KB';
+
+    // We do NOT update the `name` or `category` because they are fixed system definitions.
+    // We only update the file references.
+    const filePath = '/uploads/' + req.file.filename;
+    const updatedAt = new Date().toISOString().split('T')[0];
+
+    await pool.query(
+      'UPDATE documents SET size=?, updatedAt=?, filePath=? WHERE document_key=?',
+      [sizeLabel, updatedAt, filePath, req.params.key]
+    );
+
+    await logActivity(req.admin, 'Documents', 'Update', `Replaced document: ${doc.name}`);
+
+    res.json({ message: 'Document replaced successfully', filePath });
+  } catch (err) {
+    console.error('Error replacing document:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    res.status(500).json({ error: 'Server error replacing document' });
+  }
+});
+
+module.exports = router;
+/**
+ * Events Routes â€” Manage Events items with optional file uploads
+ */
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
+
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+});
+
+// GET /api/events â€” Fetch all events
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM events ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching events:', err);
+    res.status(500).json({ error: 'Server error fetching events' });
+  }
+});
+
+// POST /api/events â€” Add a new event
+router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
+  const { title, date, status, category } = req.body;
+  const filePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+  if (!title) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO events (title, date, status, category, file_path) VALUES (?, ?, ?, ?, ?)',
+      [title, date || new Date().toISOString().split('T')[0], status || 'Upcoming', category || 'Event', filePath]
+    );
+    await logActivity(req.admin, 'Events', 'Create', `Added event: ${title}`);
+    res.status(201).json({ message: 'Event created successfully', id: result.insertId });
+  } catch (err) {
+    console.error('Error creating event:', err);
+    res.status(500).json({ error: 'Server error creating event' });
+  }
+});
+
+// PUT /api/events/:id â€” Update an event
+router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
+  const { id } = req.params;
+  const { title, date, status, category } = req.body;
+  
+  try {
+    // If a new file is uploaded, update file_path, otherwise keep old
+    let query = 'UPDATE events SET title = ?, date = ?, status = ?, category = ? WHERE id = ?';
+    let params = [title, date, status, category, id];
+
+    if (req.file) {
+      const filePath = `/uploads/${req.file.filename}`;
+      query = 'UPDATE events SET title = ?, date = ?, status = ?, category = ?, file_path = ? WHERE id = ?';
+      params = [title, date, status, category, filePath, id];
+    }
+
+    await pool.query(query, params);
+    await logActivity(req.admin, 'Events', 'Update', `Updated event: ${title}`);
+    res.json({ message: 'Event updated successfully' });
+  } catch (err) {
+    console.error('Error updating event:', err);
+    res.status(500).json({ error: 'Server error updating event' });
+  }
+});
+
+// DELETE /api/events/:id â€” Delete an event
+router.delete('/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Optionally delete the physical file here if needed (skipping for simplicity/archival)
+    await pool.query('DELETE FROM events WHERE id = ?', [id]);
+    await logActivity(req.admin, 'Events', 'Delete', `Deleted event ID: ${id}`);
+    res.json({ message: 'Event deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting event:', err);
+    res.status(500).json({ error: 'Server error deleting event' });
+  }
+});
+
+// POST /api/events/register â€” Register for an event
+router.post('/register', async (req, res) => {
+  const { event_id, name, email, phone, student_id } = req.body;
+  if (!event_id || !name || !email) {
+    return res.status(400).json({ error: 'Event ID, Name, and Email are required.' });
+  }
+  const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  
+  try {
+    await pool.query(
+      'INSERT INTO event_registrations (event_id, name, email, phone, student_id, date) VALUES (?, ?, ?, ?, ?, ?)',
+      [event_id, name, email, phone, student_id, date]
+    );
+    res.json({ message: 'Successfully registered for the event' });
+  } catch (err) {
+    console.error('Error registering for event:', err);
+    res.status(500).json({ error: 'Server error registering for event' });
+  }
+});
+
+// GET /api/events/registrations/:id â€” Get registrations for an event (admin)
+router.get('/registrations/:id', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM event_registrations WHERE event_id = ? ORDER BY id DESC', [req.params.id]);
+    res.json({ registrations: rows });
+  } catch (err) {
+    console.error('Error fetching registrations:', err);
+    res.status(500).json({ error: 'Server error fetching registrations' });
+  }
+});
+
+module.exports = router;
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
+
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'faculty');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+});
+
+// Helper to get faculty with their departments
+const fetchFacultyWithDepartments = async (whereClause = '', params = []) => {
+  const [facultyRows] = await pool.query(`SELECT * FROM faculty ${whereClause}`, params);
+  
+  if (facultyRows.length === 0) return [];
+
+  const facultyIds = facultyRows.map(f => f.id);
+  const [deptRows] = await pool.query('SELECT * FROM faculty_departments WHERE faculty_id IN (?)', [facultyIds]);
+
+  return facultyRows.map(f => ({
+    ...f,
+    departments: deptRows.filter(d => d.faculty_id === f.id).map(d => d.department_slug)
+  }));
+};
+
+// GET /api/faculty â€” Fetch all faculty
+router.get('/', async (req, res) => {
+  try {
+    const data = await fetchFacultyWithDepartments('ORDER BY name ASC');
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching faculty:', err);
+    res.status(500).json({ error: 'Server error fetching faculty' });
+  }
+});
+
+// GET /api/faculty/department/:slug â€” Fetch faculty by department
+router.get('/department/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const [relations] = await pool.query('SELECT faculty_id FROM faculty_departments WHERE department_slug = ?', [slug]);
+    
+    if (relations.length === 0) return res.json([]);
+    
+    const ids = relations.map(r => r.faculty_id);
+    const data = await fetchFacultyWithDepartments('WHERE id IN (?) ORDER BY name ASC', [ids]);
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching department faculty:', err);
+    res.status(500).json({ error: 'Server error fetching department faculty' });
+  }
+});
+
+// GET /api/faculty/:slug â€” Fetch single faculty by slug
+router.get('/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const data = await fetchFacultyWithDepartments('WHERE slug = ?', [slug]);
+    if (data.length === 0) return res.status(404).json({ error: 'Faculty not found' });
+    res.json(data[0]);
+  } catch (err) {
+    console.error('Error fetching faculty details:', err);
+    res.status(500).json({ error: 'Server error fetching faculty details' });
+  }
+});
+
+// POST /api/faculty â€” Add new faculty (Admin)
+router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+  const { name, slug, designation, qualification, email, area_of_interest, vidwan_link, departments } = req.body;
+  const imagePath = req.file ? `/uploads/faculty/${req.file.filename}` : null;
+  
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO faculty (slug, name, designation, qualification, email, area_of_interest, vidwan_link, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [slug, name, designation, qualification, email, area_of_interest, vidwan_link, imagePath]
+    );
+
+    const facultyId = result.insertId;
+    
+    if (departments) {
+      const depts = JSON.parse(departments);
+      for (const deptSlug of depts) {
+        await pool.query('INSERT INTO faculty_departments (faculty_id, department_slug) VALUES (?, ?)', [facultyId, deptSlug]);
+      }
+    }
+
+    await logActivity(req.admin, 'Faculty', 'Create', `Added faculty member: ${name}`);
+
+    res.status(201).json({ message: 'Faculty created successfully', id: facultyId });
+  } catch (err) {
+    console.error('Error creating faculty:', err);
+    res.status(500).json({ error: 'Server error creating faculty' });
+  }
+});
+
+// PUT /api/faculty/:id â€” Update faculty (Admin)
+router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const { name, slug, designation, qualification, email, area_of_interest, vidwan_link, departments } = req.body;
+  
+  try {
+    let query = 'UPDATE faculty SET slug=?, name=?, designation=?, qualification=?, email=?, area_of_interest=?, vidwan_link=? WHERE id=?';
+    let params = [slug, name, designation, qualification, email, area_of_interest, vidwan_link, id];
+
+    if (req.file) {
+      const imagePath = `/uploads/faculty/${req.file.filename}`;
+      query = 'UPDATE faculty SET slug=?, name=?, designation=?, qualification=?, email=?, area_of_interest=?, vidwan_link=?, image_path=? WHERE id=?';
+      params = [slug, name, designation, qualification, email, area_of_interest, vidwan_link, imagePath, id];
+    }
+
+    await pool.query(query, params);
+
+    // Update departments
+    if (departments) {
+      const depts = JSON.parse(departments);
+      await pool.query('DELETE FROM faculty_departments WHERE faculty_id = ?', [id]);
+      for (const deptSlug of depts) {
+        await pool.query('INSERT INTO faculty_departments (faculty_id, department_slug) VALUES (?, ?)', [id, deptSlug]);
+      }
+    }
+
+    await logActivity(req.admin, 'Faculty', 'Update', `Updated faculty member: ${name}`);
+
+    res.json({ message: 'Faculty updated successfully' });
+  } catch (err) {
+    console.error('Error updating faculty:', err);
+    res.status(500).json({ error: 'Server error updating faculty' });
+  }
+});
+
+// DELETE /api/faculty/:id â€” Delete faculty (Admin)
+router.delete('/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query('DELETE FROM faculty WHERE id = ?', [id]);
+    await logActivity(req.admin, 'Faculty', 'Delete', `Deleted faculty ID: ${id}`);
+    res.json({ message: 'Faculty deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting faculty:', err);
+    res.status(500).json({ error: 'Server error deleting faculty' });
+  }
+});
+
+module.exports = router;
+/**
+ * Gallery Routes â€” Manage Image Gallery
+ */
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
+
+// Ensure uploads/gallery directory exists
+const galleryDir = path.join(__dirname, '..', 'uploads', 'gallery');
+if (!fs.existsSync(galleryDir)) {
+  fs.mkdirSync(galleryDir, { recursive: true });
+}
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, galleryDir),
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max for images
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only JPG, JPEG, PNG, WEBP, and GIF images are allowed.'));
+    }
+  },
+});
+
+// GET /api/gallery â€” List all gallery images
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM gallery ORDER BY createdAt DESC');
+    res.json({ images: rows });
+  } catch (err) {
+    console.error('Error fetching gallery:', err);
+    res.status(500).json({ error: 'Server error fetching gallery images' });
+  }
+});
+
+// POST /api/gallery â€” Upload a new image
+router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No image uploaded.' });
+  }
+
+  const { title, category } = req.body;
+  if (!title) {
+    // If we fail, delete the just-uploaded file
+    fs.unlinkSync(req.file.path);
+    return res.status(400).json({ error: 'Image title is required.' });
+  }
+
+  try {
+    const imagePath = '/uploads/gallery/' + req.file.filename;
+    const cat = category || 'general';
+
+    const [result] = await pool.query(
+      'INSERT INTO gallery (title, category, imagePath) VALUES (?, ?, ?)',
+      [title, cat, imagePath]
+    );
+
+    await logActivity(req.admin, 'Gallery', 'Create', `Uploaded image: ${title}`);
+
+    res.json({ message: 'Image uploaded successfully', id: result.insertId });
+  } catch (err) {
+    console.error('Error uploading image:', err);
+    if (req.file) fs.unlinkSync(req.file.path);
+    res.status(500).json({ error: 'Server error saving image' });
+  }
+});
+
+// PUT /api/gallery/:id â€” Update image title and category
+router.put('/:id', authMiddleware, async (req, res) => {
+  const { title, category } = req.body;
+  if (!title) {
+    return res.status(400).json({ error: 'Image title is required.' });
+  }
+
+  try {
+    const cat = category || 'general';
+    await pool.query(
+      'UPDATE gallery SET title = ?, category = ? WHERE id = ?',
+      [title, cat, req.params.id]
+    );
+    await logActivity(req.admin, 'Gallery', 'Update', `Updated image: ${title}`);
+    res.json({ message: 'Image updated successfully' });
+  } catch (err) {
+    console.error('Error updating image:', err);
+    res.status(500).json({ error: 'Server error updating image' });
+  }
+});
+
+// DELETE /api/gallery/:id â€” Delete an image
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM gallery WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Image not found.' });
+    
+    let img = rows[0];
+
+    // Delete file from local storage
+    if (img.imagePath) {
+      const fileName = path.basename(img.imagePath);
+      const localPath = path.join(galleryDir, fileName);
+      if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
+    }
+
+    await pool.query('DELETE FROM gallery WHERE id = ?', [req.params.id]);
+
+    await logActivity(req.admin, 'Gallery', 'Delete', `Deleted image: ${img.title}`);
+
+    res.json({ message: 'Image deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting image:', err);
+    res.status(500).json({ error: 'Server error deleting image' });
+  }
+});
+
+module.exports = router;
+const express = require('express');
+const router = express.Router();
+const pool = require('../config/db');
+const verifyAdmin = require('../middleware/auth');
+const { logActivity } = require('../utils/logger');
+
+// Helper to build tree
+const buildMenuTree = (items, parentId = null) => {
+  return items
+    .filter(item => item.parent_id === parentId)
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map(item => {
+      const submenu = buildMenuTree(items, item.id);
+      return {
+        id: item.id,
+        name: item.name,
+        href: item.href,
+        external: !!item.is_external,
+        submenu: submenu.length > 0 ? submenu : null
+      };
+    });
+};
+
+// Get navigation menus (public)
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM navigation_menus ORDER BY sort_order ASC');
+    const menuTree = buildMenuTree(rows);
+    res.json(menuTree);
+  } catch (error) {
+    console.error('Error fetching menus:', error);
+    res.status(500).json({ error: 'Failed to fetch menus' });
+  }
+});
+
+// Update entire navigation structure (Admin only)
+router.put('/', verifyAdmin, async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const { menus } = req.body; // Expects the full tree structure
+    
+    // Clear existing menus
+    await connection.query('DELETE FROM navigation_menus');
+    
+    // Helper to insert tree recursively
+    const insertMenu = async (items, parentId = null) => {
+      let order = 1;
+      for (const item of items) {
+        const isExternal = item.external ? 1 : 0;
+        const [result] = await connection.execute(
+          'INSERT INTO navigation_menus (parent_id, name, href, is_external, sort_order) VALUES (?, ?, ?, ?, ?)',
+          [parentId, item.name, item.href || '', isExternal, order]
+        );
+        const newId = result.insertId;
+        
+        if (item.submenu && Array.isArray(item.submenu) && item.submenu.length > 0) {
+          await insertMenu(item.submenu, newId);
+        }
+        order++;
+      }
+    };
+
+    if (menus && Array.isArray(menus)) {
+      await insertMenu(menus);
+    }
+
+    await connection.commit();
+
+    await logActivity(req.admin, 'Menus', 'Update', 'Updated navigation menus layout');
+
+    res.json({ success: true, message: 'Menus updated successfully' });
+  } catch (error) {
+    await connection.rollback();
+    console.error('Error updating menus:', error);
+    res.status(500).json({ error: 'Failed to update menus' });
+  } finally {
+    connection.release();
+  }
+});
+
+module.exports = router;
+/**
+ * Notices Routes â€” Manage Notice Board items with optional file uploads
+ */
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+const { logActivity } = require('../utils/logger');
+
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+});
+
+// GET /api/notices â€” Fetch published notices (public)
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM notices WHERE publish_date IS NULL OR publish_date <= NOW() ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching notices:', err);
+    res.status(500).json({ error: 'Server error fetching notices' });
+  }
+});
+
+// GET /api/notices/admin â€” Fetch all notices (admin)
+router.get('/admin', authMiddleware, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM notices ORDER BY id DESC');
+    res.json(rows);
+  } catch (err) {
+    console.error('Error fetching notices:', err);
+    res.status(500).json({ error: 'Server error fetching notices' });
+  }
+});
+
+// POST /api/notices â€” Add a new notice
+router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
+  const { title, date, status, category, publish_date } = req.body;
+  const filePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+  if (!title) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  try {
+    const pubDate = publish_date ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') : null;
+    const [result] = await pool.query(
+      'INSERT INTO notices (title, date, status, category, file_path, publish_date) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, date || new Date().toISOString().split('T')[0], status || 'Active', category || 'Notice', filePath, pubDate]
+    );
+    await logActivity(req.admin, 'Notices', 'Create', `Added notice: ${title}`);
+    res.status(201).json({ message: 'Notice created successfully', id: result.insertId });
+  } catch (err) {
+    console.error('Error creating notice:', err);
+    res.status(500).json({ error: 'Server error creating notice' });
+  }
+});
+
+// PUT /api/notices/:id â€” Update a notice
+router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
+  const { id } = req.params;
+  const { title, date, status, category, publish_date } = req.body;
+  
+  try {
+    const pubDate = publish_date ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') : null;
+    // If a new file is uploaded, update file_path, otherwise keep old
+    let query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ? WHERE id = ?';
+    let params = [title, date, status, category, pubDate, id];
+
+    if (req.file) {
+      const filePath = `/uploads/${req.file.filename}`;
+      query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ?, file_path = ? WHERE id = ?';
+      params = [title, date, status, category, pubDate, filePath, id];
+    }
+
+    await pool.query(query, params);
+    await logActivity(req.admin, 'Notices', 'Update', `Updated notice: ${title}`);
+    res.json({ message: 'Notice updated successfully' });
+  } catch (err) {
+    console.error('Error updating notice:', err);
+    res.status(500).json({ error: 'Server error updating notice' });
+  }
+});
+
+// DELETE /api/notices/:id â€” Delete a notice
+router.delete('/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Optionally delete the physical file here if needed (skipping for simplicity/archival)
+    await pool.query('DELETE FROM notices WHERE id = ?', [id]);
+    await logActivity(req.admin, 'Notices', 'Delete', `Deleted notice ID: ${id}`);
+    res.json({ message: 'Notice deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting notice:', err);
+    res.status(500).json({ error: 'Server error deleting notice' });
+  }
+});
+
+module.exports = router;
+const express = require('express');
+const router = express.Router();
+const pool = require('../config/db');
+const verifyAdmin = require('../middleware/auth');
+const { logActivity } = require('../utils/logger');
+
+// Get all settings
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT setting_key, setting_value FROM site_settings');
+    const settingsObj = {};
+    rows.forEach(row => {
+      settingsObj[row.setting_key] = row.setting_value;
+    });
+    res.json(settingsObj);
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    res.status(500).json({ error: 'Failed to fetch settings' });
+  }
+});
+
+// Update multiple settings (Admin only)
+router.put('/', verifyAdmin, async (req, res) => {
+  try {
+    const updates = req.body;
+    
+    // We expect req.body to be an object: { 'welcome_title': '...', 'contact_email': '...' }
+    const keys = Object.keys(updates);
+    if (keys.length === 0) return res.json({ success: true });
+
+    const promises = keys.map(key => {
+      return pool.query(
+        'INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
+        [key, updates[key], updates[key]]
+      );
+    });
+
+    await Promise.all(promises);
+
+    await logActivity(req.admin, 'Settings', 'Update', 'Updated system settings');
+
+    res.json({ success: true, message: 'Settings updated successfully' });
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    res.status(500).json({ error: 'Failed to update settings' });
+  }
+});
+
+module.exports = router;
+/**
+ * User Management Routes â€” CRUD for admin users
+ * Only accessible by super_admin role.
+ */
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const pool = require('../config/db');
+const authMiddleware = require('../middleware/auth');
+const { requireRole } = require('../middleware/auth');
+const { logActivity } = require('../utils/logger');
+
+// All routes require auth + super_admin role
+router.use(authMiddleware);
+router.use(requireRole('super_admin'));
+
+// GET /api/users â€” List all admin users
+router.get('/', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT id, username, name, role, permissions FROM admins ORDER BY id ASC');
+    const users = rows.map(row => ({
+      ...row,
+      permissions: (() => {
+        try { return JSON.parse(row.permissions || '[]'); }
+        catch { return []; }
+      })()
+    }));
+    res.json({ users });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+// POST /api/users â€” Create a new admin user
+router.post('/', async (req, res) => {
+  try {
+    const { username, password, name, role, permissions } = req.body;
+
+    if (!username || !password || !name) {
+      return res.status(400).json({ error: 'Username, password, and name are required.' });
+    }
+
+    // Check if username already exists
+    const [existing] = await pool.query('SELECT id FROM admins WHERE username = ?', [username]);
+    if (existing.length > 0) {
+      return res.status(409).json({ error: 'Username already exists.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const userRole = role || 'editor';
+    const userPermissions = JSON.stringify(permissions || []);
+
+    const [result] = await pool.execute(
+      'INSERT INTO admins (username, password, name, role, permissions) VALUES (?, ?, ?, ?, ?)',
+      [username, hashedPassword, name, userRole, userPermissions]
+    );
+
+    await logActivity(req.admin, 'Users', 'Create', `Created admin user: ${username}`);
+
+    res.status(201).json({
+      success: true,
+      message: 'User created successfully',
+      user: { id: result.insertId, username, name, role: userRole, permissions: permissions || [] }
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+
+// PUT /api/users/:id â€” Update a user's info (role, permissions, name, password)
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, role, permissions, password } = req.body;
+
+    // Prevent changing your own role away from super_admin
+    if (parseInt(id) === req.admin.id && role && role !== 'super_admin') {
+      return res.status(400).json({ error: 'You cannot demote yourself.' });
+    }
+
+    const updates = [];
+    const values = [];
+
+    if (name) { updates.push('name = ?'); values.push(name); }
+    if (role) { updates.push('role = ?'); values.push(role); }
+    if (permissions) { updates.push('permissions = ?'); values.push(JSON.stringify(permissions)); }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updates.push('password = ?');
+      values.push(hashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No fields to update.' });
+    }
+
+    values.push(id);
+    await pool.execute(`UPDATE admins SET ${updates.join(', ')} WHERE id = ?`, values);
+
+    await logActivity(req.admin, 'Users', 'Update', `Updated admin user ID: ${id}`);
+
+    res.json({ success: true, message: 'User updated successfully' });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// DELETE /api/users/:id â€” Delete a user
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Cannot delete yourself
+    if (parseInt(id) === req.admin.id) {
+      return res.status(400).json({ error: 'You cannot delete your own account.' });
+    }
+
+    await pool.execute('DELETE FROM admins WHERE id = ?', [id]);
+    
+    await logActivity(req.admin, 'Users', 'Delete', `Deleted admin user ID: ${id}`);
+
+    res.json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
+
+module.exports = router;
+/**
+ * Visitors Routes â€” Track and retrieve visitor analytics
+ */
+const express = require('express');
+const router = express.Router();
+const authMiddleware = require('../middleware/auth');
+const pool = require('../config/db');
+
+// GET /api/visitors â€” Get visitor stats (admin only)
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
+    res.json({ visitors: { total: visitorCount ? visitorCount.total : 0, monthly: [] } });
+  } catch (err) {
+    console.error('Error fetching visitors:', err);
+    res.status(500).json({ error: 'Server error fetching visitors' });
+  }
+});
+
+// POST /api/visitors/hit â€” Increment visitor count (public, called from frontend)
+router.post('/hit', async (req, res) => {
+  try {
+    await pool.query('UPDATE visitors SET total = total + 1 WHERE id = 1');
+    const [[visitorCount]] = await pool.query('SELECT total FROM visitors WHERE id = 1');
+    res.json({ total: visitorCount.total });
+  } catch (err) {
+    console.error('Error updating visitors:', err);
+    res.status(500).json({ error: 'Server error updating visitors' });
+  }
+});
+
+module.exports = router;

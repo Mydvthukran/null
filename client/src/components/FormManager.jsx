@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/adminDashboard.css';
 
-const API_BASE = 'https://null-e3uj.onrender.com/api';
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const FormManager = ({ token, title = 'Form Submissions (Contact Us)' }) => {
   const [inquiries, setInquiries] = useState([]);

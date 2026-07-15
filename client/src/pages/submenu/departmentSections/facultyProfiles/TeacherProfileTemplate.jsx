@@ -50,7 +50,7 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
               <header className="teacher-profile-header">
                 <div className="teacher-profile-photo-wrap">
                   {profile.image_path ? (
-                    <img src={`https://null-e3uj.onrender.com${profile.image_path}`} alt={profile.name} className="teacher-profile-photo" loading="eager" />
+                    <img src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${profile.image_path}`} alt={profile.name} className="teacher-profile-photo" loading="eager" />
                   ) : (
                     <div className="teacher-profile-no-file">No photo</div>
                   )}

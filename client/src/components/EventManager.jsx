@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../css/adminDashboard.css';
 
-const API_BASE = 'https://null-e3uj.onrender.com/api';
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const EventManager = ({ token }) => {
   const [events, setEvents] = useState([]);
@@ -113,7 +113,7 @@ const EventManager = ({ token }) => {
                 <td>{e.date}</td>
                 <td><span className={`status-badge ${e.status === 'Upcoming' ? 'status-pending' : 'status-active'}`}>{e.status}</span></td>
                 <td>
-                  {e.file_path ? <a href={`https://null-e3uj.onrender.com${e.file_path}`} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
+                  {e.file_path ? <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${e.file_path}`} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
                 </td>
                 <td>
                   <button onClick={() => handleViewRegistrations(e)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem', color: '#10b981', borderColor: '#10b981' }}>Registrations</button>

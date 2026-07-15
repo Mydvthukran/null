@@ -7,7 +7,7 @@ const BannerCarousel = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://null-e3uj.onrender.com/api/gallery')
+    fetch(import.meta.env.VITE_API_URL + '/gallery')
       .then(res => res.json())
       .then(data => {
         // Only use images tagged as "Home Carousel"
@@ -62,7 +62,7 @@ const BannerCarousel = () => {
                     aria-hidden={index !== activeIndex}
                   >
                     <img
-                      src={`https://null-e3uj.onrender.com${banner.imagePath}`}
+                      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${banner.imagePath}`}
                       alt={banner.title}
                       loading="lazy"
                     />

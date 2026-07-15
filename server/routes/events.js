@@ -9,6 +9,13 @@ const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
+const rateLimit = require('express-rate-limit');
+
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 requests per IP
+  message: { error: 'Too many registrations from this IP, please try again later.' }
+});
 
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
@@ -45,6 +52,9 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
   const filePath = req.file ? `/uploads/${req.file.filename}` : null;
 
   if (!title) {
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     return res.status(400).json({ error: 'Title is required' });
   }
 
@@ -57,6 +67,9 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
     res.status(201).json({ message: 'Event created successfully', id: result.insertId });
   } catch (err) {
     console.error('Error creating event:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error creating event' });
   }
 });
@@ -73,6 +86,13 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
 
     if (req.file) {
       const filePath = `/uploads/${req.file.filename}`;
+      
+      const [oldRows] = await pool.query('SELECT file_path FROM events WHERE id = ?', [id]);
+      if (oldRows.length > 0 && oldRows[0].file_path) {
+        const oldFile = path.join(__dirname, '..', oldRows[0].file_path);
+        if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+      }
+
       query = 'UPDATE events SET title = ?, date = ?, status = ?, category = ?, file_path = ? WHERE id = ?';
       params = [title, date, status, category, filePath, id];
     }
@@ -82,6 +102,9 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
     res.json({ message: 'Event updated successfully' });
   } catch (err) {
     console.error('Error updating event:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error updating event' });
   }
 });
@@ -90,7 +113,12 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
-    // Optionally delete the physical file here if needed (skipping for simplicity/archival)
+    const [rows] = await pool.query('SELECT file_path FROM events WHERE id = ?', [id]);
+    if (rows.length > 0 && rows[0].file_path) {
+      const file = path.join(__dirname, '..', rows[0].file_path);
+      if (fs.existsSync(file)) fs.unlinkSync(file);
+    }
+    
     await pool.query('DELETE FROM events WHERE id = ?', [id]);
     await logActivity(req.admin, 'Events', 'Delete', `Deleted event ID: ${id}`);
     res.json({ message: 'Event deleted successfully' });
@@ -101,7 +129,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 });
 
 // POST /api/events/register — Register for an event
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimiter, async (req, res) => {
   const { event_id, name, email, phone, student_id } = req.body;
   if (!event_id || !name || !email) {
     return res.status(400).json({ error: 'Event ID, Name, and Email are required.' });

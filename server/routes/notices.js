@@ -31,7 +31,7 @@ const upload = multer({
 // GET /api/notices — Fetch published notices (public)
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM notices WHERE publish_date IS NULL OR publish_date <= NOW() ORDER BY id DESC');
+    const [rows] = await pool.query('SELECT * FROM notices WHERE publish_date IS NULL OR publish_date <= UTC_TIMESTAMP() ORDER BY id DESC');
     res.json(rows);
   } catch (err) {
     console.error('Error fetching notices:', err);
@@ -56,6 +56,9 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
   const filePath = req.file ? `/uploads/${req.file.filename}` : null;
 
   if (!title) {
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     return res.status(400).json({ error: 'Title is required' });
   }
 
@@ -69,6 +72,9 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
     res.status(201).json({ message: 'Notice created successfully', id: result.insertId });
   } catch (err) {
     console.error('Error creating notice:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error creating notice' });
   }
 });
@@ -86,6 +92,13 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
 
     if (req.file) {
       const filePath = `/uploads/${req.file.filename}`;
+      
+      const [oldRows] = await pool.query('SELECT file_path FROM notices WHERE id = ?', [id]);
+      if (oldRows.length > 0 && oldRows[0].file_path) {
+        const oldFile = path.join(__dirname, '..', oldRows[0].file_path);
+        if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+      }
+
       query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ?, file_path = ? WHERE id = ?';
       params = [title, date, status, category, pubDate, filePath, id];
     }
@@ -95,6 +108,9 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
     res.json({ message: 'Notice updated successfully' });
   } catch (err) {
     console.error('Error updating notice:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error updating notice' });
   }
 });
@@ -103,7 +119,12 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
-    // Optionally delete the physical file here if needed (skipping for simplicity/archival)
+    const [rows] = await pool.query('SELECT file_path FROM notices WHERE id = ?', [id]);
+    if (rows.length > 0 && rows[0].file_path) {
+      const file = path.join(__dirname, '..', rows[0].file_path);
+      if (fs.existsSync(file)) fs.unlinkSync(file);
+    }
+    
     await pool.query('DELETE FROM notices WHERE id = ?', [id]);
     await logActivity(req.admin, 'Notices', 'Delete', `Deleted notice ID: ${id}`);
     res.json({ message: 'Notice deleted successfully' });

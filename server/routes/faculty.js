@@ -95,7 +95,13 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     const facultyId = result.insertId;
     
     if (departments) {
-      const depts = JSON.parse(departments);
+      let depts = [];
+      try {
+        depts = JSON.parse(departments);
+      } catch (e) {
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+        return res.status(400).json({ error: 'Invalid departments format' });
+      }
       for (const deptSlug of depts) {
         await pool.query('INSERT INTO faculty_departments (faculty_id, department_slug) VALUES (?, ?)', [facultyId, deptSlug]);
       }
@@ -106,6 +112,9 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     res.status(201).json({ message: 'Faculty created successfully', id: facultyId });
   } catch (err) {
     console.error('Error creating faculty:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error creating faculty' });
   }
 });
@@ -121,6 +130,13 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
 
     if (req.file) {
       const imagePath = `/uploads/faculty/${req.file.filename}`;
+      
+      const [oldRows] = await pool.query('SELECT image_path FROM faculty WHERE id = ?', [id]);
+      if (oldRows.length > 0 && oldRows[0].image_path) {
+        const oldFile = path.join(__dirname, '..', oldRows[0].image_path);
+        if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+      }
+
       query = 'UPDATE faculty SET slug=?, name=?, designation=?, qualification=?, email=?, area_of_interest=?, vidwan_link=?, image_path=? WHERE id=?';
       params = [slug, name, designation, qualification, email, area_of_interest, vidwan_link, imagePath, id];
     }
@@ -129,7 +145,13 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
 
     // Update departments
     if (departments) {
-      const depts = JSON.parse(departments);
+      let depts = [];
+      try {
+        depts = JSON.parse(departments);
+      } catch (e) {
+        if (req.file && req.file.path && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+        return res.status(400).json({ error: 'Invalid departments format' });
+      }
       await pool.query('DELETE FROM faculty_departments WHERE faculty_id = ?', [id]);
       for (const deptSlug of depts) {
         await pool.query('INSERT INTO faculty_departments (faculty_id, department_slug) VALUES (?, ?)', [id, deptSlug]);
@@ -141,6 +163,9 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
     res.json({ message: 'Faculty updated successfully' });
   } catch (err) {
     console.error('Error updating faculty:', err);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     res.status(500).json({ error: 'Server error updating faculty' });
   }
 });
@@ -149,6 +174,12 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
 router.delete('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
+    const [rows] = await pool.query('SELECT image_path FROM faculty WHERE id = ?', [id]);
+    if (rows.length > 0 && rows[0].image_path) {
+      const file = path.join(__dirname, '..', rows[0].image_path);
+      if (fs.existsSync(file)) fs.unlinkSync(file);
+    }
+    
     await pool.query('DELETE FROM faculty WHERE id = ?', [id]);
     await logActivity(req.admin, 'Faculty', 'Delete', `Deleted faculty ID: ${id}`);
     res.json({ message: 'Faculty deleted successfully' });

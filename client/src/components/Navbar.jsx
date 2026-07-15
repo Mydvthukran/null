@@ -22,7 +22,7 @@ const Navbar = () => {
 
   useEffect(() => {
     // Fetch menus from database
-    fetch('https://null-e3uj.onrender.com/api/menus')
+    fetch(import.meta.env.VITE_API_URL + '/menus')
       .then(res => res.json())
       .then(data => {
         if (data && Array.isArray(data)) setNavItems(data);

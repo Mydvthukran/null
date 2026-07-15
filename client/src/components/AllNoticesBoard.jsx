@@ -5,7 +5,7 @@ const AllNoticesBoard = () => {
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
-    fetch('https://null-e3uj.onrender.com/api/notices')
+    fetch(import.meta.env.VITE_API_URL + '/notices')
       .then(res => res.json())
       .then(data => {
         // Filter out any that are 'Archived' if needed, or show all
@@ -33,7 +33,7 @@ const AllNoticesBoard = () => {
                 <p className="all-notice-date">Posted: {notice.date}</p>
                 <div className="all-notice-actions">
                   {notice.file_path ? (
-                    <a href={`https://null-e3uj.onrender.com${notice.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
+                    <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${notice.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
                       View Document
                     </a>
                   ) : (

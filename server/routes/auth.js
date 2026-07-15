@@ -6,9 +6,16 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
+const rateLimit = require('express-rate-limit');
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: { error: 'Too many login attempts from this IP, please try again after 15 minutes.' }
+});
 
 // POST /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -46,7 +53,7 @@ router.post('/login', async (req, res) => {
         role: admin.role || 'editor',
         permissions
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'fallback-secret-for-development-only',
       { expiresIn: '24h' }
     );
 

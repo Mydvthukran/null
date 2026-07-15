@@ -18,7 +18,7 @@ export const SettingsProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    fetch('https://null-e3uj.onrender.com/api/settings')
+    fetch(import.meta.env.VITE_API_URL + '/settings')
       .then(res => res.json())
       .then(data => {
         if (data && !data.error) {

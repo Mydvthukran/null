@@ -9,12 +9,12 @@ const Events = () => {
   const [regStatus, setRegStatus] = useState('');
 
   useEffect(() => {
-    fetch('https://null-e3uj.onrender.com/api/events')
+    fetch(import.meta.env.VITE_API_URL + '/events')
       .then(res => res.json())
       .then(data => setEvents(data))
       .catch(err => console.error('Error fetching events:', err));
 
-    fetch('https://null-e3uj.onrender.com/api/notices')
+    fetch(import.meta.env.VITE_API_URL + '/notices')
       .then(res => res.json())
       .then(data => setRecentUpdates(data.filter(n => n.status !== 'Archived').slice(0, 6)))
       .catch(err => console.error('Error fetching notices:', err));
@@ -23,7 +23,7 @@ const Events = () => {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://null-e3uj.onrender.com/api/events/register', {
+      const res = await fetch(import.meta.env.VITE_API_URL + '/events/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...regData, event_id: registeringEvent.id })
@@ -70,7 +70,7 @@ const Events = () => {
                   Register Now
                 </button>
                 {event.file_path && (
-                  <a href={`https://null-e3uj.onrender.com${event.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn secondary" style={{marginLeft: '0.5rem'}}>
+                  <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${event.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn secondary" style={{marginLeft: '0.5rem'}}>
                     View Flyer
                   </a>
                 )}

@@ -17,7 +17,7 @@ const FacultyProfileRoute = () => {
     }
 
     setLoading(true);
-    fetch(`https://null-e3uj.onrender.com/api/faculty/${teacherSlug}`)
+    fetch(`${import.meta.env.VITE_API_URL}/faculty/${teacherSlug}`)
       .then((res) => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
