@@ -1,11 +1,12 @@
-﻿/* Info Cards */
+/* Info Cards */
 .info-cards {
   position: relative;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 500px);
+  justify-content: center;
   gap: clamp(0.9rem, 2vw, 1.25rem);
 }
 
