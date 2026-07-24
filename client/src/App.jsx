@@ -28,6 +28,7 @@ const PhysicalCounselling = React.lazy(() => import('./pages/PhysicalCounselling
 const Developers = React.lazy(() => import('./pages/Developers'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const ContactUs = React.lazy(() => import('./pages/ContactUs'));
+const CommencementNotice = React.lazy(() => import('./pages/CommencementNotice'));
 
 const ExternalPlacementRedirect = () => {
   React.useEffect(() => {
@@ -97,6 +98,7 @@ function App() {
             <Route path="/pay-fees-online" element={<PayFeesOnline />} />
             <Route path="/admission-documents" element={<AdmissionDocuments />} />
             <Route path="/physical-counselling" element={<PhysicalCounselling />} />
+            <Route path="/commencement-notice" element={<CommencementNotice />} />
             <Route path="/developers" element={<Developers />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/contact" element={<ContactUs />} />
