@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -70,7 +71,7 @@ const Events = () => {
                   Register Now
                 </button>
                 {event.file_path && (
-                  <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${event.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn secondary" style={{marginLeft: '0.5rem'}}>
+                  <a href={getFileUrl(event.file_path)} target="_blank" rel="noopener noreferrer" className="notice-btn secondary" style={{marginLeft: '0.5rem'}}>
                     View Flyer
                   </a>
                 )}

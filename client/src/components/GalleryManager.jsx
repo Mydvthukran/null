@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const GalleryManager = ({ token }) => {
   const [images, setImages] = useState([]);
@@ -190,7 +191,7 @@ const GalleryManager = ({ token }) => {
           }}>
             <div style={{ height: '180px', overflow: 'hidden' }}>
               <img 
-                src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${img.imagePath}`} 
+                src={getFileUrl(img.imagePath)} 
                 alt={img.title} 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />

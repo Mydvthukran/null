@@ -1,6 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { departmentSectionCatalog } from '../../departmentSectionCatalog';
+import { getFileUrl } from '../../../../utils/fileUrlHelper';
 
 const TeacherProfileTemplate = ({ deptSlug, profile }) => {
   useLayoutEffect(() => {
@@ -50,7 +51,7 @@ const TeacherProfileTemplate = ({ deptSlug, profile }) => {
               <header className="teacher-profile-header">
                 <div className="teacher-profile-photo-wrap">
                   {profile.image_path ? (
-                    <img src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${profile.image_path}`} alt={profile.name} className="teacher-profile-photo" loading="eager" />
+                    <img src={getFileUrl(profile.image_path)} alt={profile.name} className="teacher-profile-photo" loading="eager" />
                   ) : (
                     <div className="teacher-profile-no-file">No photo</div>
                   )}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ADMISSIONS_CONFIG } from '../config/admissions';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const LOOP_DUPLICATE_COUNT = 3;
 
@@ -103,7 +104,7 @@ const InfoCards = () => {
           id: n.id,
           title: n.title,
           date: n.date,
-          href: n.file_path ? `${import.meta.env.VITE_API_URL.replace("/api", "")}${n.file_path}` : null,
+          href: n.file_path ? getFileUrl(n.file_path) : null,
           isNew: n.status === 'Active' // or based on date if you prefer
         });
 

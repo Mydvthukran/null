@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../css/adminDashboard.css';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -107,7 +108,7 @@ const NoticeManager = ({ token }) => {
                 <td>{n.publish_date ? new Date(n.publish_date).toLocaleString() : 'Immediate'}</td>
                 <td><span className={`status-badge ${n.status === 'Active' ? 'status-active' : 'status-pending'}`}>{n.status}</span></td>
                 <td>
-                  {n.file_path ? <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${n.file_path}`} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
+                  {n.file_path ? <a href={getFileUrl(n.file_path)} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
                 </td>
                 <td>
                   <button onClick={() => handleOpenModal(n)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem' }}>Edit</button>

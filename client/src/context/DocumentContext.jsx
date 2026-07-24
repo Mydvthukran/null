@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const DocumentContext = createContext();
 
@@ -23,7 +24,7 @@ export const DocumentProvider = ({ children }) => {
   const getDocUrl = (key, fallback = '#') => {
     const doc = documents.find(d => d.document_key === key);
     if (doc && doc.filePath) {
-      return `${import.meta.env.VITE_API_URL.replace("/api", "")}${doc.filePath}`;
+      return getFileUrl(doc.filePath);
     }
     return fallback;
   };

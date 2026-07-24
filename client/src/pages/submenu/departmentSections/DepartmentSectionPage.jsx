@@ -7,6 +7,7 @@ import cyberSecuritySections from './content/cyberSecurity';
 import roboticsSections from './content/robotics';
 import electricalEngineeringSections from './content/electricalEngineering';
 import electronicsVlsiSections from './content/electronicsVlsi';
+import { getFileUrl } from '../../../utils/fileUrlHelper';
 
 const departmentSectionContent = {
   cse: computerScienceSections,
@@ -157,7 +158,7 @@ const DepartmentSectionPage = () => {
                                   <div className="faculty-profile-head">
                                     {faculty.image_path ? (
                                       <img 
-                                        src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${faculty.image_path}`} 
+                                        src={getFileUrl(faculty.image_path)} 
                                         alt={faculty.name} 
                                         style={{ 
                                           width: '2.6rem', 

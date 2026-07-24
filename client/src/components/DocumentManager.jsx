@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -95,7 +96,7 @@ const DocumentManager = ({ token }) => {
                     <span style={{ fontWeight: 500, color: '#f8fafc' }}>{doc.name}</span>
                   </div>
                   {doc.filePath ? (
-                    <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${doc.filePath}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
+                    <a href={getFileUrl(doc.filePath)} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
                   ) : (
                     <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.25rem', display: 'inline-block' }}>No file attached</span>
                   )}

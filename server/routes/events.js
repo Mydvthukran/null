@@ -10,6 +10,7 @@ const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const rateLimit = require('express-rate-limit');
+const { getCloudinaryStorage, deleteFromCloudinary } = require('../config/cloudinary');
 
 const registerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -17,18 +18,7 @@ const registerLimiter = rateLimit({
   message: { error: 'Too many registrations from this IP, please try again later.' }
 });
 
-const uploadsDir = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
-    cb(null, uniqueName);
-  },
-});
+const storage = getCloudinaryStorage('events');
 
 const upload = multer({
   storage,
@@ -49,11 +39,11 @@ router.get('/', async (req, res) => {
 // POST /api/events — Add a new event
 router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
   const { title, date, status, category } = req.body;
-  const filePath = req.file ? `/uploads/${req.file.filename}` : null;
+  const filePath = req.file ? req.file.path : null;
 
   if (!title) {
-    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path) {
+      await deleteFromCloudinary(req.file.path);
     }
     return res.status(400).json({ error: 'Title is required' });
   }
@@ -67,8 +57,8 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
     res.status(201).json({ message: 'Event created successfully', id: result.insertId });
   } catch (err) {
     console.error('Error creating event:', err);
-    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path) {
+      await deleteFromCloudinary(req.file.path);
     }
     res.status(500).json({ error: 'Server error creating event' });
   }
@@ -85,12 +75,16 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
     let params = [title, date, status, category, id];
 
     if (req.file) {
-      const filePath = `/uploads/${req.file.filename}`;
+      const filePath = req.file.path;
       
       const [oldRows] = await pool.query('SELECT file_path FROM events WHERE id = ?', [id]);
       if (oldRows.length > 0 && oldRows[0].file_path) {
-        const oldFile = path.join(__dirname, '..', oldRows[0].file_path);
-        if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+        if (oldRows[0].file_path.includes('cloudinary.com')) {
+          await deleteFromCloudinary(oldRows[0].file_path);
+        } else {
+          const oldFile = path.join(__dirname, '..', oldRows[0].file_path);
+          if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+        }
       }
 
       query = 'UPDATE events SET title = ?, date = ?, status = ?, category = ?, file_path = ? WHERE id = ?';
@@ -102,8 +96,8 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
     res.json({ message: 'Event updated successfully' });
   } catch (err) {
     console.error('Error updating event:', err);
-    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path) {
+      await deleteFromCloudinary(req.file.path);
     }
     res.status(500).json({ error: 'Server error updating event' });
   }
@@ -115,8 +109,12 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT file_path FROM events WHERE id = ?', [id]);
     if (rows.length > 0 && rows[0].file_path) {
-      const file = path.join(__dirname, '..', rows[0].file_path);
-      if (fs.existsSync(file)) fs.unlinkSync(file);
+      if (rows[0].file_path.includes('cloudinary.com')) {
+        await deleteFromCloudinary(rows[0].file_path);
+      } else {
+        const file = path.join(__dirname, '..', rows[0].file_path);
+        if (fs.existsSync(file)) fs.unlinkSync(file);
+      }
     }
     
     await pool.query('DELETE FROM events WHERE id = ?', [id]);

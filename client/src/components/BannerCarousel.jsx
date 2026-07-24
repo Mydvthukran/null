@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ScrollReveal from './ScrollReveal';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const BannerCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -62,7 +63,7 @@ const BannerCarousel = () => {
                     aria-hidden={index !== activeIndex}
                   >
                     <img
-                      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${banner.imagePath}`}
+                      src={getFileUrl(banner.imagePath)}
                       alt={banner.title}
                       loading="lazy"
                     />

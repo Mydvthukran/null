@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ScrollReveal from './ScrollReveal';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const AllNoticesBoard = () => {
   const [notices, setNotices] = useState([]);
@@ -33,7 +34,7 @@ const AllNoticesBoard = () => {
                 <p className="all-notice-date">Posted: {notice.date}</p>
                 <div className="all-notice-actions">
                   {notice.file_path ? (
-                    <a href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${notice.file_path}`} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
+                    <a href={getFileUrl(notice.file_path)} target="_blank" rel="noopener noreferrer" className="notice-btn primary">
                       View Document
                     </a>
                   ) : (

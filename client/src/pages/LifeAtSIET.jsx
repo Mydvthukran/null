@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getFileUrl } from '../utils/fileUrlHelper';
 /**
  * Life @ SIET Page Component
  * Media section and gallery
@@ -38,7 +39,7 @@ const LifeAtSIET = () => {
             ) : galleryImages.length > 0 ? (
               galleryImages.map((image) => (
                 <div key={image.id} className="gallery-item">
-                  <img src={`${import.meta.env.VITE_API_URL.replace("/api", "")}${image.imagePath}`} alt={image.title} loading="lazy" />
+                  <img src={getFileUrl(image.imagePath)} alt={image.title} loading="lazy" />
                   <div className="gallery-overlay">
                     <p className="gallery-title">{image.title}</p>
                     <span className="gallery-category">{image.category}</span>

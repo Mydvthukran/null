@@ -9,21 +9,10 @@ const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
-
-// Ensure uploads/gallery directory exists
-const galleryDir = path.join(__dirname, '..', 'uploads', 'gallery');
-if (!fs.existsSync(galleryDir)) {
-  fs.mkdirSync(galleryDir, { recursive: true });
-}
+const { getCloudinaryStorage, deleteFromCloudinary } = require('../config/cloudinary');
 
 // Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, galleryDir),
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
-    cb(null, uniqueName);
-  },
-});
+const storage = getCloudinaryStorage('gallery');
 
 const upload = multer({
   storage,
@@ -59,12 +48,12 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   const { title, category } = req.body;
   if (!title) {
     // If we fail, delete the just-uploaded file
-    fs.unlinkSync(req.file.path);
+    await deleteFromCloudinary(req.file.path);
     return res.status(400).json({ error: 'Image title is required.' });
   }
 
   try {
-    const imagePath = '/uploads/gallery/' + req.file.filename;
+    const imagePath = req.file.path;
     const cat = category || 'general';
 
     const [result] = await pool.query(
@@ -77,7 +66,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     res.json({ message: 'Image uploaded successfully', id: result.insertId });
   } catch (err) {
     console.error('Error uploading image:', err);
-    if (req.file) fs.unlinkSync(req.file.path);
+    if (req.file) await deleteFromCloudinary(req.file.path);
     res.status(500).json({ error: 'Server error saving image' });
   }
 });
@@ -113,9 +102,13 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
     // Delete file from local storage
     if (img.imagePath) {
-      const fileName = path.basename(img.imagePath);
-      const localPath = path.join(galleryDir, fileName);
-      if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
+      if (img.imagePath.includes('cloudinary.com')) {
+        await deleteFromCloudinary(img.imagePath);
+      } else {
+        const fileName = path.basename(img.imagePath);
+        const localPath = path.join(__dirname, '..', 'uploads', 'gallery', fileName);
+        if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
+      }
     }
 
     await pool.query('DELETE FROM gallery WHERE id = ?', [req.params.id]);

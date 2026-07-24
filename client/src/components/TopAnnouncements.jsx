@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
 import { ADMISSIONS_CONFIG } from '../config/admissions';
+import { getFileUrl } from '../utils/fileUrlHelper';
 
 const TopAnnouncements = () => {
   const [events, setEvents] = useState([]);
@@ -54,7 +55,7 @@ const TopAnnouncements = () => {
           {renderTitle(e.title)} {e.date && `(${e.date})`}
           {e.file_path && (
             <a 
-              href={`${import.meta.env.VITE_API_URL.replace("/api", "")}${e.file_path}`} 
+              href={getFileUrl(e.file_path)} 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
