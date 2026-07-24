@@ -80,14 +80,17 @@ async function initDB() {
 
     // Seed data
     // 1. Admin
-    const [adminRows] = await connection.execute('SELECT * FROM admins WHERE username = "admin"');
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    
+    const [adminRows] = await connection.execute('SELECT * FROM admins WHERE username = ?', [adminUsername]);
     if (adminRows.length === 0) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       await connection.execute(
         'INSERT INTO admins (username, password, name) VALUES (?, ?, ?)',
-        ['admin', hashedPassword, 'System Admin']
+        [adminUsername, hashedPassword, 'System Admin']
       );
-      console.log('Default admin seeded (username: admin, password: admin123)');
+      console.log(`Default admin seeded (username: ${adminUsername})`);
     }
 
     // 2. Visitors
