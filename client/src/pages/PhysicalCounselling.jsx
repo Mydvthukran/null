@@ -54,8 +54,9 @@ const PhysicalCounselling = () => {
                       <p style={{ marginBottom: '1rem', fontWeight: 'bold', color: '#0a192f' }}>Note: After submitting your form, confirm by phone that it has been successfully received. This confirmation should be completed before the last submission date to ensure that your application has been successfully submitted.</p>
                     </div>
 
-                    {/* Advertisement Flyer */}
+                    {/* Advertisement Flyer - Removed because image is missing */}
                     <div className="advertisement-flyer" style={{ marginBottom: '3rem', textAlign: 'center' }}>
+                      {/*
                       <img 
                         src="/adv_flyer.jpeg" 
                         alt="Advertisement Flyer" 
@@ -65,6 +66,7 @@ const PhysicalCounselling = () => {
                           e.target.style.display = 'none';
                         }}
                       />
+                      */}
                     </div>
 
                     {/* Action Buttons */}
