@@ -5,7 +5,7 @@ export const popupSchedule = [
     images: ['/chiefguest1.jpeg', '/chiefguest2.jpeg', '/chiefguest3.jpeg'],
     startDate: '2026-04-01',
     endDate: '2026-09-30',
-    enabled: true,
+    enabled: false,
   },
   {
     id: 'event-2026-techfest',
