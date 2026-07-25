@@ -1,22 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
-import { ADMISSIONS_CONFIG } from '../config/admissions';
-import { getFileUrl } from '../utils/fileUrlHelper';
+import { topAnnouncementsData } from '../data/noticesData';
 
 const TopAnnouncements = () => {
-  const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    // Fetch live events for the scrolling marquee
-    fetch(import.meta.env.VITE_API_URL + '/events')
-      .then(res => res.json())
-      .then(data => setEvents(data))
-      .catch(err => console.error('Error fetching events:', err));
-  }, []);
-
   // Parse markdown-style links in title: [text](href)
   const renderTitle = (title) => {
+    if (!title) return '';
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/;
     const match = title.match(linkRegex);
     if (match) {
@@ -45,37 +35,46 @@ const TopAnnouncements = () => {
     return title;
   };
 
-  // Convert fetched events into announcement content
-  const announcements = events.map(e => ({
+  // Convert fetched static data into announcement content
+  const announcements = topAnnouncementsData.map(e => ({
     id: e.id,
     content: (
       <>
         <span className="announcement-dot" aria-hidden="true"></span>
         <p>
-          {renderTitle(e.title)} {e.date && `(${e.date})`}
-          {e.file_path && (
-            <a 
-              href={getFileUrl(e.file_path)} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
-            >
-              View Document
-            </a>
+          {renderTitle(e.text)}
+          {e.href && (
+            e.href.startsWith('/') && !e.href.endsWith('.pdf') && !e.href.endsWith('.jpeg') ? (
+              <Link 
+                to={e.href}
+                style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
+              >
+                Read More
+              </Link>
+            ) : (
+              <a 
+                href={e.href} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
+              >
+                View Document
+              </a>
+            )
           )}
         </p>
       </>
     )
   }));
 
-  // Fallback if there are no events in the database
+  // Fallback if there are no announcements
   if (announcements.length === 0) {
     announcements.push({
       id: 'default',
       content: (
         <>
           <span className="announcement-dot" aria-hidden="true"></span>
-          <p>Welcome to SIET Panchkula. Check back later for upcoming events!</p>
+          <p>Welcome to SIET Panchkula. Check back later for latest announcements!</p>
         </>
       )
     });
@@ -83,12 +82,12 @@ const TopAnnouncements = () => {
 
   return (
     <ScrollReveal>
-      <section className="top-announcements" aria-label="Upcoming events">
+      <section className="top-announcements" aria-label="Top announcements">
         <div className="container">
           <div className="top-announcements-wrap">
             <div className="announcements-title-box">
-              <span className="announcements-chip">Upcoming</span>
-              <h2>Upcoming Events</h2>
+              <span className="announcements-chip">Latest</span>
+              <h2>Top Announcements</h2>
             </div>
 
             <div className="announcements-track">
@@ -107,7 +106,7 @@ const TopAnnouncements = () => {
               )}
             </div>
 
-            <Link to="/events" className="announcements-link">View Events</Link>
+            <Link to="/all-notices" className="announcements-link">View All Notices</Link>
           </div>
         </div>
       </section>
