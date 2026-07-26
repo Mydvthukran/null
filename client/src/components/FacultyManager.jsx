@@ -110,7 +110,7 @@ const FacultyManager = ({ token }) => {
   return (
     <div className="admin-activity-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, color: '#f8fafc' }}>Manage Faculty</h2>
+        <h2 style={{ margin: 0, color: 'var(--ink-900)' }}>Manage Faculty</h2>
         <button className="admin-btn primary" onClick={() => handleOpenModal()}>+ Add Faculty</button>
       </div>
 
@@ -144,7 +144,7 @@ const FacultyManager = ({ token }) => {
                 <td>{f.email}</td>
                 <td>
                   <button onClick={() => handleOpenModal(f)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem' }}>Edit</button>
-                  <button onClick={() => handleDelete(f.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', borderColor: '#ef4444', color: '#ef4444' }}>Delete</button>
+                  <button onClick={() => handleDelete(f.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', bordercolor: 'var(--danger)', color: 'var(--danger)' }}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -156,9 +156,9 @@ const FacultyManager = ({ token }) => {
       </div>
 
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.5rem', width: '500px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ color: '#fff', marginTop: 0 }}>{editingId ? 'Edit Faculty' : 'Add Faculty'}</h3>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(10, 25, 47, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'var(--surface)', padding: '2rem', borderRadius: '0.5rem', width: '500px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 style={{ color: 'var(--ink-900)', marginTop: 0 }}>{editingId ? 'Edit Faculty' : 'Add Faculty'}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <input type="text" placeholder="Full Name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="admin-input" required />
               <input type="text" placeholder="Slug (e.g. dr-john-doe)" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="admin-input" />
@@ -170,10 +170,10 @@ const FacultyManager = ({ token }) => {
               <input type="text" placeholder="Vidwan Link" value={formData.vidwan_link} onChange={e => setFormData({...formData, vidwan_link: e.target.value})} className="admin-input" />
               
               <div>
-                <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Departments (Select all that apply)</label>
+                <label style={{ display: 'block', color: 'var(--ink-500)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Departments (Select all that apply)</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {ALL_DEPARTMENTS.map(d => (
-                    <label key={d.id} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#cbd5e1', fontSize: '0.85rem' }}>
+                    <label key={d.id} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--ink-700)', fontSize: '0.85rem' }}>
                       <input type="checkbox" checked={formData.departments.includes(d.id)} onChange={() => handleDeptToggle(d.id)} />
                       {d.name}
                     </label>
@@ -182,7 +182,7 @@ const FacultyManager = ({ token }) => {
               </div>
 
               <div>
-                <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Profile Image</label>
+                <label style={{ display: 'block', color: 'var(--ink-500)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>Profile Image</label>
                 <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} ref={fileInputRef} className="admin-input" style={{ padding: '0.5rem' }} />
               </div>
 

@@ -80,7 +80,7 @@ const NoticeManager = ({ token }) => {
   return (
     <div className="admin-activity-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, color: '#f8fafc' }}>Manage Notices</h2>
+        <h2 style={{ margin: 0, color: 'var(--ink-900)' }}>Manage Notices</h2>
         <button className="admin-btn primary" onClick={() => handleOpenModal()}>+ Add Notice</button>
       </div>
 
@@ -108,11 +108,11 @@ const NoticeManager = ({ token }) => {
                 <td>{n.publish_date ? new Date(n.publish_date).toLocaleString() : 'Immediate'}</td>
                 <td><span className={`status-badge ${n.status === 'Active' ? 'status-active' : 'status-pending'}`}>{n.status}</span></td>
                 <td>
-                  {n.file_path ? <a href={getFileUrl(n.file_path)} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
+                  {n.file_path ? <a href={getFileUrl(n.file_path)} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-amber)' }}>View File</a> : '-'}
                 </td>
                 <td>
                   <button onClick={() => handleOpenModal(n)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem' }}>Edit</button>
-                  <button onClick={() => handleDelete(n.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', borderColor: '#ef4444', color: '#ef4444' }}>Delete</button>
+                  <button onClick={() => handleDelete(n.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', bordercolor: 'var(--danger)', color: 'var(--danger)' }}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -124,9 +124,9 @@ const NoticeManager = ({ token }) => {
       </div>
 
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.5rem', width: '400px', maxWidth: '90%' }}>
-            <h3 style={{ color: '#fff', marginTop: 0 }}>{editingId ? 'Edit Notice' : 'Add Notice'}</h3>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(10, 25, 47, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'var(--surface)', padding: '2rem', borderRadius: '0.5rem', width: '400px', maxWidth: '90%' }}>
+            <h3 style={{ color: 'var(--ink-900)', marginTop: 0 }}>{editingId ? 'Edit Notice' : 'Add Notice'}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <input type="text" placeholder="Title" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="admin-input" required />
               <input type="text" placeholder="Date (e.g. 10 Aug 2025)" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="admin-input" />
@@ -137,7 +137,7 @@ const NoticeManager = ({ token }) => {
                 <option value="Fee">Fee</option>
               </select>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', color: '#94a3b8' }}>Scheduled Publish Date (Optional)</label>
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.85rem', color: 'var(--ink-500)' }}>Scheduled Publish Date (Optional)</label>
                 <input type="datetime-local" value={formData.publish_date} onChange={e => setFormData({...formData, publish_date: e.target.value})} className="admin-input" style={{ width: '100%' }} />
               </div>
               <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="admin-input">

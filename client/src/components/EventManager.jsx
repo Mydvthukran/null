@@ -88,7 +88,7 @@ const EventManager = ({ token }) => {
   return (
     <div className="admin-activity-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, color: '#f8fafc' }}>Manage Announcements</h2>
+        <h2 style={{ margin: 0, color: 'var(--ink-900)' }}>Manage Announcements</h2>
         <button className="admin-btn primary" onClick={() => handleOpenModal()}>+ Add Announcement</button>
       </div>
 
@@ -114,12 +114,12 @@ const EventManager = ({ token }) => {
                 <td>{e.date}</td>
                 <td><span className={`status-badge ${e.status === 'Upcoming' ? 'status-pending' : 'status-active'}`}>{e.status}</span></td>
                 <td>
-                  {e.file_path ? <a href={getFileUrl(e.file_path)} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>View File</a> : '-'}
+                  {e.file_path ? <a href={getFileUrl(e.file_path)} target="_blank" rel="noreferrer" style={{ color: 'var(--brand-amber)' }}>View File</a> : '-'}
                 </td>
                 <td>
                   <button onClick={() => handleViewRegistrations(e)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem', color: '#10b981', borderColor: '#10b981' }}>Registrations</button>
                   <button onClick={() => handleOpenModal(e)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem' }}>Edit</button>
-                  <button onClick={() => handleDelete(e.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', borderColor: '#ef4444', color: '#ef4444' }}>Delete</button>
+                  <button onClick={() => handleDelete(e.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', bordercolor: 'var(--danger)', color: 'var(--danger)' }}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -131,9 +131,9 @@ const EventManager = ({ token }) => {
       </div>
 
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.5rem', width: '400px', maxWidth: '90%' }}>
-            <h3 style={{ color: '#fff', marginTop: 0 }}>{editingId ? 'Edit Announcement' : 'Add Announcement'}</h3>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(10, 25, 47, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'var(--surface)', padding: '2rem', borderRadius: '0.5rem', width: '400px', maxWidth: '90%' }}>
+            <h3 style={{ color: 'var(--ink-900)', marginTop: 0 }}>{editingId ? 'Edit Announcement' : 'Add Announcement'}</h3>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <input type="text" placeholder="Title" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="admin-input" required />
               <input type="text" placeholder="Date (e.g. 10 Aug 2025)" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="admin-input" />
@@ -158,15 +158,15 @@ const EventManager = ({ token }) => {
       )}
 
       {showRegModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.5rem', width: '600px', maxWidth: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(10, 25, 47, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'var(--surface)', padding: '2rem', borderRadius: '0.5rem', width: '600px', maxWidth: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ color: '#fff', margin: 0 }}>Registrations for "{selectedEventForReg?.title}"</h3>
+              <h3 style={{ color: 'var(--ink-900)', margin: 0 }}>Registrations for "{selectedEventForReg?.title}"</h3>
               <button onClick={() => setShowRegModal(false)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem' }}>Close</button>
             </div>
             
             {eventRegistrations.length === 0 ? (
-              <p style={{ color: '#94a3b8' }}>No registrations yet.</p>
+              <p style={{ color: 'var(--ink-500)' }}>No registrations yet.</p>
             ) : (
               <table className="admin-table">
                 <thead>

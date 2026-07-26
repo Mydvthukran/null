@@ -135,8 +135,8 @@ const UserManager = ({ token, currentAdminId }) => {
 
   const inputStyle = {
     width: '100%', padding: '0.65rem 0.75rem', borderRadius: '0.375rem',
-    background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-    color: '#fff', outline: 'none', fontSize: '0.9rem'
+    background: 'var(--surface)', border: '1px solid var(--border-strong)',
+    color: 'var(--ink-900)', outline: 'none', fontSize: '0.9rem'
   };
 
   return (
@@ -180,7 +180,7 @@ const UserManager = ({ token, currentAdminId }) => {
                     ) : (
                       (user.permissions || []).map(p => (
                         <span key={p} style={{
-                          background: 'rgba(255,255,255,0.05)', color: '#94a3b8',
+                          background: 'rgba(255,255,255,0.05)', color: 'var(--ink-500)',
                           padding: '0.1rem 0.4rem', borderRadius: '0.25rem', fontSize: '0.7rem'
                         }}>{p}</span>
                       ))
@@ -191,14 +191,14 @@ const UserManager = ({ token, currentAdminId }) => {
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button onClick={() => handleOpenModal(user)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem' }}>Edit</button>
                     {user.id !== currentAdminId && (
-                      <button onClick={() => handleDelete(user.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem', color: '#ef4444', borderColor: 'rgba(239,68,68,0.3)' }}>Delete</button>
+                      <button onClick={() => handleDelete(user.id)} className="admin-btn outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.85rem', color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.3)' }}>Delete</button>
                     )}
                   </div>
                 </td>
               </tr>
             ))}
             {users.length === 0 && (
-              <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>No users found.</td></tr>
+              <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: 'var(--ink-500)' }}>No users found.</td></tr>
             )}
           </tbody>
         </table>
@@ -207,13 +207,13 @@ const UserManager = ({ token, currentAdminId }) => {
       {/* Add/Edit User Modal */}
       {showModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1e293b', padding: '2rem', borderRadius: '0.75rem', width: '500px', maxWidth: '95%', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <h3 style={{ color: '#f8fafc', marginTop: 0, marginBottom: '1.5rem', fontSize: '1.25rem' }}>
+          <div style={{ background: 'var(--surface)', padding: '2rem', borderRadius: '0.75rem', width: '500px', maxWidth: '95%', maxHeight: '90vh', overflowY: 'auto', border: '1px solid var(--border-strong)' }}>
+            <h3 style={{ color: 'var(--ink-900)', marginTop: 0, marginBottom: '1.5rem', fontSize: '1.25rem' }}>
               {editingUser ? `Edit User: ${editingUser.username}` : 'Create New User'}
             </h3>
 
             {error && (
-              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444', padding: '0.75rem', borderRadius: '0.375rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
+              <div style={{ background: 'rgba(206, 62, 62, 0.1)', border: '1px solid var(--danger)', color: 'var(--danger)', padding: '0.75rem', borderRadius: '0.375rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
                 {error}
               </div>
             )}
@@ -221,25 +221,25 @@ const UserManager = ({ token, currentAdminId }) => {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {!editingUser && (
                 <div>
-                  <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.375rem', fontSize: '0.875rem' }}>Username</label>
+                  <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.375rem', fontSize: '0.875rem' }}>Username</label>
                   <input type="text" value={formData.username} onChange={e => setFormData({ ...formData, username: e.target.value })} style={inputStyle} required />
                 </div>
               )}
 
               <div>
-                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.375rem', fontSize: '0.875rem' }}>Full Name</label>
+                <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.375rem', fontSize: '0.875rem' }}>Full Name</label>
                 <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} style={inputStyle} required />
               </div>
 
               <div>
-                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.375rem', fontSize: '0.875rem' }}>
+                <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.375rem', fontSize: '0.875rem' }}>
                   {editingUser ? 'New Password (leave blank to keep current)' : 'Password'}
                 </label>
                 <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} style={inputStyle} {...(!editingUser ? { required: true } : {})} />
               </div>
 
               <div>
-                <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.375rem', fontSize: '0.875rem' }}>Role</label>
+                <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.375rem', fontSize: '0.875rem' }}>Role</label>
                 <select value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} style={inputStyle}>
                   <option value="super_admin">Super Admin (Full Access)</option>
                   <option value="editor">Editor (Custom Access)</option>
@@ -250,10 +250,10 @@ const UserManager = ({ token, currentAdminId }) => {
               {formData.role !== 'super_admin' && (
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <label style={{ color: '#94a3b8', fontSize: '0.875rem' }}>Dashboard Permissions</label>
+                    <label style={{ color: 'var(--ink-500)', fontSize: '0.875rem' }}>Dashboard Permissions</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button type="button" onClick={selectAllPermissions} style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontSize: '0.75rem' }}>Select All</button>
-                      <button type="button" onClick={clearAllPermissions} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '0.75rem' }}>Clear All</button>
+                      <button type="button" onClick={selectAllPermissions} style={{ background: 'none', border: 'none', color: 'var(--brand-amber)', cursor: 'pointer', fontSize: '0.75rem' }}>Select All</button>
+                      <button type="button" onClick={clearAllPermissions} style={{ background: 'none', border: 'none', color: 'var(--ink-500)', cursor: 'pointer', fontSize: '0.75rem' }}>Clear All</button>
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', background: 'rgba(15,23,42,0.4)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -263,7 +263,7 @@ const UserManager = ({ token, currentAdminId }) => {
                           type="checkbox"
                           checked={formData.permissions.includes(perm.key)}
                           onChange={() => togglePermission(perm.key)}
-                          style={{ accentColor: '#38bdf8' }}
+                          style={{ accentcolor: 'var(--brand-amber)' }}
                         />
                         {perm.label}
                       </label>

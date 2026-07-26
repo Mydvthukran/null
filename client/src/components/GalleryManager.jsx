@@ -112,10 +112,10 @@ const GalleryManager = ({ token }) => {
       </div>
 
       <div className="admin-stat-card" style={{ marginBottom: '2rem' }}>
-        <h3 style={{ marginTop: 0, color: '#f8fafc', marginBottom: '1rem' }}>Upload New Image</h3>
+        <h3 style={{ marginTop: 0, color: 'var(--ink-900)', marginBottom: '1rem' }}>Upload New Image</h3>
         <form onSubmit={handleUpload} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
           <div style={{ flex: '1 1 200px' }}>
-            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Title/Description</label>
+            <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Title/Description</label>
             <input
               type="text"
               value={title}
@@ -123,22 +123,22 @@ const GalleryManager = ({ token }) => {
               placeholder="e.g. Annual Sports Meet 2026"
               style={{
                 width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem',
-                background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                color: '#fff', outline: 'none'
+                background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                color: 'var(--ink-900)', outline: 'none'
               }}
               required
             />
           </div>
           
           <div style={{ flex: '1 1 150px' }}>
-            <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Category</label>
+            <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               style={{
                 width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem',
-                background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                color: '#fff', outline: 'none'
+                background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                color: 'var(--ink-900)', outline: 'none'
               }}
             >
               <option value="Campus">Campus</option>
@@ -149,7 +149,7 @@ const GalleryManager = ({ token }) => {
           </div>
 
           <div style={{ flex: '1 1 250px' }}>
-             <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Image File</label>
+             <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Image File</label>
              <input
                type="file"
                ref={fileInputRef}
@@ -157,8 +157,8 @@ const GalleryManager = ({ token }) => {
                required
                style={{
                   width: '100%', padding: '0.65rem 1rem', borderRadius: '0.5rem',
-                  background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', outline: 'none'
+                  background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                  color: 'var(--ink-900)', outline: 'none'
                }}
              />
           </div>
@@ -183,7 +183,7 @@ const GalleryManager = ({ token }) => {
         {images.length > 0 ? images.map((img) => (
           <div key={img.id} style={{
             background: 'rgba(30, 41, 59, 0.5)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            border: '1px solid var(--border-strong)',
             borderRadius: '0.75rem',
             overflow: 'hidden',
             display: 'flex',
@@ -205,8 +205,8 @@ const GalleryManager = ({ token }) => {
                     onChange={(e) => setEditTitle(e.target.value)}
                     style={{
                       width: '100%', padding: '0.5rem', borderRadius: '0.25rem',
-                      background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#fff', outline: 'none', marginBottom: '0.5rem'
+                      background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                      color: 'var(--ink-900)', outline: 'none', marginBottom: '0.5rem'
                     }}
                   />
                   <select
@@ -214,8 +214,8 @@ const GalleryManager = ({ token }) => {
                     onChange={(e) => setEditCategory(e.target.value)}
                     style={{
                       width: '100%', padding: '0.5rem', borderRadius: '0.25rem',
-                      background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#fff', outline: 'none', marginBottom: '0.5rem'
+                      background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                      color: 'var(--ink-900)', outline: 'none', marginBottom: '0.5rem'
                     }}
                   >
                     <option value="Campus">Campus</option>
@@ -242,11 +242,11 @@ const GalleryManager = ({ token }) => {
                 </div>
               ) : (
                 <div>
-                  <h4 style={{ margin: '0 0 0.25rem 0', color: '#f8fafc', fontSize: '1.1rem' }}>{img.title}</h4>
+                  <h4 style={{ margin: '0 0 0.25rem 0', color: 'var(--ink-900)', fontSize: '1.1rem' }}>{img.title}</h4>
                   <span style={{ 
                     display: 'inline-block',
                     background: 'rgba(56, 189, 248, 0.1)', 
-                    color: '#38bdf8',
+                    color: 'var(--brand-amber)',
                     padding: '0.2rem 0.6rem', 
                     borderRadius: '1rem', 
                     fontSize: '0.75rem',
@@ -269,7 +269,7 @@ const GalleryManager = ({ token }) => {
                   <button 
                     onClick={() => handleDelete(img.id)}
                     className="admin-btn outline"
-                    style={{ flex: 1, padding: '0.5rem', fontSize: '0.875rem', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+                    style={{ flex: 1, padding: '0.5rem', fontSize: '0.875rem', color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
                   >
                     Delete
                   </button>
@@ -278,7 +278,7 @@ const GalleryManager = ({ token }) => {
             </div>
           </div>
         )) : (
-          <div style={{ color: '#94a3b8', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem' }}>
+          <div style={{ color: 'var(--ink-500)', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem' }}>
             No images uploaded yet.
           </div>
         )}

@@ -43,7 +43,7 @@ const FormManager = ({ token, title = 'Form Submissions (Contact Us)' }) => {
   return (
     <div className="admin-activity-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 style={{ margin: 0, color: '#f8fafc' }}>{title}</h2>
+        <h2 style={{ margin: 0, color: 'var(--ink-900)' }}>{title}</h2>
       </div>
 
       <div className="table-responsive">
@@ -83,8 +83,8 @@ const FormManager = ({ token, title = 'Form Submissions (Contact Us)' }) => {
                     value={inq.status}
                     onChange={(e) => handleStatusChange(inq.id, e.target.value)}
                     style={{
-                      background: 'rgba(15, 23, 42, 0.6)', color: '#38bdf8',
-                      border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.25rem',
+                      background: 'var(--surface)', color: 'var(--brand-amber)',
+                      border: '1px solid var(--border-strong)', borderRadius: '0.25rem',
                       padding: '0.25rem 0.5rem', cursor: 'pointer', outline: 'none'
                     }}
                   >

@@ -66,8 +66,8 @@ const DocumentManager = ({ token }) => {
           style={{ display: 'none' }}
         />
         <svg className="document-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-        <h3 style={{ color: '#f8fafc', marginBottom: '0.5rem', fontSize: '1.25rem' }}>System Document Manager</h3>
-        <p style={{ color: '#94a3b8', margin: 0, maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+        <h3 style={{ color: 'var(--ink-900)', marginBottom: '0.5rem', fontSize: '1.25rem' }}>System Document Manager</h3>
+        <p style={{ color: 'var(--ink-500)', margin: 0, maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
           Manage the permanent, structural documents of the website (e.g. Fee Structures, Syllabuses, Timetables). Click "Update File" on a row below to replace it globally.
         </p>
       </div>
@@ -93,12 +93,12 @@ const DocumentManager = ({ token }) => {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                    <span style={{ fontWeight: 500, color: '#f8fafc' }}>{doc.name}</span>
+                    <span style={{ fontWeight: 500, color: 'var(--ink-900)' }}>{doc.name}</span>
                   </div>
                   {doc.filePath ? (
-                    <a href={getFileUrl(doc.filePath)} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
+                    <a href={getFileUrl(doc.filePath)} target="_blank" rel="noreferrer" style={{ fontSize: '0.75rem', color: 'var(--brand-amber)', marginTop: '0.25rem', display: 'inline-block' }}>View Current File</a>
                   ) : (
-                    <span style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '0.25rem', display: 'inline-block' }}>No file attached</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--danger)', marginTop: '0.25rem', display: 'inline-block' }}>No file attached</span>
                   )}
                 </td>
                 <td>{doc.category}</td>
@@ -118,7 +118,7 @@ const DocumentManager = ({ token }) => {
                 </td>
               </tr>
             )) : (
-              <tr><td colSpan="5" style={{ textAlign: 'center', color: '#94a3b8' }}>Loading documents...</td></tr>
+              <tr><td colSpan="5" style={{ textAlign: 'center', color: 'var(--ink-500)' }}>Loading documents...</td></tr>
             )}
           </tbody>
         </table>

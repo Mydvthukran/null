@@ -71,7 +71,7 @@ const SettingsManager = ({ token }) => {
   };
 
   if (loading) {
-    return <div style={{ color: '#94a3b8' }}>Loading settings...</div>;
+    return <div style={{ color: 'var(--ink-500)' }}>Loading settings...</div>;
   }
 
   return (
@@ -93,108 +93,108 @@ const SettingsManager = ({ token }) => {
 
       <form onSubmit={handleSave}>
         <div className="admin-activity-panel" style={{ padding: '2rem', marginBottom: '1.5rem' }}>
-          <h3 style={{ color: '#f8fafc', marginBottom: '1rem', fontSize: '1.2rem' }}>Homepage Configuration</h3>
+          <h3 style={{ color: 'var(--ink-900)', marginBottom: '1rem', fontSize: '1.2rem' }}>Homepage Configuration</h3>
           
           <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Welcome Title</label>
+            <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Welcome Title</label>
             <input 
               type="text" 
               name="welcome_title" 
               value={settings.welcome_title || ''} 
               onChange={handleChange}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
             />
           </div>
           
           <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Welcome Subtitle / Tagline</label>
+            <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Welcome Subtitle / Tagline</label>
             <textarea 
               name="welcome_subtitle" 
               value={settings.welcome_subtitle || ''} 
               onChange={handleChange}
               rows={3}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none', resize: 'vertical' }} 
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none', resize: 'vertical' }} 
             />
           </div>
         </div>
 
         <div className="admin-activity-panel" style={{ padding: '2rem', marginBottom: '1.5rem' }}>
-          <h3 style={{ color: '#f8fafc', marginBottom: '1rem', fontSize: '1.2rem' }}>Contact Information</h3>
+          <h3 style={{ color: 'var(--ink-900)', marginBottom: '1rem', fontSize: '1.2rem' }}>Contact Information</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
             <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Primary Email</label>
+              <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Primary Email</label>
               <input 
                 type="email" 
                 name="contact_email" 
                 value={settings.contact_email || ''} 
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
               />
             </div>
             <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Primary Phone</label>
+              <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Primary Phone</label>
               <input 
                 type="text" 
                 name="contact_phone" 
                 value={settings.contact_phone || ''} 
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
               />
             </div>
           </div>
           <div>
-            <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Campus Address</label>
+            <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Campus Address</label>
             <textarea 
               name="address" 
               value={settings.address || ''} 
               onChange={handleChange}
               rows={2}
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none', resize: 'vertical' }} 
+              style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none', resize: 'vertical' }} 
             />
           </div>
         </div>
 
         <div className="admin-activity-panel" style={{ padding: '2rem', marginBottom: '1.5rem' }}>
-          <h3 style={{ color: '#f8fafc', marginBottom: '1rem', fontSize: '1.2rem' }}>Social Media Links</h3>
+          <h3 style={{ color: 'var(--ink-900)', marginBottom: '1rem', fontSize: '1.2rem' }}>Social Media Links</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
             <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Facebook</label>
+              <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Facebook</label>
               <input 
                 type="url" 
                 name="facebook_link" 
                 value={settings.facebook_link || ''} 
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
               />
             </div>
             <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Twitter / X</label>
+              <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Twitter / X</label>
               <input 
                 type="url" 
                 name="twitter_link" 
                 value={settings.twitter_link || ''} 
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
               />
             </div>
             <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>Instagram</label>
+              <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>Instagram</label>
               <input 
                 type="url" 
                 name="instagram_link" 
                 value={settings.instagram_link || ''} 
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
               />
             </div>
             <div>
-              <label style={{ display: 'block', color: '#94a3b8', marginBottom: '0.5rem' }}>LinkedIn</label>
+              <label style={{ display: 'block', color: 'var(--ink-500)', marginBottom: '0.5rem' }}>LinkedIn</label>
               <input 
                 type="url" 
                 name="linkedin_link" 
                 value={settings.linkedin_link || ''} 
                 onChange={handleChange}
-                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', outline: 'none' }} 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: '0.25rem', background: 'var(--surface)', border: '1px solid var(--border-strong)', color: 'var(--ink-900)', outline: 'none' }} 
               />
             </div>
           </div>
@@ -205,7 +205,7 @@ const SettingsManager = ({ token }) => {
             type="submit" 
             disabled={saving}
             style={{ 
-              background: saving ? '#64748b' : '#38bdf8', color: '#fff', padding: '0.75rem 2rem', 
+              background: saving ? '#64748b' : '#38bdf8', color: 'var(--ink-900)', padding: '0.75rem 2rem', 
               borderRadius: '0.5rem', border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
               fontWeight: 600, fontSize: '1rem'
             }}

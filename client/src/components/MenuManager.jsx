@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 const MenuItemEditor = ({ item, onChange, onRemove, onAddSubmenu, level }) => {
   return (
     <div style={{
-      border: '1px solid rgba(255,255,255,0.1)',
+      border: '1px solid var(--border-strong)',
       background: 'rgba(15, 23, 42, 0.4)',
       padding: '1rem',
       marginBottom: '1rem',
@@ -14,35 +14,35 @@ const MenuItemEditor = ({ item, onChange, onRemove, onAddSubmenu, level }) => {
     }}>
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <div style={{ flex: '1 1 200px' }}>
-          <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Menu Label</label>
+          <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Menu Label</label>
           <input
             type="text"
             value={item.name}
             onChange={(e) => onChange({ ...item, name: e.target.value })}
             style={{
               width: '100%', padding: '0.5rem', borderRadius: '0.25rem',
-              background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-              color: '#fff', outline: 'none'
+              background: 'var(--surface)', border: '1px solid var(--border-strong)',
+              color: 'var(--ink-900)', outline: 'none'
             }}
           />
         </div>
         
         <div style={{ flex: '1 1 200px' }}>
-          <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>URL / Link</label>
+          <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>URL / Link</label>
           <input
             type="text"
             value={item.href || ''}
             onChange={(e) => onChange({ ...item, href: e.target.value })}
             style={{
               width: '100%', padding: '0.5rem', borderRadius: '0.25rem',
-              background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-              color: '#fff', outline: 'none'
+              background: 'var(--surface)', border: '1px solid var(--border-strong)',
+              color: 'var(--ink-900)', outline: 'none'
             }}
           />
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '2rem' }}>
-          <label style={{ color: '#cbd5e1', fontSize: '0.875rem', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <label style={{ color: 'var(--ink-700)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
             <input
               type="checkbox"
               checked={item.external}
@@ -68,7 +68,7 @@ const MenuItemEditor = ({ item, onChange, onRemove, onAddSubmenu, level }) => {
             type="button"
             onClick={onRemove}
             className="admin-btn outline"
-            style={{ padding: '0.5rem', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+            style={{ padding: '0.5rem', color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
           >
             Remove
           </button>
@@ -158,7 +158,7 @@ const MenuManager = ({ token }) => {
     setMenus([...menus, { tempId: Date.now(), name: 'New Menu', href: '', external: false, submenu: null }]);
   };
 
-  if (loading) return <div style={{ color: '#94a3b8' }}>Loading menus...</div>;
+  if (loading) return <div style={{ color: 'var(--ink-500)' }}>Loading menus...</div>;
 
   return (
     <div>
@@ -175,7 +175,7 @@ const MenuManager = ({ token }) => {
       </div>
 
       <div className="admin-activity-panel">
-        <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>
+        <p style={{ color: 'var(--ink-500)', marginBottom: '2rem' }}>
           Manage the top navigation bar. You can nest items up to 3 levels deep (Main Menu &gt; Submenu &gt; Nested Submenu).
         </p>
         
@@ -202,7 +202,7 @@ const MenuManager = ({ token }) => {
         ))}
         
         {menus.length === 0 && (
-          <div style={{ textAlign: 'center', color: '#94a3b8', padding: '2rem' }}>
+          <div style={{ textAlign: 'center', color: 'var(--ink-500)', padding: '2rem' }}>
             No menus found. Create one to get started!
           </div>
         )}

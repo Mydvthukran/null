@@ -164,48 +164,48 @@ const AdminDashboard = () => {
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ 
               width: '60px', height: '60px', borderRadius: '50%', 
-              background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+              background: 'var(--brand-teal)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               margin: '0 auto 1rem auto'
             }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke='currentColor' strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
-            <h2 style={{ margin: 0, color: '#f8fafc', fontSize: '1.5rem' }}>Admin Portal Login</h2>
-            <p style={{ color: '#94a3b8', margin: '0.5rem 0 0 0', fontSize: '0.875rem' }}>Enter your credentials to access the dashboard</p>
+            <h2 style={{ margin: 0, color: 'var(--ink-900)', fontSize: '1.5rem' }}>Admin Portal Login</h2>
+            <p style={{ color: 'var(--ink-500)', margin: '0.5rem 0 0 0', fontSize: '0.875rem' }}>Enter your credentials to access the dashboard</p>
           </div>
 
           {loginError && (
-            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '0.75rem 1rem', borderRadius: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem', textAlign: 'center' }}>
+            <div style={{ background: 'rgba(206, 62, 62, 0.1)', border: '1px solid var(--danger)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: '0.5rem', marginBottom: '1rem', fontSize: '0.875rem', textAlign: 'center' }}>
               {loginError}
             </div>
           )}
           
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Username</label>
+              <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Username</label>
               <input 
                 type="text" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 style={{
                   width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem',
-                  background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', outline: 'none'
+                  background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                  color: 'var(--ink-900)', outline: 'none'
                 }}
                 placeholder="admin"
                 required
               />
             </div>
             <div>
-              <label style={{ display: 'block', color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Password</label>
+              <label style={{ display: 'block', color: 'var(--ink-700)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Password</label>
               <input 
                 type="password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{
                   width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem',
-                  background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#fff', outline: 'none'
+                  background: 'var(--surface)', border: '1px solid var(--border-strong)',
+                  color: 'var(--ink-900)', outline: 'none'
                 }}
                 placeholder="••••••••"
                 required
@@ -215,8 +215,8 @@ const AdminDashboard = () => {
               type="submit"
               disabled={loading}
               style={{
-                background: loading ? '#64748b' : 'linear-gradient(90deg, #38bdf8, #818cf8)',
-                color: '#fff', border: 'none', padding: '0.875rem',
+                background: loading ? 'var(--ink-500)' : 'var(--brand-teal)',
+                color: 'white', border: 'none', padding: '0.875rem',
                 borderRadius: '0.5rem', fontSize: '1rem', fontWeight: 600,
                 cursor: loading ? 'not-allowed' : 'pointer', marginTop: '0.5rem', transition: 'opacity 0.2s'
               }}
@@ -345,7 +345,7 @@ const AdminDashboard = () => {
           
           <div 
             className="admin-nav-item"
-            style={{ marginTop: 'auto', color: '#ef4444' }}
+            style={{ marginTop: 'auto', color: 'var(--danger)' }}
             onClick={handleLogout}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
                         <td>{new Date(item.date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</td>
                       </tr>
                     )) : (
-                      <tr><td colSpan="5" style={{ textAlign: 'center', color: '#94a3b8', padding: '1rem' }}>No recent activity.</td></tr>
+                      <tr><td colSpan="5" style={{ textAlign: 'center', color: 'var(--ink-500)', padding: '1rem' }}>No recent activity.</td></tr>
                     )}
                   </tbody>
                 </table>
