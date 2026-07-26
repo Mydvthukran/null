@@ -9,6 +9,12 @@
  *   - Hostinger Cloud Storage for document uploads
  */
 require('dotenv').config({ override: true });
+
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined in environment variables.');
+  process.exit(1);
+}
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');

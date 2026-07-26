@@ -11,5 +11,8 @@ export const getFileUrl = (path) => {
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
   }
+  if (!import.meta.env.VITE_API_URL) {
+    return path;
+  }
   return `${import.meta.env.VITE_API_URL.replace("/api", "")}${path}`;
 };

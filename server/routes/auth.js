@@ -53,7 +53,7 @@ router.post('/login', loginLimiter, async (req, res) => {
         role: admin.role || 'editor',
         permissions
       },
-      process.env.JWT_SECRET || 'fallback-secret-for-development-only',
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 

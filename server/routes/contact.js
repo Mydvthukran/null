@@ -49,6 +49,10 @@ router.get('/', authMiddleware, async (req, res) => {
 router.put('/:id/status', authMiddleware, async (req, res) => {
   try {
     const { status } = req.body;
+    const validStatuses = ['New', 'In Progress', 'Resolved', 'Closed'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status value.' });
+    }
     await pool.query('UPDATE contact_submissions SET status = ? WHERE id = ?', [status, req.params.id]);
     res.json({ message: 'Status updated' });
   } catch (err) {

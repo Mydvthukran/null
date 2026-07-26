@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const verifyAdmin = require('../middleware/auth');
+const { requireRole } = require('../middleware/auth');
 const { logActivity } = require('../utils/logger');
 
 // Get all settings
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update multiple settings (Admin only)
-router.put('/', verifyAdmin, async (req, res) => {
+router.put('/', verifyAdmin, requireRole('super_admin'), async (req, res) => {
   const connection = await pool.getConnection();
   try {
     const updates = req.body;

@@ -13,6 +13,15 @@ const storage = getCloudinaryStorage('faculty');
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['.jpg', '.jpeg', '.png', '.webp'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedTypes.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only JPG, JPEG, PNG, WEBP files are allowed.'));
+    }
+  },
 });
 
 // Helper to get faculty with their departments
