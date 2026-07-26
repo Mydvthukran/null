@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import fs from 'fs'
 import path from 'path'
@@ -17,15 +17,35 @@ const copy404Plugin = () => ({
 });
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: '/',
-  plugins: [react(), copy404Plugin()],
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: './src/setupTests.js',
-  },
-  build: {
-    outDir: 'client/dist'
-  }
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const apiUrl = env.VITE_API_URL || '/api';
+
+  return {
+    base: '/',
+    plugins: [react(), copy404Plugin()],
+    define: {
+      'import.meta.env.VITE_API_URL': JSON.stringify(apiUrl),
+    },
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+        },
+        '/uploads': {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+        },
+      },
+    },
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: './src/setupTests.js',
+    },
+    build: {
+      outDir: 'client/dist'
+    }
+  };
 })
