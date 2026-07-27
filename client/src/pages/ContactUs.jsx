@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSettings } from '../context/SettingsContext';
 
 const initialFormData = {
   name: '',
@@ -9,6 +10,7 @@ const initialFormData = {
 };
 
 const ContactUs = () => {
+  const settings = useSettings();
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -96,9 +98,9 @@ const ContactUs = () => {
           <aside className="submenu-aside">
             <div className="submenu-aside-card">
               <h3>Contact Information</h3>
-              <p><strong>Address:</strong> State Institute of Engineering and Technology, Nilokheri, Karnal (Haryana)</p>
-              <p><strong>Email:</strong> <a href="mailto:sietpkl@gmail.com">sietpkl@gmail.com</a></p>
-              <p><strong>Phone:</strong> <a href="tel:01722979887">0172-2979887</a></p>
+              <p><strong>Address:</strong> {settings?.address || 'State Institute of Engineering and Technology, Nilokheri, Karnal (Haryana)'}</p>
+              <p><strong>Email:</strong> <a href={`mailto:${settings?.contact_email || 'sietpkl@gmail.com'}`}>{settings?.contact_email || 'sietpkl@gmail.com'}</a></p>
+              <p><strong>Phone:</strong> <a href={`tel:${(settings?.contact_phone || '0172-2979887').replace(/[^0-9+]/g, '')}`}>{settings?.contact_phone || '0172-2979887'}</a></p>
             </div>
           </aside>
         </div>
