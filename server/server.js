@@ -43,6 +43,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ============================================================
 // API Routes
 // ============================================================
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+  next();
+});
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/applications', require('./routes/applications'));
