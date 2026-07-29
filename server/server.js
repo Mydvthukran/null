@@ -81,7 +81,11 @@ app.use((err, req, res, next) => {
 // ============================================================
 // Start Server
 // ============================================================
-app.listen(PORT, () => {
-  console.log(`✅ SIET Admin Server running on http://localhost:${PORT}`);
-  console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ SIET Admin Server running on http://localhost:${PORT}`);
+    console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+  });
+}
+
+module.exports = app;
