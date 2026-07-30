@@ -12,14 +12,12 @@ describe('Developers Page', () => {
 
   it('renders section title', () => {
     renderPage();
-    expect(screen.getByText('Project Developers')).toBeInTheDocument();
+    expect(screen.getByText('The Creators')).toBeInTheDocument();
   });
 
   it('renders developer cards', () => {
     renderPage();
-    expect(screen.getByText('Yogesh Kumar')).toBeInTheDocument();
-    expect(screen.getByText('Rohan Mukhija')).toBeInTheDocument();
-    expect(screen.getByText('Vinay Sharma')).toBeInTheDocument();
-    expect(screen.getByText('Tarun Rana')).toBeInTheDocument();
+    expect(screen.getByText('Manish Yadav')).toBeInTheDocument();
+    expect(screen.getByText('Aaditiya Verma')).toBeInTheDocument();
   });
 });

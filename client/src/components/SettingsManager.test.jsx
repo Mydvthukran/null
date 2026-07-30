@@ -4,12 +4,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('SettingsManager Component', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve([
-          { id: 1, key: 'contact_email', value: 'admin@college.edu' },
-          { id: 2, key: 'contact_phone', value: '123-456-7890' }
-        ])
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true,
+        json: () => Promise.resolve({
+          welcome_title: 'Test',
+          contact_email: 'admin@college.edu',
+          contact_phone: '123-456-7890'
+        })
       })
     ));
   });
@@ -19,13 +19,14 @@ describe('SettingsManager Component', () => {
   });
 
   it('renders correctly', async () => {
-    render(<SettingsManager admin={{ role: 'super_admin' }} />);
-    expect(screen.getByText('Site Settings')).toBeInTheDocument();
+    render(<SettingsManager token="test" />);
+    await waitFor(() => {
+      expect(screen.getByText('System Settings & Branding')).toBeInTheDocument();
+    });
   });
 
   it('displays fetched settings inputs', async () => {
-    render(<SettingsManager admin={{ role: 'super_admin' }} />);
-    
+    render(<SettingsManager token="test" />);
     await waitFor(() => {
       const inputs = screen.getAllByRole('textbox');
       expect(inputs.length).toBeGreaterThan(0);
@@ -33,8 +34,10 @@ describe('SettingsManager Component', () => {
     });
   });
 
-  it('renders save button', () => {
-    render(<SettingsManager admin={{ role: 'super_admin' }} />);
-    expect(screen.getByText('Save Settings')).toBeInTheDocument();
+  it('renders save button', async () => {
+    render(<SettingsManager token="test" />);
+    await waitFor(() => {
+      expect(screen.getByText('Save Settings')).toBeInTheDocument();
+    });
   });
 });

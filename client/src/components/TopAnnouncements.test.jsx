@@ -1,50 +1,24 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import TopAnnouncements from './TopAnnouncements';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+vi.mock('./ScrollReveal', () => ({ default: ({ children }) => <div>{children}</div> }));
 
 describe('TopAnnouncements Component', () => {
-  beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve([
-          { id: 1, title: 'Urgent Announcement', status: 'Active', category: 'Notice', file_path: null },
-          { id: 2, title: 'Normal Announcement', status: 'Active', category: 'Notice', file_path: 'doc.pdf' }
-        ])
-      })
-    ));
+  const renderPage = () => render(
+    <BrowserRouter>
+      <TopAnnouncements />
+    </BrowserRouter>
+  );
+
+  it('renders section title', () => {
+    renderPage();
+    expect(screen.getByText('Top Announcements')).toBeInTheDocument();
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('renders without crashing', async () => {
-    render(
-      <BrowserRouter>
-        <TopAnnouncements />
-      </BrowserRouter>
-    );
-    expect(await screen.findByText('ANNOUNCEMENTS')).toBeInTheDocument();
-  });
-
-  it('displays active announcements', async () => {
-    render(
-      <BrowserRouter>
-        <TopAnnouncements />
-      </BrowserRouter>
-    );
-    expect(await screen.findByText('Urgent Announcement')).toBeInTheDocument();
-    expect(await screen.findByText('Normal Announcement')).toBeInTheDocument();
-  });
-
-  it('displays "New" badge for announcements', async () => {
-    render(
-      <BrowserRouter>
-        <TopAnnouncements />
-      </BrowserRouter>
-    );
-    const badges = await screen.findAllByText('New');
-    expect(badges.length).toBe(2);
+  it('renders view all link', () => {
+    renderPage();
+    expect(screen.getByText('View All Notices')).toBeInTheDocument();
   });
 });

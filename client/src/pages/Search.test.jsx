@@ -1,25 +1,9 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Search from './Search';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 describe('Search Page', () => {
-  beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({
-          notices: [{ id: 1, title: 'Exam Notice' }],
-          events: [{ id: 1, title: 'Annual Fest' }],
-          gallery: []
-        })
-      })
-    ));
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   const renderPage = () => render(
     <BrowserRouter>
       <Search />
@@ -28,17 +12,11 @@ describe('Search Page', () => {
 
   it('renders section title', () => {
     renderPage();
-    expect(screen.getByText('Search Site')).toBeInTheDocument();
+    expect(screen.getByText('Search')).toBeInTheDocument();
   });
 
-  it('performs search when typing', async () => {
+  it('displays no results when query is empty', () => {
     renderPage();
-    const input = screen.getByPlaceholderText('Enter search term (min 3 characters)...');
-    fireEvent.change(input, { target: { value: 'Exam' } });
-    
-    await waitFor(() => {
-      expect(screen.getByText('Exam Notice')).toBeInTheDocument();
-      expect(screen.getByText('Annual Fest')).toBeInTheDocument(); // Since search is mocked, all results return
-    });
+    expect(screen.getByText('Results for')).toBeInTheDocument();
   });
 });

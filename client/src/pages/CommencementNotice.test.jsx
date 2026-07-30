@@ -1,7 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import CommencementNotice from './CommencementNotice';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+vi.mock('../components/ScrollReveal', () => ({ default: ({ children }) => <div>{children}</div> }));
 
 describe('CommencementNotice Page', () => {
   const renderPage = () => render(
@@ -12,16 +14,17 @@ describe('CommencementNotice Page', () => {
 
   it('renders section title', () => {
     renderPage();
-    expect(screen.getByText('Session Commencement Notice')).toBeInTheDocument();
+    expect(screen.getByText('NOTICE')).toBeInTheDocument();
   });
 
   it('renders commencement date info', () => {
     renderPage();
-    expect(screen.getByText(/Classes for the upcoming academic session/i)).toBeInTheDocument();
+    expect(screen.getByText('Commencement of B.Tech. 1st Year Regular Classes')).toBeInTheDocument();
   });
 
-  it('renders uniform guidelines', () => {
+  it('renders induction program schedule', () => {
     renderPage();
-    expect(screen.getByText(/Students must strictly adhere to the uniform code/i)).toBeInTheDocument();
+    expect(screen.getByText('Week 1: Academic Induction')).toBeInTheDocument();
+    expect(screen.getByText('Week 2: Industrial Induction')).toBeInTheDocument();
   });
 });
