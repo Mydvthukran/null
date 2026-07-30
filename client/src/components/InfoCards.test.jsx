@@ -5,8 +5,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('InfoCards Component', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true,
         json: () => Promise.resolve([
           { id: 1, title: 'Test Notice 1', date: '2026-07-01', status: 'Active', category: 'Notice', file_path: 'test1.pdf' },
           { id: 2, title: 'Archived Notice', date: '2026-06-01', status: 'Archived', category: 'Notice', file_path: 'test2.pdf' },
@@ -53,8 +52,7 @@ describe('InfoCards Component', () => {
   });
   
   it('displays empty state if no notices', async () => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true,
         json: () => Promise.resolve([])
       })
     ));

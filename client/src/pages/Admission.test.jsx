@@ -14,26 +14,22 @@ describe('Admission Page', () => {
 
   it('renders section title', () => {
     renderPage();
-    expect(screen.getByText('B.Tech Admission 2026-27')).toBeInTheDocument();
+    expect(screen.getByText('Student Query Form')).toBeInTheDocument();
   });
 
-  it('renders first year section', () => {
+  it('renders name input', () => {
     renderPage();
-    expect(screen.getByText(/1st Year \(B.Tech\)/i)).toBeInTheDocument();
+    // Match exactly 'Name *' to avoid matching 'Father\'s Name *'
+    expect(screen.getByLabelText('Name *')).toBeInTheDocument();
   });
 
-  it('renders LEET section', () => {
+  it('renders address input', () => {
     renderPage();
-    expect(screen.getByText(/2nd Year \(B.Tech LEET\)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Address *')).toBeInTheDocument();
   });
 
-  it('renders links', () => {
+  it('renders submit button', () => {
     renderPage();
-    expect(screen.getByRole('link', { name: /Download Admission Brochure/i })).toBeInTheDocument();
-  });
-
-  it('renders admission open text', () => {
-    renderPage();
-    expect(screen.getByText(/Admission Open for B.Tech/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Submit Query Form/i })).toBeInTheDocument();
   });
 });

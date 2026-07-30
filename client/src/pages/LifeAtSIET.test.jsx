@@ -5,8 +5,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('LifeAtSIET Page', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true,
         json: () => Promise.resolve({
           images: [
             { id: 1, title: 'Campus Photo', category: 'Campus', imagePath: 'campus.jpg' }

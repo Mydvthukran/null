@@ -5,8 +5,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 describe('ScheduledPopup Component', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(() =>
-      Promise.resolve({
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true,
         json: () => Promise.resolve([
           { id: 1, title: 'Popup Title', file_path: 'popup.jpg', status: 'Active', category: 'Home Carousel' }
         ])

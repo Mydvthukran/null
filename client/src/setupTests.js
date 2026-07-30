@@ -38,3 +38,11 @@ Object.defineProperty(global, 'IntersectionObserver', {
   configurable: true,
   value: IntersectionObserver,
 });
+
+// Mock global fetch for components that don't mock it locally
+global.fetch = vi.fn(() => 
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve([])
+  })
+);

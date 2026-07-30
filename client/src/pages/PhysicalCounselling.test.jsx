@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import PhysicalCounselling from './PhysicalCounselling';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+vi.mock('../components/ScrollReveal', () => ({ default: ({ children }) => <div>{children}</div> }));
 
 describe('PhysicalCounselling Page', () => {
   const renderPage = () => render(
@@ -12,21 +14,24 @@ describe('PhysicalCounselling Page', () => {
 
   it('renders section title', () => {
     renderPage();
-    expect(screen.getByText('B.Tech Physical Counselling 2025-26')).toBeInTheDocument();
+    expect(screen.getByText('Physical Counselling')).toBeInTheDocument();
   });
 
-  it('renders application fee info', () => {
+  it('renders terms and conditions text', () => {
     renderPage();
-    expect(screen.getByText(/Application Fee: ₹500/i)).toBeInTheDocument();
+    expect(screen.getByText(/By submitting this form/i)).toBeInTheDocument();
   });
 
-  it('renders offline form section', () => {
+  it('renders document links', () => {
     renderPage();
-    expect(screen.getByText(/Offline Counselling Form/i)).toBeInTheDocument();
+    expect(screen.getByText('Physical Counselling form')).toBeInTheDocument();
+    expect(screen.getByText('Fee Structure')).toBeInTheDocument();
   });
 
-  it('renders required documents heading', () => {
+  it('shows warning when applying without accepting terms', () => {
     renderPage();
-    expect(screen.getByText(/Required Documents/i)).toBeInTheDocument();
+    const applyButton = screen.getByRole('button', { name: 'Apply Online' });
+    fireEvent.click(applyButton);
+    expect(screen.getByText('Please Accept the terms and conditions')).toBeInTheDocument();
   });
 });

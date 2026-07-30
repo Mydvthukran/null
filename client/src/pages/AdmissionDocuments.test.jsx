@@ -12,13 +12,18 @@ describe('AdmissionDocuments Page', () => {
 
   it('renders section title', () => {
     renderPage();
-    expect(screen.getByText('Required Documents for Admission')).toBeInTheDocument();
+    expect(screen.getByText('Fee Structure')).toBeInTheDocument();
   });
 
-  it('renders standard document list', () => {
+  it('renders fee structure table', () => {
     renderPage();
-    expect(screen.getByText('1. 10th Marksheet & Certificate')).toBeInTheDocument();
-    expect(screen.getByText('2. 12th Marksheet & Certificate')).toBeInTheDocument();
-    expect(screen.getByText('6. Character Certificate')).toBeInTheDocument();
+    expect(screen.getByText('Tuition fee (PA)')).toBeInTheDocument();
+    expect(screen.getByText('Spot Round Counselling Participation Fee: ₹700')).toBeInTheDocument();
+  });
+
+  it('renders standard document links', () => {
+    renderPage();
+    expect(screen.getByText('Documents SIET B.Tech Admission')).toBeInTheDocument();
+    expect(screen.getByText('Fee Structure 2026-27')).toBeInTheDocument();
   });
 });

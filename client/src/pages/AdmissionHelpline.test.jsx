@@ -1,9 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import AdmissionHelpline from './AdmissionHelpline';
-import { describe, it, expect, vi } from 'vitest';
-
-vi.mock('../components/ScrollReveal', () => ({ default: ({ children }) => <div>{children}</div> }));
+import { describe, it, expect } from 'vitest';
 
 describe('AdmissionHelpline Page', () => {
   const renderPage = () => render(
@@ -14,26 +12,28 @@ describe('AdmissionHelpline Page', () => {
 
   it('renders main headings', () => {
     renderPage();
-    expect(screen.getByText('Admission Helpline 2025-26')).toBeInTheDocument();
+    expect(screen.getByText('Admission Helpline')).toBeInTheDocument();
   });
 
-  it('renders offline counselling note', () => {
+  it('renders email contact', () => {
     renderPage();
-    expect(screen.getByText(/Offline Counselling at SIET Panchkula/i)).toBeInTheDocument();
+    expect(screen.getByText('admissions@sietpanchkula.ac.in')).toBeInTheDocument();
   });
 
-  it('renders first year contacts', () => {
+  it('renders department coordinators', () => {
     renderPage();
-    expect(screen.getByText('1st Year')).toBeInTheDocument();
+    expect(screen.getByText('Department Coordinators')).toBeInTheDocument();
+    expect(screen.getByText('Computer Science & Engineering')).toBeInTheDocument();
   });
 
-  it('renders LEET contacts', () => {
+  it('renders general admission queries', () => {
     renderPage();
-    expect(screen.getByText('LEET')).toBeInTheDocument();
+    expect(screen.getByText('General Admission Queries')).toBeInTheDocument();
+    expect(screen.getByText('Dr. Milap Sharma')).toBeInTheDocument();
   });
-  
-  it('renders document list link', () => {
+
+  it('renders office contact', () => {
     renderPage();
-    expect(screen.getByRole('link', { name: /View Required Documents/i })).toBeInTheDocument();
+    expect(screen.getByText('Office Contact')).toBeInTheDocument();
   });
 });
