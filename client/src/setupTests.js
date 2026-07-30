@@ -16,3 +16,25 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 window.scrollTo = vi.fn();
+
+// Mock IntersectionObserver
+class IntersectionObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe(element) {
+    this.callback([{ isIntersecting: true, target: element }]);
+  }
+  unobserve() {}
+  disconnect() {}
+}
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserver,
+});
+Object.defineProperty(global, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserver,
+});
