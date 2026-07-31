@@ -154,7 +154,7 @@ const Developers = () => {
               
               <div className="developer-image-container" style={{ transform: 'translateZ(60px)' }}>
                 {dev.image ? (
-                  <img src={dev.image} alt={dev.name} className="developer-image" />
+                  <img src={dev.image} alt={dev.name} className="developer-image" loading="lazy" />
                 ) : (
                   <div className="developer-placeholder" style={{ background: `linear-gradient(135deg, ${dev.theme}, #000)` }}>
                     {dev.name.charAt(0)}

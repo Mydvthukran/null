@@ -157,17 +157,18 @@ const DepartmentSectionPage = () => {
                                 >
                                   <div className="faculty-profile-head">
                                     {faculty.image_path ? (
-                                      <img 
-                                        src={getFileUrl(faculty.image_path)} 
-                                        alt={faculty.name} 
-                                        style={{ 
-                                          width: '2.6rem', 
-                                          height: '2.6rem', 
-                                          borderRadius: '50%', 
-                                          objectFit: 'cover',
-                                          border: '1px solid rgba(16, 35, 63, 0.2)' 
-                                        }} 
-                                      />
+                                        <img 
+                                          src={getFileUrl(faculty.image_path)} 
+                                          alt={faculty.name} 
+                                          style={{ 
+                                            width: '2.6rem', 
+                                            height: '2.6rem', 
+                                            borderRadius: '50%', 
+                                            objectFit: 'cover',
+                                            border: '1px solid rgba(16, 35, 63, 0.2)' 
+                                          }} 
+                                          loading="lazy"
+                                        />
                                     ) : (
                                       <div className="faculty-profile-avatar" aria-hidden="true">{initials}</div>
                                     )}
