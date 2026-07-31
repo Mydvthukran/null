@@ -17,7 +17,8 @@ const Header = React.memo(() => {
               className="tpo-gov-emblem"
               src={sietLogo}
               alt="SIET Panchkula Logo"
-              loading="lazy"
+              loading="eager"
+              fetchpriority="high"
             />
           </div>
 
@@ -31,7 +32,7 @@ const Header = React.memo(() => {
             
           </div>
           <Link to="/" className="tpo-header-emblem header-logo tpo-header-logo" aria-label="SIET Panchkula Home">
-            <img src={haryanaEmblem} alt="Haryana Government Emblem" loading="lazy" />
+            <img src={haryanaEmblem} alt="Haryana Government Emblem" loading="eager" fetchpriority="high" />
           </Link>
           
         </div>

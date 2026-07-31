@@ -26,6 +26,13 @@ export default defineConfig({
     setupFiles: './src/setupTests.js',
   },
   build: {
-    outDir: 'client/dist'
+    outDir: 'client/dist',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        }
+      }
+    }
   }
 })

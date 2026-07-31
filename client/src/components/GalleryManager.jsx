@@ -194,6 +194,7 @@ const GalleryManager = ({ token }) => {
                 src={getFileUrl(img.imagePath)} 
                 alt={img.title} 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                loading="lazy"
               />
             </div>
             <div style={{ padding: '1rem', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>

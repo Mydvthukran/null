@@ -131,7 +131,7 @@ const FacultyManager = ({ token }) => {
               <tr key={f.id}>
                 <td>
                   {f.image_path ? (
-                    <img src={getFileUrl(f.image_path)} alt={f.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                    <img src={getFileUrl(f.image_path)} alt={f.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} loading="lazy" />
                   ) : (
                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{f.name.charAt(0)}</div>
                   )}

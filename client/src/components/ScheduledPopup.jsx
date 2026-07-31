@@ -90,7 +90,8 @@ const ScheduledPopup = () => {
                       maxHeight: '70vh', 
                       objectFit: 'contain', 
                       display: 'block' 
-                    }} 
+                    }}
+                    loading="lazy"
                   />
                 </div>
               ))}
