@@ -4,8 +4,13 @@ const bcrypt = require('bcryptjs');
 
 async function updateSuperAdmin() {
   try {
-    const adminUsername = process.env.ADMIN_USERNAME || 'geraltofrivia';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'witcher3';
+    const adminUsername = process.env.ADMIN_USERNAME;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminUsername || !adminPassword) {
+      throw new Error("ADMIN_USERNAME and ADMIN_PASSWORD must be set in the .env file!");
+    }
+
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
     
     // We update the user where id = 1 or username = 'admin', depending on what the current superadmin is.
