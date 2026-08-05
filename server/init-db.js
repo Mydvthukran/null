@@ -80,8 +80,12 @@ async function initDB() {
 
     // Seed data
     // 1. Admin
-    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const adminUsername = process.env.ADMIN_USERNAME;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminUsername || !adminPassword) {
+      throw new Error("ADMIN_USERNAME and ADMIN_PASSWORD must be provided in environment variables.");
+    }
     
     const [adminRows] = await connection.execute('SELECT * FROM admins WHERE username = ?', [adminUsername]);
     if (adminRows.length === 0) {

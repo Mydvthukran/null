@@ -3,11 +3,15 @@ const path = require("path");
 const { Readable } = require("stream");
 require("dotenv").config();
 
-const FTP_HOST = process.env.FTP_HOST || "145.79.212.16";
-const FTP_USER = process.env.FTP_USER || "sietftp";
-const FTP_PASSWORD = process.env.FTP_PASSWORD || "Rf6r'M4#O8\\;Cy^-";
-const FTP_BASE_DIR = process.env.FTP_BASE_DIR || "public_html/uploads";
-const FTP_BASE_URL = process.env.FTP_BASE_URL || "https://sietpanchkula.ac.in/uploads";
+const FTP_HOST = process.env.FTP_HOST;
+const FTP_USER = process.env.FTP_USER;
+const FTP_PASSWORD = process.env.FTP_PASSWORD;
+const FTP_BASE_DIR = process.env.FTP_BASE_DIR;
+const FTP_BASE_URL = process.env.FTP_BASE_URL;
+
+if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD || !FTP_BASE_DIR || !FTP_BASE_URL) {
+  throw new Error("Missing required FTP environment variables!");
+}
 
 async function getClient() {
   const client = new ftp.Client();
