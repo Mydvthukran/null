@@ -2,12 +2,16 @@ import request from 'supertest';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import jwt from 'jsonwebtoken';
 
+const mockQuery = vi.fn();
+vi.mock('mysql2/promise', () => ({
+  default: {
+    createPool: () => ({ query: mockQuery })
+  },
+  createPool: () => ({ query: mockQuery })
+}));
+
 import pool from '../config/db';
 import app from '../server';
-
-vi.mock('../config/db', () => ({
-  default: { query: vi.fn() }
-}));
 
 // Mock FTP
 vi.mock('../config/ftp', () => ({
@@ -24,23 +28,24 @@ describe('Notices API Routes', () => {
   const authHeader = `Bearer ${adminToken}`;
 
   beforeEach(() => {
+    mockQuery.mockReset();
     vi.clearAllMocks();
   });
 
   describe('GET /api/notices', () => {
     it('should return published notices', async () => {
       const mockNotices = [{ id: 1, title: 'Public Notice' }];
-      pool.query.mockResolvedValue([mockNotices]);
+      mockQuery.mockResolvedValue([mockNotices]);
 
       const res = await request(app).get('/api/notices');
       
       expect(res.status).toBe(200);
       expect(res.body).toEqual(mockNotices);
-      expect(pool.query).toHaveBeenCalled();
+      expect(mockQuery).toHaveBeenCalled();
     });
 
     it('should handle database errors', async () => {
-      pool.query.mockRejectedValue(new Error('DB Error'));
+      mockQuery.mockRejectedValue(new Error('DB Error'));
 
       const res = await request(app).get('/api/notices');
       
@@ -70,7 +75,7 @@ describe('Notices API Routes', () => {
 
   describe('POST /api/notices', () => {
     it('should create a new notice', async () => {
-      pool.query.mockResolvedValue([{ insertId: 10 }]);
+      mockQuery.mockResolvedValue([{ insertId: 10 }]);
 
       const res = await request(app)
         .post('/api/notices')
@@ -84,8 +89,8 @@ describe('Notices API Routes', () => {
 
   describe('DELETE /api/notices/:id', () => {
     it('should delete a notice and return success', async () => {
-      pool.query.mockResolvedValueOnce([[{ file_path: null }]]); // SELECT
-      pool.query.mockResolvedValueOnce([{ affectedRows: 1 }]); // DELETE
+      mockQuery.mockResolvedValueOnce([[{ file_path: null }]]); // SELECT
+      mockQuery.mockResolvedValueOnce([{ affectedRows: 1 }]); // DELETE
 
       const res = await request(app)
         .delete('/api/notices/1')
