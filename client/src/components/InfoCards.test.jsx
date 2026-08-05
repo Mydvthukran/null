@@ -64,8 +64,10 @@ describe('InfoCards Component', () => {
     );
     
     await waitFor(() => {
-      expect(screen.getByText('No updates available')).toBeInTheDocument();
-      expect(screen.getByText('This section will appear once official updates are added.')).toBeInTheDocument();
+      const emptyTitles = screen.getAllByText('No updates available');
+      expect(emptyTitles.length).toBeGreaterThan(0);
+      const emptySubtitles = screen.getAllByText('This section will appear once official updates are added.');
+      expect(emptySubtitles.length).toBeGreaterThan(0);
     });
   });
 

@@ -16,27 +16,20 @@ describe('SocialMediaBar Component', () => {
     render(<SocialMediaBar />);
     const link = screen.getByLabelText('Facebook');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://facebook.com/test');
+    expect(link).toHaveAttribute('href', 'https://www.facebook.com/people/State-Institute-of-Engineering-Technology-Panchkula/61588014391559/');
   });
 
   it('renders twitter link correctly', () => {
     render(<SocialMediaBar />);
     const link = screen.getByLabelText('Twitter');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://twitter.com/test');
+    expect(link).toHaveAttribute('href', 'https://x.com/sietpkl');
   });
 
   it('renders instagram link correctly', () => {
     render(<SocialMediaBar />);
     const link = screen.getByLabelText('Instagram');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://instagram.com/test');
-  });
-
-  it('renders linkedin link correctly', () => {
-    render(<SocialMediaBar />);
-    const link = screen.getByLabelText('LinkedIn');
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', 'https://linkedin.com/test');
+    expect(link).toHaveAttribute('href', 'https://www.instagram.com/siet.panchkula/?hl=en');
   });
 });

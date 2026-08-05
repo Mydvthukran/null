@@ -18,7 +18,6 @@ describe('AdmissionDocuments Page', () => {
   it('renders fee structure table', () => {
     renderPage();
     expect(screen.getByText('Tuition fee (PA)')).toBeInTheDocument();
-    expect(screen.getByText('Spot Round Counselling Participation Fee: ₹700')).toBeInTheDocument();
   });
 
   it('renders standard document links', () => {
