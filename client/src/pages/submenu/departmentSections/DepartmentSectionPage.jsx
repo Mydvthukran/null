@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Link, Navigate, useParams, useLocation } from 'react-router-dom';
 import { departmentSectionCatalog, departmentSectionTitles } from '../departmentSectionCatalog';
 import computerScienceSections from './content/computerScience';
@@ -7,7 +7,7 @@ import cyberSecuritySections from './content/cyberSecurity';
 import roboticsSections from './content/robotics';
 import electricalEngineeringSections from './content/electricalEngineering';
 import electronicsVlsiSections from './content/electronicsVlsi';
-import { getFacultyByDepartment } from '../../../data/facultyProfiles';
+import { getFileUrl } from '../../../utils/fileUrlHelper';
 
 const departmentSectionContent = {
   cse: computerScienceSections,
@@ -32,9 +32,27 @@ const DepartmentSectionPage = () => {
   const { hash } = useLocation();
   const config = departmentSectionCatalog[deptSlug];
 
+  const [facultyMembers, setFacultyMembers] = useState([]);
+
+  useEffect(() => {
+    fetch(import.meta.env.VITE_API_URL + '/faculty/department/' + deptSlug)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const mapped = data.map(f => ({
+            ...f,
+            areaOfInterest: f.area_of_interest,
+            vidwan: f.vidwan_link,
+            image: f.image_path ? getFileUrl(f.image_path) : null
+          }));
+          setFacultyMembers(mapped);
+        }
+      })
+      .catch(err => console.error('Failed to fetch faculty:', err));
+  }, [deptSlug]);
+
   const sections = useMemo(() => {
     const baseSections = departmentSectionContent[deptSlug] || [];
-    const facultyMembers = getFacultyByDepartment(deptSlug);
 
     return baseSections.map((section) => {
       if (section.id !== 'faculty') {
@@ -48,7 +66,7 @@ const DepartmentSectionPage = () => {
         facultyMembers
       };
     });
-  }, [deptSlug]);
+  }, [deptSlug, facultyMembers]);
 
   useEffect(() => {
     if (hash) {

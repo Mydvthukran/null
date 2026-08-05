@@ -2,12 +2,13 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { searchableLinks } from '../data/searchIndex';
 import useMediaQuery from '../hooks/useMediaQuery';
+import { navItems } from '../constants/navConfig';
+
 /**
  * Navbar Component
  * Sticky navigation with responsive mobile menu
  */
 const Navbar = () => {
-  const [navItems, setNavItems] = useState([]);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -21,14 +22,6 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch menus from database
-    fetch(import.meta.env.VITE_API_URL + '/menus')
-      .then(res => res.json())
-      .then(data => {
-        if (data && Array.isArray(data)) setNavItems(data);
-      })
-      .catch(err => console.error('Error fetching menus:', err));
-
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
