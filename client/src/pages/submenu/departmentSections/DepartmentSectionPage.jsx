@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Link, Navigate, useParams, useLocation } from 'react-router-dom';
 import { departmentSectionCatalog, departmentSectionTitles } from '../departmentSectionCatalog';
 import computerScienceSections from './content/computerScience';
@@ -7,7 +7,7 @@ import cyberSecuritySections from './content/cyberSecurity';
 import roboticsSections from './content/robotics';
 import electricalEngineeringSections from './content/electricalEngineering';
 import electronicsVlsiSections from './content/electronicsVlsi';
-import { getFileUrl } from '../../../utils/fileUrlHelper';
+import { getFacultyByDepartment } from '../../../data/facultyProfiles';
 
 const departmentSectionContent = {
   cse: computerScienceSections,
@@ -31,18 +31,10 @@ const DepartmentSectionPage = () => {
   const { deptSlug } = useParams();
   const { hash } = useLocation();
   const config = departmentSectionCatalog[deptSlug];
-  const [facultyMembers, setFacultyMembers] = useState([]);
-
-  useEffect(() => {
-    if (!deptSlug) return;
-    fetch(`${import.meta.env.VITE_API_URL}/faculty/department/${deptSlug}`)
-      .then(res => res.json())
-      .then(data => setFacultyMembers(data))
-      .catch(err => console.error('Error fetching faculty:', err));
-  }, [deptSlug]);
 
   const sections = useMemo(() => {
     const baseSections = departmentSectionContent[deptSlug] || [];
+    const facultyMembers = getFacultyByDepartment(deptSlug);
 
     return baseSections.map((section) => {
       if (section.id !== 'faculty') {
@@ -56,7 +48,7 @@ const DepartmentSectionPage = () => {
         facultyMembers
       };
     });
-  }, [deptSlug, facultyMembers]);
+  }, [deptSlug]);
 
   useEffect(() => {
     if (hash) {
@@ -71,7 +63,7 @@ const DepartmentSectionPage = () => {
     } else {
        window.scrollTo({ top: 0, behavior: 'auto' });
     }
-  }, [hash, deptSlug, facultyMembers]);
+  }, [hash, deptSlug]);
 
   if (!config) {
     return <Navigate to="/departments/cse" replace />;
@@ -137,9 +129,11 @@ const DepartmentSectionPage = () => {
                         {section.facultyMembers?.length > 0 ? (
                           <div className="faculty-card-grid submenu-mt-10">
                             {section.facultyMembers.map((faculty) => {
-                              const interests = faculty.area_of_interest
-                                ? faculty.area_of_interest.split(',').map((item) => item.trim()).filter(Boolean).slice(0, 3)
-                                : [];
+                              const interests = faculty.areaOfInterest
+                                .split(',')
+                                .map((item) => item.trim())
+                                .filter(Boolean)
+                                .slice(0, 3);
                               const initials = faculty.name
                                 .split(' ')
                                 .map((word) => word.trim())
@@ -156,19 +150,18 @@ const DepartmentSectionPage = () => {
                                   aria-label={`Open profile of ${faculty.name}`}
                                 >
                                   <div className="faculty-profile-head">
-                                    {faculty.image_path ? (
-                                        <img 
-                                          src={getFileUrl(faculty.image_path)} 
-                                          alt={faculty.name} 
-                                          style={{ 
-                                            width: '2.6rem', 
-                                            height: '2.6rem', 
-                                            borderRadius: '50%', 
-                                            objectFit: 'cover',
-                                            border: '1px solid rgba(16, 35, 63, 0.2)' 
-                                          }} 
-                                          loading="lazy"
-                                        />
+                                    {faculty.image ? (
+                                      <img 
+                                        src={faculty.image} 
+                                        alt={faculty.name} 
+                                        style={{ 
+                                          width: '2.6rem', 
+                                          height: '2.6rem', 
+                                          borderRadius: '50%', 
+                                          objectFit: 'cover',
+                                          border: '1px solid rgba(16, 35, 63, 0.2)' 
+                                        }} 
+                                      />
                                     ) : (
                                       <div className="faculty-profile-avatar" aria-hidden="true">{initials}</div>
                                     )}

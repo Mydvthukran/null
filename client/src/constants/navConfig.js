@@ -147,8 +147,7 @@ export const navItems = [
       { name: 'Admission Helpline', href: '/admission-helpline' },
       { name: 'Admission Prospectus', href: '/academics/admission-prospectus' },
       { name: 'Admission Documents', href: '/admission-documents' },
-      { name: 'Pay Fees Online', href: '/pay-fees-online' },
-      { name: 'Physical Counselling', href: '/physical-counselling' }
+      { name: 'Pay Fees Online', href: '/pay-fees-online' }
     ]
   }
 ];

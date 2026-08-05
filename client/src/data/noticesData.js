@@ -1,4 +1,4 @@
-import meritListDoc from '../assets/new-assets/Merit List 12th.pdf';
+import meritListDoc from '../assets/new-assets/home/notices/12th-merit-list.pdf';
 import aicteQualificationsDoc from '../assets/new-assets/home/notices/AICTE-Degree-Pay-Qualifications-and-Promotions.pdf';
 import applicationPklDoc from '../assets/new-assets/home/notices/Application-PKL.pdf';
 import leetSyllabusDoc from '../assets/new-assets/home/notices/B.Tech-LEET-Syllabus-2025-26-07.05.2025.pdf';
@@ -9,66 +9,15 @@ import admissionDocsAltDoc from '../assets/new-assets/home/notices/Doc_B.techAdm
 import feeStructureDoc from '../assets/new-assets/home/notices/Fee_Structure_b.tech_2025.pdf';
 import guestFacultyGuidelinesDoc from '../assets/new-assets/home/notices/Guidelines-for-engagement-of-Guest-Faculty-Instructors-dated-22.12.2022.pdf';
 import iitRoparDoc from '../assets/new-assets/home/notices/IITROPAR.pdf';
-import jeeListDoc from '../assets/new-assets/Merit List JEE Mains.pdf';
+import jeeListDoc from '../assets/new-assets/home/notices/jee-list.pdf';
 import ptmNoticeDoc from '../assets/new-assets/home/notices/Notice-PTM.pdf';
 import martyrdomQuizDoc from '../assets/new-assets/home/notices/Quiz-Competition-on-Martyrdom-Day.pdf';
 import academicCalendarDoc from '../assets/new-assets/home/notices/Schedule-of-Academic-Calendar-for-Engg.-Affiliated-Colleges-for-the-Session-2025-26.pdf';
 import trainingPolicyDoc from '../assets/new-assets/home/notices/training-policy.pdf';
-import reopeningNoticeDoc from '../assets/new-assets/home/notices/Notice 17.07.2026.pdf';
 
 const admissionDocsDoc = null;
 
 export const noticesBoardData = [
-  {
-    id: 22,
-    title: 'Commencement of B.Tech. 1st Year Regular Classes',
-    category: 'Event',
-    date: '24 Jul 2026',
-    priority: 'High',
-    details: 'NOTICE regarding the Commencement of B.Tech. 1st Year Regular Classes and Induction Program.',
-    downloadUrl: '/commencement-notice',
-    readMoreUrl: '/commencement-notice'
-  },
-  {
-    id: 21,
-    title: 'B.Tech. Physical Counselling Merit Lists Released',
-    category: 'Event',
-    date: '24 Jul 2026',
-    priority: 'High',
-    details: 'Merit lists for B.Tech. Physical Counselling have been released.',
-    downloadUrl: '/physical-counselling',
-    readMoreUrl: '/physical-counselling'
-  },
-  {
-    id: 20,
-    title: 'Induction Program for Freshers',
-    category: 'Event',
-    date: '23 Jul 2026',
-    priority: 'High',
-    details: 'Official Order (Order 168) regarding the Induction Program for Freshers for the academic session 2026-27.',
-    downloadUrl: '/order-168.jpeg',
-    readMoreUrl: '/order-168.jpeg'
-  },
-  {
-    id: 19,
-    title: 'B.Tech. Physical Counselling 2026-27',
-    category: 'Event',
-    date: '18 Jul 2026',
-    priority: 'High',
-    details: 'Physical Counselling deadline was 23/07/2026 and this form is no longer accepting responses. Merit list will be displayed on 24/07/2026.',
-    downloadUrl: '/physical-counselling',
-    readMoreUrl: '/physical-counselling'
-  },
-  {
-    id: 18,
-    title: 'College Reopening Notice',
-    category: 'Event',
-    date: '17 Jul 2026',
-    priority: 'High',
-    details: 'Official notice regarding the reopening of the college for the academic session 2026-27.',
-    downloadUrl: reopeningNoticeDoc,
-    readMoreUrl: reopeningNoticeDoc
-  },
   {
     id: 1,
     title: 'B.Tech Prospectus 2025-26',
@@ -310,9 +259,6 @@ export const noticesListData = noticesBoardData
 // Pulled from the institute "Notices/Updates" feed
 // shown on https://sietpanchkula.ac.in/
 export const campusUpdatesData = [
-  { id: 13, title: 'Induction Program for Freshers (Order 168)', date: '23 Jul, 2026', href: '/order-168.jpeg' },
-  { id: 11, title: 'B.Tech. Physical Counselling Deadline Notice', date: '18 Jul, 2026', href: '/physical-counselling' },
-  { id: 12, title: 'College Reopening Notice', date: '17 Jul, 2026' },
   { id: 1, title: 'Web Development Competition on 20.03.2026', date: '19 Mar, 2026' },
   { id: 2, title: 'Quiz Competition on Martyrdom Day', date: '19 Mar, 2026' },
   { id: 3, title: 'Notice: Parent-Teacher Meeting (March 13, 2026)', date: '5 Mar, 2026' },

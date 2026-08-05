@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { notificationsListData, noticesListData } from '../data/noticesData';
 import { ADMISSIONS_CONFIG } from '../config/admissions';
 import { getFileUrl } from '../utils/fileUrlHelper';
 
@@ -91,6 +92,7 @@ const ScrollableCardBody = ({ items, scrollRef, contentRef, pauseRef }) => (
  * Three auto-scrolling information cards
  */
 const InfoCards = () => {
+  const notifications = notificationsListData;
   const [notices, setNotices] = useState([]);
 
   useEffect(() => {
@@ -105,7 +107,7 @@ const InfoCards = () => {
           title: n.title,
           date: n.date,
           href: n.file_path ? getFileUrl(n.file_path) : null,
-          isNew: n.status === 'Active' // or based on date if you prefer
+          isNew: n.status === 'Active'
         });
 
         const notes = activeData
@@ -117,10 +119,31 @@ const InfoCards = () => {
       .catch(err => console.error('Error fetching notices:', err));
   }, []);
 
+  const news = [];
+  /* if (!ADMISSIONS_CONFIG.hstesOpen) {
+    news.push({
+      id: 'news-campus-counselling',
+      title: 'Offline Counselling form',
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      href: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
+      isNew: true
+    });
+  } */
+
+  const newsScrollRef = useRef(null);
+  const newsContentRef = useRef(null);
+  const newsPauseRef = useRef(false);
+
+  const notifScrollRef = useRef(null);
+  const notifContentRef = useRef(null);
+  const notifPauseRef = useRef(false);
+
   const noticesScrollRef = useRef(null);
   const noticesContentRef = useRef(null);
   const noticesPauseRef = useRef(false);
 
+  useAutoScroll(newsScrollRef, newsContentRef, newsPauseRef);
+  useAutoScroll(notifScrollRef, notifContentRef, notifPauseRef);
   useAutoScroll(noticesScrollRef, noticesContentRef, noticesPauseRef);
 
   return (
@@ -132,6 +155,42 @@ const InfoCards = () => {
         </div>
 
         <div className="cards-grid">
+          <div className="info-card card-blue">
+            <div className="card-header">
+              <div className="card-icon" aria-hidden="true">NEWS</div>
+              <h3 className="card-title">News and Events</h3>
+            </div>
+            <ScrollableCardBody
+              items={news}
+              scrollRef={newsScrollRef}
+              contentRef={newsContentRef}
+              pauseRef={newsPauseRef}
+            />
+            <div className="card-footer">
+              <Link to="/all-notices" className="card-link">
+                View all news {'->'}
+              </Link>
+            </div>
+          </div>
+
+          <div className="info-card card-green">
+            <div className="card-header">
+              <div className="card-icon" aria-hidden="true">ALRT</div>
+              <h3 className="card-title">Notifications</h3>
+            </div>
+            <ScrollableCardBody
+              items={notifications}
+              scrollRef={notifScrollRef}
+              contentRef={notifContentRef}
+              pauseRef={notifPauseRef}
+            />
+            <div className="card-footer">
+              <Link to="/all-notices" className="card-link">
+                View all notifications {'->'}
+              </Link>
+            </div>
+          </div>
+
           <div className="info-card card-peach">
             <div className="card-header">
               <div className="card-icon" aria-hidden="true">NOTE</div>
@@ -147,6 +206,24 @@ const InfoCards = () => {
               <Link to="/all-notices" className="card-link">
                 View all notices {'->'}
               </Link>
+            </div>
+          </div>
+
+          <div className="info-card card-peach" id="placements">
+            <div className="card-header">
+              <div className="card-icon" aria-hidden="true">PLAC</div>
+              <h3 className="card-title">Placement Updates</h3>
+            </div>
+            <div className="card-body">
+              <div className="card-empty">
+                <p className="card-empty-title">No updates available</p>
+                <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
+              </div>
+            </div>
+            <div className="card-footer">
+              <a href="https://tpo.sietpanchkula.ac.in/" target="_blank" rel="noopener noreferrer" className="card-link">
+                View all placements {'->'}
+              </a>
             </div>
           </div>
         </div>

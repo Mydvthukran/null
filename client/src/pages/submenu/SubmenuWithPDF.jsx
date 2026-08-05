@@ -2,27 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getSectionHome } from './submenuTemplateShared';
 import SubmenuBodyProse from './SubmenuBodyProse';
-import { useDocuments } from '../../context/DocumentContext';
 
 const SubmenuWithPDF = ({
   sectionLabel,
   title,
   subtitle,
   pdfUrl,
-  pdfKey,
   points = [],
   body = [],
   resources = [],
   hideHero = false,
 }) => {
   const sectionHome = getSectionHome(sectionLabel);
-  const { getDocUrl } = useDocuments();
-  const actualPdfUrl = pdfUrl || (pdfKey ? getDocUrl(pdfKey) : null);
 
   const handleDownload = () => {
-    if (!actualPdfUrl) return;
+    if (!pdfUrl) return;
     const link = document.createElement('a');
-    link.href = actualPdfUrl;
+    link.href = pdfUrl;
     link.download = `${title.replace(/\s+/g, '_')}.pdf`;
     document.body.appendChild(link);
     link.click();
@@ -75,7 +71,7 @@ const SubmenuWithPDF = ({
 
                 <div className="coc-panel" style={{ marginTop: '2.5rem', boxShadow: 'var(--shadow-mid)' }}>
                   <div className="coc-preview-head">
-                    {actualPdfUrl && (
+                    {pdfUrl && (
                       <button
                         onClick={handleDownload}
                         className="gradient-button"
@@ -86,10 +82,10 @@ const SubmenuWithPDF = ({
                   </div>
                   
                   <div className="coc-preview-frame-wrap">
-                    {actualPdfUrl ? (
+                    {pdfUrl ? (
                       <iframe
                         title={`${title} PDF preview`}
-                        src={actualPdfUrl}
+                        src={pdfUrl}
                         className="coc-preview-frame"
                         loading="lazy"
                       />

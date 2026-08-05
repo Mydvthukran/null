@@ -49,7 +49,6 @@ export const searchableLinks = [
   { label: 'Admission Prospectus', href: '/academics/admission-prospectus' },
   { label: 'Exam Schedule', href: '/academics/exam-schedule' },
   { label: 'Code of Conduct', href: '/academics/code-of-conduct' },
-  { label: 'Physical Counselling', href: '/physical-counselling' },
   { label: 'Anti-Ragging', href: '/academics/anti-ragging' },
   ...departmentSearchableLinks,
   { label: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },

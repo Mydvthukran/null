@@ -18,7 +18,6 @@ const CourseCard = React.memo(({ course }) => (
           src={course.image}
           alt={course.title}
           className="course-img"
-          loading="lazy"
         />
       ) : (
         <div className="course-img course-img-placeholder" aria-hidden="true" />

@@ -78,6 +78,7 @@ const Footer = React.memo(() => {
                 <div className="contact-item">
                   <div>
                     <p><a href={`mailto:${settings?.contact_email || 'sietpkl@gmail.com'}`}>{settings?.contact_email || 'sietpkl@gmail.com'}</a></p>
+                    <p style={{ marginTop: '0.2rem' }}><a href="mailto:admissions@sietpanchkula.ac.in">admissions@sietpanchkula.ac.in</a></p>
                   </div>
                 </div>
                 <div className="contact-item">
