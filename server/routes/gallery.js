@@ -9,13 +9,11 @@ const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
-const { getCloudinaryStorage, deleteFromCloudinary } = require('../config/cloudinary');
+const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
 
 // Multer storage configuration
-const storage = getCloudinaryStorage('gallery');
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max for images
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
@@ -47,13 +45,11 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 
   const { title, category } = req.body;
   if (!title) {
-    // If we fail, delete the just-uploaded file
-    await deleteFromCloudinary(req.file.path);
     return res.status(400).json({ error: 'Image title is required.' });
   }
 
   try {
-    const imagePath = req.file.path;
+    const imagePath = await uploadToFTP(req.file.buffer, 'gallery', req.file.originalname);
     const cat = category || 'general';
 
     const [result] = await pool.query(
@@ -66,7 +62,6 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     res.json({ message: 'Image uploaded successfully', id: result.insertId });
   } catch (err) {
     console.error('Error uploading image:', err);
-    if (req.file) await deleteFromCloudinary(req.file.path);
     res.status(500).json({ error: 'Server error saving image' });
   }
 });
@@ -100,15 +95,9 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     
     let img = rows[0];
 
-    // Delete file from local storage
+    // Delete file from storage
     if (img.imagePath) {
-      if (img.imagePath.includes('cloudinary.com')) {
-        await deleteFromCloudinary(img.imagePath);
-      } else {
-        const fileName = path.basename(img.imagePath);
-        const localPath = path.join(__dirname, '..', 'uploads', 'gallery', fileName);
-        if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
-      }
+      await deleteFromFTP(img.imagePath);
     }
 
     await pool.query('DELETE FROM gallery WHERE id = ?', [req.params.id]);

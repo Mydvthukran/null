@@ -9,12 +9,10 @@ const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
-const { getCloudinaryStorage, deleteFromCloudinary } = require('../config/cloudinary');
-
-const storage = getCloudinaryStorage('documents');
+const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'];
@@ -47,22 +45,22 @@ router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM documents WHERE document_key = ?', [req.params.key]);
     if (rows.length === 0) {
-      if (req.file && req.file.path) {
-        await deleteFromCloudinary(req.file.path);
-      }
       return res.status(404).json({ error: 'System document key not found.' });
     }
     
     let doc = rows[0];
+    
+    let filePath = null;
+    try {
+      filePath = await uploadToFTP(req.file.buffer, 'documents', req.file.originalname);
+    } catch (err) {
+      console.error('FTP upload error:', err);
+      return res.status(500).json({ error: 'Error uploading file' });
+    }
 
     // Optionally delete old file from storage
     if (doc.filePath) {
-      if (doc.filePath.includes('cloudinary.com')) {
-        await deleteFromCloudinary(doc.filePath);
-      } else {
-        const oldPath = path.join(__dirname, '..', 'uploads', path.basename(doc.filePath));
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
+      await deleteFromFTP(doc.filePath);
     }
 
     const fileSizeKB = (req.file.size / 1024).toFixed(0);
@@ -72,7 +70,6 @@ router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
 
     // We do NOT update the `name` or `category` because they are fixed system definitions.
     // We only update the file references.
-    const filePath = req.file.path;
     const updatedAt = new Date().toISOString().split('T')[0];
 
     await pool.query(
@@ -85,9 +82,6 @@ router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
     res.json({ message: 'Document replaced successfully', filePath });
   } catch (err) {
     console.error('Error replacing document:', err);
-    if (req.file && req.file.path) {
-      await deleteFromCloudinary(req.file.path);
-    }
     res.status(500).json({ error: 'Server error replacing document' });
   }
 });

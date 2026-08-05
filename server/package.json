@@ -12,15 +12,14 @@
   "license": "ISC",
   "description": "Backend server for SIET college admin dashboard",
   "dependencies": {
+    "basic-ftp": "^6.2.0",
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.2.0",
-    "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.14.1"
   },
   "devDependencies": {

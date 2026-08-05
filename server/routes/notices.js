@@ -9,12 +9,10 @@ const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
-const { getCloudinaryStorage, deleteFromCloudinary } = require('../config/cloudinary');
-
-const storage = getCloudinaryStorage('notices');
+const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.jpg', '.jpeg', '.png'];
@@ -52,13 +50,19 @@ router.get('/admin', authMiddleware, async (req, res) => {
 // POST /api/notices — Add a new notice
 router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
   const { title, date, status, category, publish_date } = req.body;
-  const filePath = req.file ? req.file.path : null;
 
   if (!title) {
-    if (req.file && req.file.path) {
-      await deleteFromCloudinary(req.file.path);
-    }
     return res.status(400).json({ error: 'Title is required' });
+  }
+
+  let filePath = null;
+  if (req.file) {
+    try {
+      filePath = await uploadToFTP(req.file.buffer, 'notices', req.file.originalname);
+    } catch (err) {
+      console.error('FTP upload error:', err);
+      return res.status(500).json({ error: 'Error uploading file' });
+    }
   }
 
   try {
@@ -71,8 +75,8 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
     res.status(201).json({ message: 'Notice created successfully', id: result.insertId });
   } catch (err) {
     console.error('Error creating notice:', err);
-    if (req.file && req.file.path) {
-      await deleteFromCloudinary(req.file.path);
+    if (filePath) {
+      await deleteFromFTP(filePath);
     }
     res.status(500).json({ error: 'Server error creating notice' });
   }
@@ -83,23 +87,18 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
   const { id } = req.params;
   const { title, date, status, category, publish_date } = req.body;
   
+  let filePath = null;
   try {
     const pubDate = publish_date ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') : null;
-    // If a new file is uploaded, update file_path, otherwise keep old
     let query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ? WHERE id = ?';
     let params = [title, date, status, category, pubDate, id];
 
     if (req.file) {
-      const filePath = req.file.path;
+      filePath = await uploadToFTP(req.file.buffer, 'notices', req.file.originalname);
       
       const [oldRows] = await pool.query('SELECT file_path FROM notices WHERE id = ?', [id]);
       if (oldRows.length > 0 && oldRows[0].file_path) {
-        if (oldRows[0].file_path.includes('cloudinary.com')) {
-          await deleteFromCloudinary(oldRows[0].file_path);
-        } else {
-          const oldFile = path.join(__dirname, '..', oldRows[0].file_path);
-          if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
-        }
+        await deleteFromFTP(oldRows[0].file_path);
       }
 
       query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ?, file_path = ? WHERE id = ?';
@@ -111,8 +110,8 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
     res.json({ message: 'Notice updated successfully' });
   } catch (err) {
     console.error('Error updating notice:', err);
-    if (req.file && req.file.path) {
-      await deleteFromCloudinary(req.file.path);
+    if (filePath) {
+      await deleteFromFTP(filePath);
     }
     res.status(500).json({ error: 'Server error updating notice' });
   }
@@ -124,12 +123,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT file_path FROM notices WHERE id = ?', [id]);
     if (rows.length > 0 && rows[0].file_path) {
-      if (rows[0].file_path.includes('cloudinary.com')) {
-        await deleteFromCloudinary(rows[0].file_path);
-      } else {
-        const file = path.join(__dirname, '..', rows[0].file_path);
-        if (fs.existsSync(file)) fs.unlinkSync(file);
-      }
+      await deleteFromFTP(rows[0].file_path);
     }
     
     await pool.query('DELETE FROM notices WHERE id = ?', [id]);

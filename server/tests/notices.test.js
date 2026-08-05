@@ -5,34 +5,26 @@ import jwt from 'jsonwebtoken';
 import pool from '../config/db';
 import app from '../server';
 
-let originalQuery;
+vi.mock('../config/db', () => ({
+  default: { query: vi.fn() }
+}));
 
-// Mock Cloudinary
-vi.mock('multer-storage-cloudinary', () => ({
-  CloudinaryStorage: vi.fn().mockImplementation(() => ({
-    _handleFile: (req, file, cb) => cb(null, { path: 'mocked-path', size: 100 }),
-    _removeFile: (req, file, cb) => cb(null)
-  }))
+// Mock FTP
+vi.mock('../config/ftp', () => ({
+  uploadToFTP: vi.fn().mockResolvedValue('https://mocked-path/file.jpg'),
+  deleteFromFTP: vi.fn().mockResolvedValue(true)
 }));
 
 // Set dummy JWT secret for testing
 process.env.JWT_SECRET = 'test-secret';
 process.env.PORT = '5001'; // Avoid conflict with dev server if running
 
-import app from '../server';
-
 describe('Notices API Routes', () => {
   const adminToken = jwt.sign({ id: 1, role: 'super_admin' }, process.env.JWT_SECRET);
   const authHeader = `Bearer ${adminToken}`;
 
   beforeEach(() => {
-    originalQuery = pool.query;
-    pool.query = vi.fn();
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    pool.query = originalQuery;
   });
 
   describe('GET /api/notices', () => {

@@ -6,12 +6,10 @@ const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
-const { getCloudinaryStorage, deleteFromCloudinary } = require('../config/cloudinary');
-
-const storage = getCloudinaryStorage('faculty');
+const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ['.jpg', '.jpeg', '.png', '.webp'];
@@ -82,7 +80,16 @@ router.get('/:slug', async (req, res) => {
 
 router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   const { name, slug, designation, qualification, email, area_of_interest, vidwan_link, departments } = req.body;
-  const imagePath = req.file ? req.file.path : null;
+  
+  let imagePath = null;
+  if (req.file) {
+    try {
+      imagePath = await uploadToFTP(req.file.buffer, 'faculty', req.file.originalname);
+    } catch (err) {
+      console.error('FTP upload error:', err);
+      return res.status(500).json({ error: 'Error uploading image' });
+    }
+  }
   
   try {
     const [result] = await pool.query(
@@ -97,7 +104,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
       try {
         depts = JSON.parse(departments);
       } catch (e) {
-        if (req.file && req.file.path) await deleteFromCloudinary(req.file.path);
+        if (imagePath) await deleteFromFTP(imagePath);
         return res.status(400).json({ error: 'Invalid departments format' });
       }
       for (const deptSlug of depts) {
@@ -110,8 +117,8 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     res.status(201).json({ message: 'Faculty created successfully', id: facultyId });
   } catch (err) {
     console.error('Error creating faculty:', err);
-    if (req.file && req.file.path) {
-      await deleteFromCloudinary(req.file.path);
+    if (imagePath) {
+      await deleteFromFTP(imagePath);
     }
     res.status(500).json({ error: 'Server error creating faculty' });
   }
@@ -122,21 +129,17 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
   const { id } = req.params;
   const { name, slug, designation, qualification, email, area_of_interest, vidwan_link, departments } = req.body;
   
+  let imagePath = null;
   try {
     let query = 'UPDATE faculty SET slug=?, name=?, designation=?, qualification=?, email=?, area_of_interest=?, vidwan_link=? WHERE id=?';
     let params = [slug, name, designation, qualification, email, area_of_interest, vidwan_link, id];
 
     if (req.file) {
-      const imagePath = req.file.path;
+      imagePath = await uploadToFTP(req.file.buffer, 'faculty', req.file.originalname);
       
       const [oldRows] = await pool.query('SELECT image_path FROM faculty WHERE id = ?', [id]);
       if (oldRows.length > 0 && oldRows[0].image_path) {
-        if (oldRows[0].image_path.includes('cloudinary.com')) {
-          await deleteFromCloudinary(oldRows[0].image_path);
-        } else {
-          const oldFile = path.join(__dirname, '..', oldRows[0].image_path);
-          if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
-        }
+        await deleteFromFTP(oldRows[0].image_path);
       }
 
       query = 'UPDATE faculty SET slug=?, name=?, designation=?, qualification=?, email=?, area_of_interest=?, vidwan_link=?, image_path=? WHERE id=?';
@@ -150,7 +153,7 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
       try {
         depts = JSON.parse(departments);
       } catch (e) {
-        if (req.file && req.file.path) await deleteFromCloudinary(req.file.path);
+        if (imagePath) await deleteFromFTP(imagePath);
         return res.status(400).json({ error: 'Invalid departments format' });
       }
       await pool.query('DELETE FROM faculty_departments WHERE faculty_id = ?', [id]);
@@ -164,8 +167,8 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
     res.json({ message: 'Faculty updated successfully' });
   } catch (err) {
     console.error('Error updating faculty:', err);
-    if (req.file && req.file.path) {
-      await deleteFromCloudinary(req.file.path);
+    if (imagePath) {
+      await deleteFromFTP(imagePath);
     }
     res.status(500).json({ error: 'Server error updating faculty' });
   }
@@ -177,12 +180,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT image_path FROM faculty WHERE id = ?', [id]);
     if (rows.length > 0 && rows[0].image_path) {
-      if (rows[0].image_path.includes('cloudinary.com')) {
-        await deleteFromCloudinary(rows[0].image_path);
-      } else {
-        const file = path.join(__dirname, '..', rows[0].image_path);
-        if (fs.existsSync(file)) fs.unlinkSync(file);
-      }
+      await deleteFromFTP(rows[0].image_path);
     }
     
     await pool.query('DELETE FROM faculty WHERE id = ?', [id]);
