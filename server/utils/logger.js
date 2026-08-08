@@ -11,7 +11,9 @@ const pool = require('../config/db');
 const logActivity = async (admin, module, action, description) => {
   try {
     const adminId = admin ? admin.id : null;
-    const adminName = admin ? admin.name : 'System';
+    // Older tokens and public actions may not include a display name. MySQL2
+    // rejects undefined bind values, so always normalize the fallback.
+    const adminName = admin?.name || admin?.username || 'System';
 
     await pool.execute(
       'INSERT INTO activity_log (admin_id, admin_name, module, action, description) VALUES (?, ?, ?, ?, ?)',

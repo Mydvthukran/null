@@ -26,6 +26,8 @@ export default defineConfig({
     setupFiles: './src/setupTests.js',
   },
   build: {
-    outDir: 'client/dist'
+    // vite resolves outDir relative to this config file's directory.
+    // Using "client/dist" here created a nested client/client/dist folder.
+    outDir: 'dist'
   }
 })

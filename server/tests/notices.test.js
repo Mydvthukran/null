@@ -1,17 +1,17 @@
 import request from 'supertest';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import jwt from 'jsonwebtoken';
+import { createRequire } from 'node:module';
 
-const mockQuery = vi.fn();
-vi.mock('mysql2/promise', () => ({
-  default: {
-    createPool: () => ({ query: mockQuery })
-  },
-  createPool: () => ({ query: mockQuery })
-}));
-
-import pool from '../config/db';
+const require = createRequire(import.meta.url);
+const pool = require('../config/db');
 import app from '../server';
+
+// The application uses CommonJS `require`, so mocking the ESM package import
+// does not intercept its database pool. Spy on the actual pool instead to
+// keep this suite isolated from the configured database.
+const mockQuery = vi.spyOn(pool, 'query');
+const mockExecute = vi.spyOn(pool, 'execute');
 
 // Mock FTP
 vi.mock('../config/ftp', () => ({
@@ -29,6 +29,7 @@ describe('Notices API Routes', () => {
 
   beforeEach(() => {
     mockQuery.mockReset();
+    mockExecute.mockReset().mockResolvedValue([{}]);
     vi.clearAllMocks();
   });
 
