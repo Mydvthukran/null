@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
     res.json(settingsObj);
   } catch (error) {
     console.error('Error fetching settings:', error);
-    res.status(500).json({ error: 'Failed to fetch settings' });
+    res.status(500).json({ error: error.message || 'Failed to fetch settings' });
   }
 });
 
