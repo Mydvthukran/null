@@ -14,6 +14,12 @@ const loginLimiter = rateLimit({
   message: { error: 'Too many login attempts from this IP, please try again after 15 minutes.' }
 });
 
+const AUTH_COOKIE = 'siet_admin_session';
+const cookieAttributes = () => {
+  const production = process.env.NODE_ENV === 'production';
+  return `HttpOnly; Path=/; Max-Age=86400; SameSite=${production ? 'None' : 'Lax'}${production ? '; Secure' : ''}`;
+};
+
 // POST /api/auth/login
 router.post('/login', loginLimiter, async (req, res) => {
   try {
@@ -57,9 +63,9 @@ router.post('/login', loginLimiter, async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    res.setHeader('Set-Cookie', `${AUTH_COOKIE}=${encodeURIComponent(token)}; ${cookieAttributes()}`);
     res.json({
       message: 'Login successful',
-      token,
       admin: {
         id: admin.id,
         username: admin.username,
@@ -72,6 +78,11 @@ router.post('/login', loginLimiter, async (req, res) => {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error during login.' });
   }
+});
+
+router.post('/logout', (req, res) => {
+  res.setHeader('Set-Cookie', `${AUTH_COOKIE}=; ${cookieAttributes().replace('Max-Age=86400', 'Max-Age=0')}`);
+  res.json({ success: true });
 });
 
 module.exports = router;

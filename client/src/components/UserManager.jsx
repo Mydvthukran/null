@@ -30,6 +30,7 @@ const UserManager = ({ token, currentAdminId }) => {
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${API_BASE}/users`, {
+        credentials: 'include',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -90,6 +91,7 @@ const UserManager = ({ token, currentAdminId }) => {
       try {
         const res = await fetch(`${API_BASE}/users/${editingUser.id}`, {
           method: 'PUT',
+          credentials: 'include',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
@@ -109,6 +111,7 @@ const UserManager = ({ token, currentAdminId }) => {
       try {
         const res = await fetch(`${API_BASE}/users`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
@@ -125,6 +128,7 @@ const UserManager = ({ token, currentAdminId }) => {
     try {
       const res = await fetch(`${API_BASE}/users/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

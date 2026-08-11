@@ -18,17 +18,14 @@ const API_BASE = import.meta.env.VITE_API_URL;
  * Connected to the Express.js backend via REST API.
  */
 const AdminDashboard = () => {
-  const [token, setToken] = useState(() => sessionStorage.getItem('adminToken'));
-  const [adminName, setAdminName] = useState(() => sessionStorage.getItem('adminName') || '');
-  const [adminRole, setAdminRole] = useState(() => sessionStorage.getItem('adminRole') || '');
-  const [adminPermissions, setAdminPermissions] = useState(() => {
-    try { return JSON.parse(sessionStorage.getItem('adminPermissions') || '[]'); } catch { return []; }
-  });
-  const [adminId, setAdminId] = useState(() => {
-    const savedId = sessionStorage.getItem('adminId');
-    return savedId ? parseInt(savedId) : null;
-  });
-  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(sessionStorage.getItem('adminToken')));
+  // Authentication is maintained by an HttpOnly cookie; never keep the JWT in JS storage.
+  // Do not read or write sensitive auth info from local/session storage — instead verify session with the server on mount.
+  const token = null; // kept for compatibility with child components expecting the prop; real auth is in cookie
+  const [adminName, setAdminName] = useState('');
+  const [adminRole, setAdminRole] = useState('');
+  const [adminPermissions, setAdminPermissions] = useState([]);
+  const [adminId, setAdminId] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,41 +49,80 @@ const AdminDashboard = () => {
     document.title = isLoggedIn ? "College Admin Portal | SIET" : "Admin Login | SIET";
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    // Remove credentials written by older builds.
+    try { window.localStorage.removeItem('adminToken'); } catch {};
+    try { window.sessionStorage.removeItem('adminToken'); } catch {};
+  }, []);
+
+  // Verify existing session with the server on mount. Do not trust client storage.
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+        if (!mounted) return;
+        if (!res.ok) {
+          setIsLoggedIn(false);
+          return;
+        }
+        const data = await res.json();
+        if (data && data.admin) {
+          setAdminName(data.admin.name || '');
+          setAdminRole(data.admin.role || '');
+          setAdminPermissions(data.admin.permissions || []);
+          setAdminId(data.admin.id || null);
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (err) {
+        console.error('Session check failed:', err);
+        setIsLoggedIn(false);
+      }
+    })();
+
+    return () => { mounted = false; };
+  }, []);
+
   // Helper: check if user has a specific permission
   const hasPermission = (tab) => {
     if (adminRole === 'super_admin') return true;
-    return adminPermissions.includes(tab);
+    try { return Array.isArray(adminPermissions) && adminPermissions.includes(tab); } catch { return false; }
   };
 
   // --- LOGOUT ---
   const handleLogout = useCallback(() => {
     setIsLoggedIn(false);
-    setToken(null);
     setAdminName('');
     setAdminRole('');
     setAdminPermissions([]);
     setAdminId(null);
-    sessionStorage.removeItem('adminToken');
-    sessionStorage.removeItem('adminName');
-    sessionStorage.removeItem('adminRole');
-    sessionStorage.removeItem('adminPermissions');
-    sessionStorage.removeItem('adminId');
+    try { window.sessionStorage.removeItem('adminToken'); } catch {}
+    // Tell server to clear the cookie/session
+    fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
     setUsername('');
     setPassword('');
   }, []);
 
   // --- API HELPER ---
+  // Generic API helper that relies on HttpOnly cookies (credentials: 'include').
   const apiCall = useCallback(async (endpoint, options = {}) => {
     const headers = { ...options.headers };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    if (!(options.body instanceof FormData)) {
+    // Only set content-type for JSON bodies. If body is FormData, let fetch set appropriate headers.
+    if (options.body && !(options.body instanceof FormData) && typeof options.body === 'object') {
       headers['Content-Type'] = 'application/json';
     }
 
     try {
-      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers, credentials: 'include' });
       if (res.status === 401 || res.status === 403) {
         handleLogout();
+        return null;
+      }
+      // Protect against non-JSON responses
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
         return null;
       }
       return await res.json();
@@ -94,7 +130,7 @@ const AdminDashboard = () => {
       console.error('API Error:', err);
       return null;
     }
-  }, [token, handleLogout]);
+  }, [handleLogout]);
 
   // --- FETCH DASHBOARD ---
   const fetchDashboardData = useCallback(async () => {
@@ -107,7 +143,7 @@ const AdminDashboard = () => {
 
   // Fetch data when logged in or tab changes
   useEffect(() => {
-    if (!isLoggedIn || !token) return;
+    if (!isLoggedIn) return;
 
     const timeoutId = window.setTimeout(() => {
       if (activeTab === 'overview') {
@@ -116,7 +152,7 @@ const AdminDashboard = () => {
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [isLoggedIn, token, activeTab, fetchDashboardData]);
+  }, [isLoggedIn, activeTab, fetchDashboardData]);
 
   // --- LOGIN ---
   const handleLogin = async (e) => {
@@ -127,6 +163,7 @@ const AdminDashboard = () => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
@@ -138,17 +175,11 @@ const AdminDashboard = () => {
         setLoading(false);
         return;
       }
-
-      setToken(data.token);
+      // Set admin state from server response. Do NOT persist sensitive data to storage.
       setAdminName(data.admin.name);
       setAdminRole(data.admin.role || 'editor');
       setAdminPermissions(data.admin.permissions || []);
       setAdminId(data.admin.id);
-      sessionStorage.setItem('adminToken', data.token);
-      sessionStorage.setItem('adminName', data.admin.name);
-      sessionStorage.setItem('adminRole', data.admin.role || 'editor');
-      sessionStorage.setItem('adminPermissions', JSON.stringify(data.admin.permissions || []));
-      sessionStorage.setItem('adminId', data.admin.id);
       setIsLoggedIn(true);
     } catch (loginErr) {
       console.error('Login error:', loginErr);

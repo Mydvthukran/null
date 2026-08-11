@@ -4,14 +4,19 @@
  */
 const jwt = require('jsonwebtoken');
 
+const getCookie = (header, name) => {
+  const entry = header?.split(';').map((part) => part.trim()).find((part) => part.startsWith(`${name}=`));
+  return entry ? decodeURIComponent(entry.slice(name.length + 1)) : null;
+};
+
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const token = bearerToken || getCookie(req.headers.cookie, 'siet_admin_session');
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!token) {
     return res.status(401).json({ error: 'Access denied. No token provided.' });
   }
-
-  const token = authHeader.split(' ')[1];
 
   if (!process.env.JWT_SECRET) {
     return res.status(500).json({ error: 'Server misconfiguration: JWT_SECRET is missing.' });

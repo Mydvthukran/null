@@ -17,7 +17,7 @@ const GalleryManager = ({ token }) => {
 
   const fetchGallery = async () => {
     try {
-      const res = await fetch(import.meta.env.VITE_API_URL + '/gallery');
+      const res = await fetch(import.meta.env.VITE_API_URL + '/gallery', { credentials: 'include', cache: 'no-store' });
       const data = await res.json();
       if (res.ok) setImages(data.images || []);
     } catch (err) {
@@ -40,6 +40,7 @@ const GalleryManager = ({ token }) => {
     try {
       const res = await fetch(import.meta.env.VITE_API_URL + '/gallery', {
         method: 'POST',
+        credentials: 'include',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
@@ -67,6 +68,7 @@ const GalleryManager = ({ token }) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/gallery/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -83,6 +85,7 @@ const GalleryManager = ({ token }) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/gallery/${id}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: { 
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` 

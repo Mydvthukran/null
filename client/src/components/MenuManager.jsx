@@ -119,7 +119,7 @@ const MenuManager = ({ token }) => {
   const fetchMenus = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/menus`);
+      const res = await fetch(`${API_BASE}/menus`, { credentials: 'include', cache: 'no-store' });
       const data = await res.json();
       if (!data.error) {
         setMenus(data);
@@ -135,6 +135,7 @@ const MenuManager = ({ token }) => {
     try {
       const res = await fetch(`${API_BASE}/menus`, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -15,6 +15,7 @@ const DocumentManager = ({ token }) => {
   const fetchDocuments = async () => {
     try {
       const res = await fetch(`${API_BASE}/documents`, {
+        credentials: 'include',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -36,6 +37,7 @@ const DocumentManager = ({ token }) => {
     try {
       const res = await fetch(`${API_BASE}/documents/${uploadingDocKey.current}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         },

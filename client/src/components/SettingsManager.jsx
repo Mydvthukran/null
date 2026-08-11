@@ -26,6 +26,7 @@ const SettingsManager = ({ token }) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/settings`, {
+        credentials: 'include',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -50,6 +51,7 @@ const SettingsManager = ({ token }) => {
     try {
       const res = await fetch(`${API_BASE}/settings`, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
