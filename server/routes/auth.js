@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const rateLimit = require('express-rate-limit');
+const authMiddleware = require('../middleware/auth');
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -83,6 +84,11 @@ router.post('/login', loginLimiter, async (req, res) => {
 router.post('/logout', (req, res) => {
   res.setHeader('Set-Cookie', `${AUTH_COOKIE}=; ${cookieAttributes().replace('Max-Age=86400', 'Max-Age=0')}`);
   res.json({ success: true });
+});
+
+// GET /api/auth/me
+router.get('/me', authMiddleware, (req, res) => {
+  res.json({ admin: req.admin });
 });
 
 module.exports = router;
