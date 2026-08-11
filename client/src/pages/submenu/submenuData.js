@@ -18,12 +18,17 @@ import galleryAltImage from '../../assets/new-assets/life at siet/gallery/IMG_19
 import libraryImage from '../../assets/new-assets/life at siet/gallery/IMG_1922-1024x768.jpg';
 import inspectionImage from '../../assets/new-assets/life at siet/gallery/Inspection-Pic-1024x768.jpg';
 import teacherImage from '../../assets/new-assets/depatment/facalities/teachers/anil-kumar.jpg';
-import firstYearSyllabusDoc from '../../assets/new-assets/student/syllabus/B.Tech_.-1st-Year-Common-Syllabus-1 (1).pdf';
-import cseAimlCsSecondYearSyllabusDoc from '../../assets/new-assets/student/syllabus/B.Tech_CSE-AIML-CS_2ndyear_2025onwards.pdf';
-import roboticsAutomationSyllabusDoc from '../../assets/new-assets/student/syllabus/B.tech_syllabus_RoboticsAutomation (1).pdf';
-import aimlSemesterFiveSixSyllabusDoc from '../../assets/new-assets/student/syllabus/AIML-5-6-SEM (1).pdf';
+import firstYearSyllabusDoc from '../../assets/new-assets/syllabus/1styear.pdf';
+import aimlSecondYearSyllabusDoc from '../../assets/new-assets/syllabus/2ndyearAIML.pdf';
+import cysSecondYearSyllabusDoc from '../../assets/new-assets/syllabus/2ndyearCYS.pdf';
+import raSecondYearSyllabusDoc from '../../assets/new-assets/syllabus/2ndyearR&A.pdf';
+import aimlThirdYearSyllabusDoc from '../../assets/new-assets/syllabus/3rdyearAIML.pdf';
+import cysThirdYearSyllabusDoc from '../../assets/new-assets/syllabus/3rdyearCYS.pdf';
+import aimlFourthYearSyllabusDoc from '../../assets/new-assets/syllabus/4thyearAIML.pdf';
+import cysFourthYearSyllabusDoc from '../../assets/new-assets/syllabus/4thyearCYS.pdf';
 import beBtechBarchProspectusDoc from '../../assets/new-assets/student/admission prospectus/BE-BTech-BArch-Prospectus-2026 (1).pdf';
 import btechLeetProspectusDoc from '../../assets/new-assets/student/admission prospectus/BTechLE-Prospectus-2026 (1).pdf';
+import scholarshipsPdf from '../../assets/new-assets/home/notices/Scholarships.pdf';
 import createDepartmentDemoSections from './departmentDemoSections';
 
 const kukWebsiteUrl = 'https://kuk.ac.in/';
@@ -79,6 +84,27 @@ export const submenuData = {
       'Electrical Engineering - Intake: 60',
       'Electronics Engineering (VLSI Design) - Intake: 60',
       'Focus on hands-on labs, projects, and industry-relevant skills.'
+    ],
+    resources: [
+      { label: 'Mandatory Disclosure 2026-27 (PDF)', href: '/Mandatory Disclosure 2026-27.pdf' }
+    ]
+  },
+  'about/mandatory-disclosure': {
+    sectionLabel: 'ABOUT US',
+    title: 'Mandatory Disclosure 2026-27',
+    subtitle: 'Official AICTE / Institute Mandatory Disclosure Document for Academic Session 2026-27',
+    pdfUrl: '/Mandatory Disclosure 2026-27.pdf',
+    body: [
+      'State Institute of Engineering & Technology (SIET), Panchkula publishes its official Mandatory Disclosure for the Academic Session 2026-27 in accordance with AICTE & Government guidelines.',
+      'This document includes essential details regarding institutional governance, academic programs, faculty credentials, campus infrastructure, intake capacities, and student welfare initiatives.'
+    ],
+    points: [
+      'Institutional Profile, AICTE Approval Status & Affiliation Details.',
+      'Academic Programs, Departmental Intake & Infrastructure Information.',
+      'Anti-Ragging Committees, Grievance Redressal & Student Support Cells.'
+    ],
+    resources: [
+      { label: 'Download Mandatory Disclosure 2026-27 (PDF)', href: '/Mandatory Disclosure 2026-27.pdf' }
     ]
   },
   'about/vision-mission': {
@@ -320,16 +346,16 @@ export const submenuData = {
     title: 'Syllabus',
     subtitle: 'Search and open the syllabus PDF for your program.',
     courses: [
-      { key: 'btech-1st', label: 'B.tech 1st year', pdfUrl: firstYearSyllabusDoc },
-      { key: 'btech-cse-aiml-2nd', label: 'B.tech CSE AIML-2nd year', pdfUrl: cseAimlCsSecondYearSyllabusDoc },
-      { key: 'btech-cse-cs-2nd', label: 'B.tech CSE CS-2nd year', pdfUrl: cseAimlCsSecondYearSyllabusDoc },
-      { key: 'btech-ra-2nd', label: 'B.tech Robotics & Automation-2nd year', pdfUrl: roboticsAutomationSyllabusDoc },
-      { key: 'btech-cse-aiml-3rd', label: 'B.tech CSE AIML-3rd year', pdfUrl: aimlSemesterFiveSixSyllabusDoc },
-      { key: 'btech-cse-cs-3rd', label: 'B.tech CSE CS-3rd year', pdfUrl: null },
-      { key: 'btech-ra-3rd', label: 'B.tech Robotics & Automation-3rd year', pdfUrl: null },
-      { key: 'btech-cse-aiml-4th', label: 'B.tech CSE AIML-4th year', pdfUrl: null },
-      { key: 'btech-cse-cs-4th', label: 'B.tech CSE CS-4th year', pdfUrl: null },
-      { key: 'btech-ra-4th', label: 'B.tech Robotics & Automation-4th year', pdfUrl: null }
+      { key: 'btech-1st', label: 'B.Tech 1st year', pdfUrl: firstYearSyllabusDoc },
+      { key: 'btech-cse-aiml-2nd', label: 'B.Tech CSE AIML-2nd year', pdfUrl: aimlSecondYearSyllabusDoc },
+      { key: 'btech-cse-cs-2nd', label: 'B.Tech CSE CS-2nd year', pdfUrl: cysSecondYearSyllabusDoc },
+      { key: 'btech-ra-2nd', label: 'B.Tech Robotics & Automation-2nd year', pdfUrl: raSecondYearSyllabusDoc },
+      { key: 'btech-cse-aiml-3rd', label: 'B.Tech CSE AIML-3rd year', pdfUrl: aimlThirdYearSyllabusDoc },
+      { key: 'btech-cse-cs-3rd', label: 'B.Tech CSE CS-3rd year', pdfUrl: cysThirdYearSyllabusDoc },
+      { key: 'btech-ra-3rd', label: 'B.Tech Robotics & Automation-3rd year', pdfUrl: null },
+      { key: 'btech-cse-aiml-4th', label: 'B.Tech CSE AIML-4th year', pdfUrl: aimlFourthYearSyllabusDoc },
+      { key: 'btech-cse-cs-4th', label: 'B.Tech CSE CS-4th year', pdfUrl: cysFourthYearSyllabusDoc },
+      { key: 'btech-ra-4th', label: 'B.Tech Robotics & Automation-4th year', pdfUrl: null }
     ],
     body: [
       'Find and download the official syllabus for each year and department below.'
@@ -397,6 +423,44 @@ export const submenuData = {
     points: [],
     resources: []
   },
+  'academics/scholarships': {
+    sectionLabel: 'STUDENT',
+    title: 'Awards & Scholarships',
+    subtitle: 'National Scholarship Portal (NSP) & Central / State Government Scholarship Schemes',
+    pdfUrl: scholarshipsPdf,
+    body: [
+      'National Scholarships Portal (NSP) is a one-stop solution through which various services starting from student application, application receipt, processing, sanction and disbursal of various scholarships to Students are enabled. National Scholarships Portal is taken as Mission Mode Project under National e-Governance Plan (NeGP). The Mission Mode Project (MMP) of National Scholarships Portal under the National e-Governance Plan aims at providing common electronic portal for implementing various Scholarships schemes launched by Union Government, State Government and Union Territories across the country.',
+      'Various Schemes for all categories (General, OBC, SC, ST, DNT etc.) are run by Central/State Governments on NSP portal like Top Class Education Scheme for SC Students, Post Matric Scholarship (PMS) for SC & BC Students and PM Young Achievers Scholarship Award Scheme for Vibrant India (PM-YASASVI) central sector scheme of top-class education in college for OBC, EBC and DNT students run by the Ministry of Social Justice and Empowerment. Students may visit the NSP Portal for more information regarding procedure to apply for scholarship, eligibility criteria, etc.'
+    ],
+    points: [
+      'Ensure timely disbursement of Scholarships to students',
+      'Provide a common portal for various Scholarships schemes of Central and State Governments',
+      'Create a transparent database of scholars',
+      'Avoid duplication in processing',
+      'Harmonisation of different Scholarships schemes & norms',
+      'Application of Direct Benefit Transfer'
+    ],
+    resources: [
+      { label: 'National Scholarship Portal (NSP)', href: 'https://scholarships.gov.in' }
+    ]
+  },
+  'academics/dress-code': {
+    sectionLabel: 'ACADEMICS',
+    title: 'Dress Code Guidelines',
+    body: [
+      '📢 Official Announcement: Student Dress Code Guidelines',
+      'Please review the standard uniform requirements for the upcoming academic sessions to ensure consistency and professionalism on campus.'
+    ],
+    points: [
+      '☀️ Summer Uniform — Shirt/Top: Plain Light Sky Blue shirt | Trousers: Dark Grey formal trousers | Belt: Formal Black belt (Mandatory) | Tie / Scarf: Dark Blue (Optional).',
+      'Traditional Attire Option (Female Students) — Light Sky Blue Kurta with Dark Grey Salwar & Navy Blue Dupatta, OR Navy Blue Saree with a Sky Blue Blouse. (Note: Students may select the fabric of their choice).',
+      '❄️ Winter Uniform — Outerwear: Navy Blue V-neck Sweater OR Navy Blue Blazer | Base: Light Sky Blue shirt with Dark Grey trousers.',
+      '🛠️ Workshop Uniform — Lab/Workshop Classes: Khaki color apron.',
+      '👞 Footwear — Shoes: Formal Black shoes paired with Light Grey socks.',
+      '📌 Reminder: Adherence to the uniform code is strictly maintained.'
+    ]
+  },
+
   'academics/student-testimonials': {
     sectionLabel: 'ACADEMICS',
     title: 'Student Testimonials',

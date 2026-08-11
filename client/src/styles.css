@@ -382,23 +382,26 @@ img {
 
 .nav-brand {
   justify-self: start;
+  flex-shrink: 0;
   font-family: var(--font-heading);
-  font-size: 0.96rem;
+  font-size: 0.92rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #c5a059;
-  padding: 0.45rem 0.85rem;
+  padding: 0.4rem 0.75rem;
   border-radius: 6px;
   background: rgba(197, 160, 89, 0.1);
   border: 1px solid rgba(197, 160, 89, 0.25);
+  white-space: nowrap;
 }
 
 .navbar-quick-links {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: clamp(0.15rem, 0.4vw, 0.6rem);
+  min-width: 0;
 }
 
 .nav-link {
@@ -406,15 +409,16 @@ img {
   align-items: center;
   justify-content: center;
   gap: 0.3rem;
-  padding: 0.55rem 0.85rem;
+  padding: 0.5rem clamp(0.45rem, 0.65vw, 0.8rem);
   border-radius: 6px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(0.75rem, 0.8vw, 0.84rem);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   transition: all 0.2s ease;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -1307,8 +1311,23 @@ img {
 .card-body {
   position: relative;
   height: 250px;
-  overflow: hidden;
-  padding: 0.85rem 0.85rem 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0.75rem 0.85rem;
+}
+
+.card-body.has-auto-scroll {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10px, black calc(100% - 14px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10px, black calc(100% - 14px), transparent 100%);
+}
+
+.card-body::-webkit-scrollbar {
+  display: none;
+}
+
+.card-body::after {
+  display: none;
 }
 
 .card-empty {
@@ -1330,17 +1349,6 @@ img {
   font-size: 0.9rem;
   line-height: 1.6;
   max-width: 46ch;
-}
-
-.card-body::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 42px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95));
-  pointer-events: none;
 }
 
 .card-list {
@@ -1856,6 +1864,18 @@ img {
   }
 }
 
+@keyframes upcoming-ticker {
+  0% {
+    left: 100%;
+    transform: translateX(0);
+  }
+
+  100% {
+    left: 0%;
+    transform: translateX(-100%);
+  }
+}
+
 @keyframes pulseSkeleton {
   0% {
     background-position: 100% 50%;
@@ -1922,16 +1942,21 @@ img {
 
 .announcements-track {
   overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
 
 .announcements-marquee {
   display: flex;
-  gap: 0.8rem;
+  gap: 5rem;
   width: max-content;
-  animation: ticker 32s linear infinite;
+  position: relative;
+  animation: upcoming-ticker 42s linear infinite;
 }
 
-.announcements-track.paused .announcements-marquee {
+.announcements-track.paused .announcements-marquee,
+.announcements-track:hover .announcements-marquee,
+.announcements-marquee:hover {
   animation-play-state: paused;
 }
 
@@ -3075,7 +3100,7 @@ img {
   gap: 0.75rem;
 }
 
-@media (max-width: 920px) {
+@media (max-width: 1080px) {
   .navbar-content {
     grid-template-columns: auto auto;
     justify-content: space-between;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ScrollReveal from './ScrollReveal';
 import { getFileUrl } from '../utils/fileUrlHelper';
 
@@ -7,8 +7,9 @@ const BannerCarousel = () => {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + '/gallery')
+  const fetchBanners = useCallback(() => {
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+    fetch(`${apiBase}/gallery`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         // Only use images tagged as "Home Carousel"
@@ -21,6 +22,12 @@ const BannerCarousel = () => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    fetchBanners();
+    window.addEventListener('siet:gallery-updated', fetchBanners);
+    return () => window.removeEventListener('siet:gallery-updated', fetchBanners);
+  }, [fetchBanners]);
 
   const handleNext = () => {
     if (banners.length === 0) return;

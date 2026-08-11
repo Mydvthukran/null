@@ -10,7 +10,8 @@ const Clubs = () => {
       description: 'Driving hands-on innovation through workshops, design challenges, and hackathons like the NeXus Design Challenge.',
       tags: ['Robotics', 'Automation', 'Hackathons'],
       color: '#0a192f',
-      bgColor: 'rgba(10, 25, 47, 0.08)'
+      bgColor: 'rgba(10, 25, 47, 0.08)',
+      website: 'https://autonex.sietpanchkula.ac.in'
     },
     {
       initials: 'SA',
@@ -188,6 +189,31 @@ const Clubs = () => {
                           </span>
                         ))}
                       </div>
+
+                      {club.website && (
+                        <div style={{ marginTop: '0.75rem' }}>
+                          <a
+                            href={club.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              padding: '0.45rem 1rem',
+                              background: '#0a192f',
+                              color: '#ffffff',
+                              fontSize: '0.82rem',
+                              fontWeight: '700',
+                              borderRadius: '6px',
+                              textDecoration: 'none',
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
+                            Visit Website ↗
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

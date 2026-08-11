@@ -143,6 +143,7 @@ const MenuManager = ({ token }) => {
       });
       if (res.ok) {
         alert('Menus updated successfully!');
+        window.dispatchEvent(new CustomEvent('siet:menus-updated'));
         fetchMenus();
       } else {
         alert('Failed to save menus.');

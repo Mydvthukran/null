@@ -1,9 +1,8 @@
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { searchableLinks } from '../data/searchIndex';
-import useMediaQuery from '../hooks/useMediaQuery';
 import { navItems } from '../constants/navConfig';
-
+import useMediaQuery from '../hooks/useMediaQuery';
 /**
  * Navbar Component
  * Sticky navigation with responsive mobile menu
@@ -13,13 +12,34 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [openNestedDropdown, setOpenNestedDropdown] = useState(null);
-  const isMobile = useMediaQuery('(max-width: 920px)');
+  const isMobile = useMediaQuery('(max-width: 1080px)');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeSuggestion, setActiveSuggestion] = useState(-1);
   const searchWrapRef = useRef(null);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
+  const [menuItems, setMenuItems] = useState(navItems);
+
+  const refreshMenus = React.useCallback(async () => {
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+    try {
+      const response = await fetch(`${apiBase}/menus`, { cache: 'no-store' });
+      const data = await response.json();
+      if (response.ok && Array.isArray(data)) {
+        setMenuItems(data);
+      }
+    } catch (error) {
+      // The bundled menu remains available if the API is temporarily offline.
+      console.error('Failed to fetch navigation menus:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshMenus();
+    window.addEventListener('siet:menus-updated', refreshMenus);
+    return () => window.removeEventListener('siet:menus-updated', refreshMenus);
+  }, [refreshMenus]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,7 +152,7 @@ const Navbar = () => {
               </form>
             </li>
 
-            {navItems.map((item, index) => (
+            {menuItems.map((item, index) => (
               <li
                 key={index}
                 className={`nav-item ${item.submenu ? 'has-submenu' : ''}`}

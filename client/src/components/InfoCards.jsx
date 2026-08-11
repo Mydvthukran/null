@@ -1,230 +1,148 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { notificationsListData, noticesListData } from '../data/noticesData';
-import { ADMISSIONS_CONFIG } from '../config/admissions';
 import { getFileUrl } from '../utils/fileUrlHelper';
 
 const LOOP_DUPLICATE_COUNT = 3;
 
-const useAutoScroll = (scrollRef, contentRef, pauseRef) => {
+const useAutoScroll = (scrollRef, contentRef, pauseRef, itemCount) => {
   useEffect(() => {
     const container = scrollRef.current;
     const content = contentRef.current;
-    if (!container || !content) {
-      return undefined;
-    }
+    if (!container || !content || !itemCount || itemCount <= 5) return undefined;
 
     let animationId;
-    const speed = 0.6;
-    container.scrollTop = 0;
-
     const smoothScroll = () => {
-      if (!pauseRef.current) {
-        container.scrollTop += speed;
-
-        if (container.scrollTop >= content.scrollHeight / LOOP_DUPLICATE_COUNT) {
-          container.scrollTop = 0;
-        }
+      if (!pauseRef.current && content.scrollHeight > container.clientHeight) {
+        container.scrollTop += 0.5;
+        const singleSetHeight = content.scrollHeight / LOOP_DUPLICATE_COUNT;
+        if (container.scrollTop >= singleSetHeight) container.scrollTop -= singleSetHeight;
       }
       animationId = requestAnimationFrame(smoothScroll);
     };
 
     animationId = requestAnimationFrame(smoothScroll);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-    };
-  }, [scrollRef, contentRef, pauseRef]);
+    return () => cancelAnimationFrame(animationId);
+  }, [scrollRef, contentRef, pauseRef, itemCount]);
 };
 
-const ScrollableCardBody = ({ items, scrollRef, contentRef, pauseRef }) => (
-  <div
-    className="card-body"
-    ref={scrollRef}
-    onMouseEnter={() => {
-      pauseRef.current = true;
-    }}
-    onMouseLeave={() => {
-      pauseRef.current = false;
-    }}
-  >
-    {(!items || items.length === 0) ? (
-      <div className="card-empty">
-        <p className="card-empty-title">No updates available</p>
-        <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
-      </div>
-    ) : (
-    <ul className="card-list scroll-list" ref={contentRef}>
-      {(items.length > 3 ? Array.from({ length: LOOP_DUPLICATE_COUNT }, () => items).flat() : items).map((item, index) => (
-        <li key={`${item.id || item.title}-${index}`} className="card-list-item">
-          {item.href ? (
-            <a
-              className="list-item-link"
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open: ${item.title}`}
-            >
-              <div className="list-item-content">
-                <span className="item-title">{item.title}</span>
-                <span className="item-date">{item.date}</span>
-              </div>
-              {item.isNew && <span className="badge-new">NEW</span>}
-            </a>
-          ) : (
-            <>
-              <div className="list-item-content">
-                <span className="item-title">{item.title}</span>
-                <span className="item-date">{item.date}</span>
-              </div>
-              {item.isNew && <span className="badge-new">NEW</span>}
-            </>
-          )}
-        </li>
-      ))}
-    </ul>
-    )}
-  </div>
-);
+const mapItem = (item) => ({
+  id: item.id,
+  title: item.title,
+  date: item.date,
+  href: item.file_path ? getFileUrl(item.file_path) : '/all-notices',
+  isNew: item.status === 'Active' || item.status === 'Upcoming',
+});
 
-/**
- * InfoCards Component
- * Three auto-scrolling information cards
- */
+const ScrollableCardBody = ({ items, scrollRef, contentRef, pauseRef }) => {
+  const shouldLoop = items && items.length > 5;
+  const displayItems = shouldLoop ? Array.from({ length: LOOP_DUPLICATE_COUNT }, () => items).flat() : items;
+
+  return (
+    <div
+      className={`card-body ${shouldLoop ? 'has-auto-scroll' : ''}`}
+      ref={scrollRef}
+      onMouseEnter={() => { pauseRef.current = true; }}
+      onMouseLeave={() => { pauseRef.current = false; }}
+    >
+      {(!items || items.length === 0) ? (
+        <div className="card-empty">
+          <p className="card-empty-title">No updates available</p>
+          <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
+        </div>
+      ) : (
+        <ul className="card-list scroll-list" ref={contentRef}>
+          {displayItems.map((item, index) => (
+            <li key={`${item.id || item.title}-${index}`} className="card-list-item">
+              <a className="list-item-link" href={item.href} target={item.href.startsWith('/') ? undefined : '_blank'} rel={item.href.startsWith('/') ? undefined : 'noopener noreferrer'}>
+                <div className="list-item-content">
+                  <span className="item-title">{item.title}</span>
+                  <span className="item-date">{item.date}</span>
+                </div>
+                {item.isNew && <span className="badge-new">NEW</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 const InfoCards = () => {
-  const notifications = notificationsListData;
-  const [notices, setNotices] = useState([]);
+  const [news, setNews] = useState([]);
+  const [notifications, setNotifications] = useState(notificationsListData);
+  const [notices, setNotices] = useState(noticesListData);
 
-  useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + '/notices')
-      .then(res => res.json())
-      .then(data => {
-        const activeData = data.filter(n => n.status !== 'Archived');
-        
-        // Map database row to component format
-        const mapItem = (n) => ({
-          id: n.id,
-          title: n.title,
-          date: n.date,
-          href: n.file_path ? getFileUrl(n.file_path) : null,
-          isNew: n.status === 'Active'
-        });
+  const loadUpdates = useCallback(async () => {
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+    try {
+      const [noticesResponse, eventsResponse] = await Promise.all([
+        fetch(`${apiBase}/notices`, { cache: 'no-store' }),
+        fetch(`${apiBase}/events`, { cache: 'no-store' }),
+      ]);
+      const apiNotices = noticesResponse.ok ? await noticesResponse.json() : [];
+      const apiEvents = eventsResponse.ok ? await eventsResponse.json() : [];
+      const activeNotices = Array.isArray(apiNotices) ? apiNotices.filter((item) => item.status !== 'Archived') : [];
+      const activeEvents = Array.isArray(apiEvents) ? apiEvents.filter((item) => item.status !== 'Archived') : [];
 
-        const notes = activeData
-          .filter(n => ['Notice', 'Event'].includes(n.category))
-          .map(mapItem);
-          
-        setNotices(notes);
-      })
-      .catch(err => console.error('Error fetching notices:', err));
+      setNews(activeEvents.length > 0 ? activeEvents.slice(0, 8).map(mapItem) : []);
+      const nonEventNotices = activeNotices.filter((item) => !['Notice', 'Event'].includes(item.category));
+      setNotifications(nonEventNotices.length > 0 ? nonEventNotices.slice(0, 12).map(mapItem) : notificationsListData);
+      const noticeItems = activeNotices.filter((item) => ['Notice', 'Event'].includes(item.category));
+      setNotices((noticeItems.length > 0 ? noticeItems : activeNotices).slice(0, 12).map(mapItem));
+    } catch (error) {
+      console.error('Failed to fetch campus updates:', error);
+    }
   }, []);
 
-  const news = [];
-  /* if (!ADMISSIONS_CONFIG.hstesOpen) {
-    news.push({
-      id: 'news-campus-counselling',
-      title: 'Offline Counselling form',
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      href: ADMISSIONS_CONFIG.COUNSELLING_GOOGLE_FORM_URL,
-      isNew: true
-    });
-  } */
+  useEffect(() => {
+    loadUpdates();
+    window.addEventListener('siet:notices-updated', loadUpdates);
+    window.addEventListener('siet:events-updated', loadUpdates);
+    return () => {
+      window.removeEventListener('siet:notices-updated', loadUpdates);
+      window.removeEventListener('siet:events-updated', loadUpdates);
+    };
+  }, [loadUpdates]);
 
   const newsScrollRef = useRef(null);
   const newsContentRef = useRef(null);
   const newsPauseRef = useRef(false);
-
   const notifScrollRef = useRef(null);
   const notifContentRef = useRef(null);
   const notifPauseRef = useRef(false);
-
   const noticesScrollRef = useRef(null);
   const noticesContentRef = useRef(null);
   const noticesPauseRef = useRef(false);
 
-  useAutoScroll(newsScrollRef, newsContentRef, newsPauseRef);
-  useAutoScroll(notifScrollRef, notifContentRef, notifPauseRef);
-  useAutoScroll(noticesScrollRef, noticesContentRef, noticesPauseRef);
+  useAutoScroll(newsScrollRef, newsContentRef, newsPauseRef, news.length);
+  useAutoScroll(notifScrollRef, notifContentRef, notifPauseRef, notifications.length);
+  useAutoScroll(noticesScrollRef, noticesContentRef, noticesPauseRef, notices.length);
+
+  const card = (className, icon, title, items, scrollRef, contentRef, pauseRef, footer) => (
+    <div className={`info-card ${className}`}>
+      <div className="card-header">
+        <div className="card-icon" aria-hidden="true">{icon}</div>
+        <h3 className="card-title">{title}</h3>
+      </div>
+      <ScrollableCardBody items={items} scrollRef={scrollRef} contentRef={contentRef} pauseRef={pauseRef} />
+      <div className="card-footer"><Link to="/all-notices" className="card-link">{footer} {'->'}</Link></div>
+    </div>
+  );
 
   return (
     <section className="info-cards section" id="updates">
       <div className="container">
-        <div className="section-header">
-          <h2 className="section-title">Campus Updates</h2>
-          <div className="title-underline"></div>
-        </div>
-
+        <div className="section-header"><h2 className="section-title">Campus Updates</h2><div className="title-underline"></div></div>
         <div className="cards-grid">
-          <div className="info-card card-blue">
-            <div className="card-header">
-              <div className="card-icon" aria-hidden="true">NEWS</div>
-              <h3 className="card-title">News and Events</h3>
-            </div>
-            <ScrollableCardBody
-              items={news}
-              scrollRef={newsScrollRef}
-              contentRef={newsContentRef}
-              pauseRef={newsPauseRef}
-            />
-            <div className="card-footer">
-              <Link to="/all-notices" className="card-link">
-                View all news {'->'}
-              </Link>
-            </div>
-          </div>
-
-          <div className="info-card card-green">
-            <div className="card-header">
-              <div className="card-icon" aria-hidden="true">ALRT</div>
-              <h3 className="card-title">Notifications</h3>
-            </div>
-            <ScrollableCardBody
-              items={notifications}
-              scrollRef={notifScrollRef}
-              contentRef={notifContentRef}
-              pauseRef={notifPauseRef}
-            />
-            <div className="card-footer">
-              <Link to="/all-notices" className="card-link">
-                View all notifications {'->'}
-              </Link>
-            </div>
-          </div>
-
-          <div className="info-card card-peach">
-            <div className="card-header">
-              <div className="card-icon" aria-hidden="true">NOTE</div>
-              <h3 className="card-title">Notices</h3>
-            </div>
-            <ScrollableCardBody
-              items={notices}
-              scrollRef={noticesScrollRef}
-              contentRef={noticesContentRef}
-              pauseRef={noticesPauseRef}
-            />
-            <div className="card-footer">
-              <Link to="/all-notices" className="card-link">
-                View all notices {'->'}
-              </Link>
-            </div>
-          </div>
-
+          {card('card-blue', 'NEWS', 'News and Events', news, newsScrollRef, newsContentRef, newsPauseRef, 'View all news')}
+          {card('card-green', 'ALRT', 'Notifications', notifications, notifScrollRef, notifContentRef, notifPauseRef, 'View all notifications')}
+          {card('card-peach', 'NOTE', 'Notices', notices, noticesScrollRef, noticesContentRef, noticesPauseRef, 'View all notices')}
           <div className="info-card card-peach" id="placements">
-            <div className="card-header">
-              <div className="card-icon" aria-hidden="true">PLAC</div>
-              <h3 className="card-title">Placement Updates</h3>
-            </div>
-            <div className="card-body">
-              <div className="card-empty">
-                <p className="card-empty-title">No updates available</p>
-                <p className="card-empty-subtitle">This section will appear once official updates are added.</p>
-              </div>
-            </div>
-            <div className="card-footer">
-              <a href="https://tpo.sietpanchkula.ac.in/" target="_blank" rel="noopener noreferrer" className="card-link">
-                View all placements {'->'}
-              </a>
-            </div>
+            <div className="card-header"><div className="card-icon" aria-hidden="true">PLAC</div><h3 className="card-title">Placement Updates</h3></div>
+            <div className="card-body"><div className="card-empty"><p className="card-empty-title">No updates available</p><p className="card-empty-subtitle">This section will appear once official updates are added.</p></div></div>
+            <div className="card-footer"><a href="https://tpo.sietpanchkula.ac.in/" target="_blank" rel="noopener noreferrer" className="card-link">View all placements {'->'}</a></div>
           </div>
         </div>
       </div>

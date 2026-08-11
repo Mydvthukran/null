@@ -25,29 +25,28 @@ const AdmissionHelpline = React.lazy(() => import('./pages/AdmissionHelpline'));
 const PayFeesOnline = React.lazy(() => import('./pages/PayFeesOnline'));
 const AdmissionDocuments = React.lazy(() => import('./pages/AdmissionDocuments'));
 const PhysicalCounselling = React.lazy(() => import('./pages/PhysicalCounselling'));
+const Jobs = React.lazy(() => import('./pages/Jobs'));
+const SIH2026 = React.lazy(() => import('./pages/SIH2026'));
 const Developers = React.lazy(() => import('./pages/Developers'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const ContactUs = React.lazy(() => import('./pages/ContactUs'));
 const CommencementNotice = React.lazy(() => import('./pages/CommencementNotice'));
 
 const ExternalPlacementRedirect = () => {
-  React.useEffect(() => {
+  useEffect(() => {
     window.location.replace('https://tpo.sietpanchkula.ac.in/');
   }, []);
 
   return null;
 };
 
-/**
- * Main App Component
- * Combines all sections to create the complete college website with routing
- */
 function App() {
   useEffect(() => {
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
     if (!sessionStorage.getItem('siet_visited')) {
-      fetch(import.meta.env.VITE_API_URL + '/visitors/hit', { method: 'POST' })
+      fetch(`${apiBase}/visitors/hit`, { method: 'POST', cache: 'no-store' })
         .then(() => sessionStorage.setItem('siet_visited', 'true'))
-        .catch(err => console.error('Failed to register visit:', err));
+        .catch((err) => console.error('Failed to register visit:', err));
     }
   }, []);
 
@@ -55,14 +54,9 @@ function App() {
     <SettingsProvider>
       <div className="App">
         <ScheduledPopup />
-
-        {/* Top Header with College Name and Logo */}
         <Header />
-
-        {/* Sticky Navigation Bar */}
         <Navbar />
 
-        {/* Main Content Routes */}
         <Suspense fallback={<div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center' }}>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -98,6 +92,8 @@ function App() {
             <Route path="/pay-fees-online" element={<PayFeesOnline />} />
             <Route path="/admission-documents" element={<AdmissionDocuments />} />
             <Route path="/physical-counselling" element={<PhysicalCounselling />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/sih-2026" element={<SIH2026 />} />
             <Route path="/commencement-notice" element={<CommencementNotice />} />
             <Route path="/developers" element={<Developers />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
@@ -107,8 +103,6 @@ function App() {
 
         <ChatbotWidget />
         <SocialMediaBar />
-
-        {/* Footer with Links and Contact Info */}
         <Footer />
       </div>
     </SettingsProvider>

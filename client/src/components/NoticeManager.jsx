@@ -67,12 +67,14 @@ const NoticeManager = ({ token }) => {
 
     await apiCall(endpoint, { method, body: data });
     setShowModal(false);
+    window.dispatchEvent(new CustomEvent('siet:notices-updated'));
     fetchNotices();
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this notice?')) {
       await apiCall(`/notices/${id}`, { method: 'DELETE' });
+      window.dispatchEvent(new CustomEvent('siet:notices-updated'));
       fetchNotices();
     }
   };

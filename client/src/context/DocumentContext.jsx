@@ -8,7 +8,8 @@ export const DocumentProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + '/documents')
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+    const fetchDocuments = () => fetch(`${apiBase}/documents`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setDocuments(data.documents || []);
@@ -18,6 +19,10 @@ export const DocumentProvider = ({ children }) => {
         console.error('Failed to fetch system documents:', err);
         setLoading(false);
       });
+
+    fetchDocuments();
+    window.addEventListener('siet:documents-updated', fetchDocuments);
+    return () => window.removeEventListener('siet:documents-updated', fetchDocuments);
   }, []);
 
   // Helper function to get a document URL by its key

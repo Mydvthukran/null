@@ -157,9 +157,12 @@ const AboutInstituteHome = () => {
                 ))}
               </div>
 
-              <div className="about-mission-actions">
+              <div className="about-mission-actions" style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
                 <Link to="/about/about-institute" className="btn btn-primary">
                   Read More
+                </Link>
+                <Link to="/about/mandatory-disclosure" className="btn btn-outline-gold">
+                  📄 Mandatory Disclosure 2026-27
                 </Link>
                 <a
                   href="#courses"

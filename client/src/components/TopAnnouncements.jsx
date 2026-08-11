@@ -1,84 +1,65 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
 import { topAnnouncementsData } from '../data/noticesData';
+import { getFileUrl } from '../utils/fileUrlHelper';
+
+const fallbackAnnouncements = topAnnouncementsData.map((item) => ({
+  id: item.id,
+  text: item.text,
+  href: item.href || '/all-notices',
+  isExternal: Boolean(item.href && !item.href.startsWith('/')),
+}));
 
 const TopAnnouncements = () => {
-  // Parse markdown-style links in title: [text](href)
-  const renderTitle = (title) => {
-    if (!title) return '';
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/;
-    const match = title.match(linkRegex);
-    if (match) {
-      const before = title.substring(0, match.index);
-      const linkText = match[1];
-      const linkHref = match[2];
-      const after = title.substring(match.index + match[0].length);
-      return (
-        <>
-          {before}
-          <Link 
-            to={linkHref}
-            style={{ 
-              color: '#c5a059', 
-              textDecoration: 'underline', 
-              fontWeight: 'bold',
-              marginLeft: '0.3rem'
-            }}
-          >
-            {linkText}
-          </Link>
-          {after}
-        </>
-      );
+  const [announcements, setAnnouncements] = useState(fallbackAnnouncements);
+
+  const loadAnnouncements = useCallback(async () => {
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+    try {
+      const response = await fetch(`${apiBase}/notices`, { cache: 'no-store' });
+      const data = await response.json();
+      if (!response.ok || !Array.isArray(data)) return;
+
+      const nextAnnouncements = data
+        .filter((notice) => notice.status !== 'Archived')
+        .slice(0, 8)
+        .map((notice) => ({
+          id: notice.id,
+          text: notice.title,
+          href: notice.file_path ? getFileUrl(notice.file_path) : '/all-notices',
+          isExternal: Boolean(notice.file_path),
+        }));
+
+      setAnnouncements(nextAnnouncements.length > 0 ? nextAnnouncements : fallbackAnnouncements);
+    } catch (error) {
+      console.error('Failed to fetch top announcements:', error);
     }
-    return title;
-  };
+  }, []);
 
-  // Convert fetched static data into announcement content
-  const announcements = topAnnouncementsData.map(e => ({
-    id: e.id,
-    content: (
-      <>
-        <span className="announcement-dot" aria-hidden="true"></span>
-        <p>
-          {renderTitle(e.text)}
-          {e.href && (
-            e.href.startsWith('/') && !e.href.endsWith('.pdf') && !e.href.endsWith('.jpeg') ? (
-              <Link 
-                to={e.href}
-                style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
-              >
-                Read More
-              </Link>
-            ) : (
-              <a 
-                href={e.href} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: 'bold', marginLeft: '0.5rem' }}
-              >
-                View Document
-              </a>
-            )
-          )}
-        </p>
-      </>
-    )
-  }));
+  useEffect(() => {
+    loadAnnouncements();
+    window.addEventListener('siet:notices-updated', loadAnnouncements);
+    return () => window.removeEventListener('siet:notices-updated', loadAnnouncements);
+  }, [loadAnnouncements]);
 
-  // Fallback if there are no announcements
-  if (announcements.length === 0) {
-    announcements.push({
-      id: 'default',
-      content: (
-        <>
-          <span className="announcement-dot" aria-hidden="true"></span>
-          <p>Welcome to SIET Panchkula. Check back later for latest announcements!</p>
-        </>
-      )
-    });
-  }
+  const renderAnnouncement = (item) => (
+    <>
+      <span className="announcement-dot" aria-hidden="true"></span>
+      <p>
+        {item.text}{' '}
+        {item.isExternal ? (
+          <a href={item.href} target="_blank" rel="noopener noreferrer" className="announcement-inline-link">
+            View Document
+          </a>
+        ) : (
+          <Link to={item.href} className="announcement-inline-link">
+            View Details
+          </Link>
+        )}
+      </p>
+    </>
+  );
 
   return (
     <ScrollReveal>
@@ -92,14 +73,12 @@ const TopAnnouncements = () => {
 
             <div className="announcements-track">
               {announcements.length === 1 ? (
-                <div className="announcements-placeholder">
-                  {announcements[0].content}
-                </div>
+                <div className="announcements-placeholder">{renderAnnouncement(announcements[0])}</div>
               ) : (
                 <div className="announcements-marquee">
-                  {[...announcements, ...announcements].map((item, idx) => (
-                    <div key={`${item.id}-${idx}`} className="announcement-item">
-                      {item.content}
+                  {[...announcements, ...announcements].map((item, index) => (
+                    <div key={`${item.id}-${index}`} className="announcement-item">
+                      {renderAnnouncement(item)}
                     </div>
                   ))}
                 </div>

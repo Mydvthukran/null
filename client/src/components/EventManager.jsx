@@ -68,12 +68,14 @@ const EventManager = ({ token }) => {
 
     await apiCall(endpoint, { method, body: data });
     setShowModal(false);
+    window.dispatchEvent(new CustomEvent('siet:events-updated'));
     fetchEvents();
   };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this announcement?')) {
       await apiCall(`/events/${id}`, { method: 'DELETE' });
+      window.dispatchEvent(new CustomEvent('siet:events-updated'));
       fetchEvents();
     }
   };

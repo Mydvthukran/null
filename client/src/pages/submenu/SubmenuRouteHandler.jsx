@@ -5,6 +5,7 @@ const AboutInstitute = React.lazy(() => import('./AboutInstitute'));
 const VisionMission = React.lazy(() => import('./VisionMission'));
 const DirectorsMessage = React.lazy(() => import('./DirectorsMessage'));
 const RegistrarsMessage = React.lazy(() => import('./RegistrarsMessage'));
+const MandatoryDisclosure = React.lazy(() => import('./MandatoryDisclosure'));
 const QualityPolicy = React.lazy(() => import('./QualityPolicy'));
 const Affiliations = React.lazy(() => import('./Affiliations'));
 const AntiRagging = React.lazy(() => import('./AntiRagging'));
@@ -26,6 +27,8 @@ const ExamSchedule = React.lazy(() => import('./ExamSchedule'));
 const AcademicStudentTestimonials = React.lazy(() => import('./AcademicStudentTestimonials'));
 const Syllabus = React.lazy(() => import('./Syllabus'));
 const CodeOfConduct = React.lazy(() => import('./CodeOfConduct'));
+const Scholarships = React.lazy(() => import('./Scholarships'));
+const DressCode = React.lazy(() => import('./DressCode'));
 const AdmissionProspectus = React.lazy(() => import('./AdmissionProspectus'));
 const Infrastructure = React.lazy(() => import('./Infrastructure'));
 const Library = React.lazy(() => import('./Library'));
@@ -54,6 +57,7 @@ const Clubs = React.lazy(() => import('./Clubs'));
 const submenuComponents = {
   'about/history': History,
   'about/about-institute': AboutInstitute,
+  'about/mandatory-disclosure': MandatoryDisclosure,
   'about/vision-mission': VisionMission,
   'about/directors-message': DirectorsMessage,
   'about/registrars-message': RegistrarsMessage,
@@ -78,6 +82,8 @@ const submenuComponents = {
   'academics/exam-schedule': ExamSchedule,
   'academics/student-testimonials': AcademicStudentTestimonials,
   'academics/code-of-conduct': CodeOfConduct,
+  'academics/scholarships': Scholarships,
+  'academics/dress-code': DressCode,
   'facilities/infrastructure': Infrastructure,
   'facilities/library': Library,
   'facilities/hostels': Hostels,

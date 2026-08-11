@@ -44,8 +44,8 @@ function Home() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '3rem' }}>
-            <img src={mouImg1} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} loading="lazy" />
-            <img src={mouImg2} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} loading="lazy" />
+            <img src={mouImg1} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} />
+            <img src={mouImg2} alt="IIT Ropar and SIET Panchkula MoU Signing" style={{ width: '100%', maxWidth: '500px', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', objectFit: 'cover' }} />
           </div>
         </div>
       </section>

@@ -13,6 +13,7 @@ export const navItems = [
       { name: 'Vision & Mission', href: '/about/vision-mission' },
       { name: "Director - Principal's Desk", href: '/about/directors-message' },
       { name: 'Registrar\'s Desk', href: '/about/registrars-message' },
+      { name: 'Mandatory Disclosure 2026-27', href: '/about/mandatory-disclosure' },
       { name: 'Unnat Bharat Abhiyan', href: 'https://unnatbharatabhiyan.gov.in/', external: true }
     ]
   },
@@ -92,9 +93,12 @@ export const navItems = [
       { name: 'Admission Prospectus', href: '/academics/admission-prospectus' },
       { name: 'Pay Fees Online', href: '/pay-fees-online' },
       { name: 'Exam Schedule', href: '/academics/exam-schedule' },
+      { name: 'Scholarships', href: '/academics/scholarships' },
+      { name: 'Dress Code', href: '/academics/dress-code' },
       { name: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },
       { name: 'Code of Conduct', href: '/academics/code-of-conduct' },
       { name: 'Anti-Ragging', href: '/academics/anti-ragging' },
+      { name: 'SIH 2026', href: '/sih-2026' },
       { name: 'Clubs', href: '/life-at-siet/clubs' }
     ]
   },
@@ -134,6 +138,7 @@ export const navItems = [
     submenu: [
       { name: 'Life @ SIET Overview', href: '/life-at-siet' },
       { name: 'Events', href: '/events' },
+      { name: 'SIH 2026', href: '/sih-2026' },
       { name: 'Student Helpline', href: '/student-helpline' },
       { name: 'Top-Level Sections', href: '/top-level-sections' },
       { name: 'Content Differences', href: '/content-differences' },
@@ -147,7 +152,18 @@ export const navItems = [
       { name: 'Admission Helpline', href: '/admission-helpline' },
       { name: 'Admission Prospectus', href: '/academics/admission-prospectus' },
       { name: 'Admission Documents', href: '/admission-documents' },
-      { name: 'Pay Fees Online', href: '/pay-fees-online' }
+      { name: 'Pay Fees Online', href: '/pay-fees-online' },
+      { name: 'Physical Counselling', href: '/physical-counselling' }
     ]
+  },
+  {
+    name: 'SIH 2026',
+    href: '/sih-2026',
+    submenu: null
+  },
+  {
+    name: 'Jobs',
+    href: '/jobs',
+    submenu: null
   }
 ];

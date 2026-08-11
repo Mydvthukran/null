@@ -58,6 +58,9 @@ const SettingsManager = ({ token }) => {
       });
       const data = await res.json();
       if (data.success) {
+        // Keep the public-site context in sync when admin and public pages
+        // are open in the same SPA session.
+        window.dispatchEvent(new CustomEvent('siet:settings-updated', { detail: settings }));
         setMessage('Settings saved successfully!');
         setTimeout(() => setMessage(''), 3000);
       } else {

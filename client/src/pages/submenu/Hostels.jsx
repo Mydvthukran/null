@@ -1,6 +1,8 @@
 import React from 'react';
 import '../../css/submenu.css';
 
+const hostelAllotmentPdf = '/Hostel Allotment List new.pdf';
+
 const Hostels = () => {
   const HOSTEL_APPLICATION_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScWotxjUaxhy-POgnQ_bzQPl2WjzpazwOan65xMhY0OTU9Iig/viewform';
 
@@ -113,7 +115,7 @@ const Hostels = () => {
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <a 
                     href={HOSTEL_APPLICATION_FORM_URL}
                     target="_blank"
@@ -123,6 +125,38 @@ const Hostels = () => {
                   >
                     Hostel Application Form
                   </a>
+                  <a 
+                    href={hostelAllotmentPdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="gradient-button"
+                    style={{ padding: '0.8rem 2rem', fontSize: '0.9rem', textDecoration: 'none' }}
+                  >
+                    Download Hostel Allotment List (PDF)
+                  </a>
+                </div>
+
+                <div className="coc-panel" style={{ marginTop: '2.5rem', boxShadow: 'var(--shadow-mid)' }}>
+                  <div className="coc-preview-head">
+                    <h3 className="submenu-subsection-title" style={{ margin: 0 }}>Hostel Allotment List 2026-27</h3>
+                    <a
+                      href={hostelAllotmentPdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="gradient-button"
+                    >
+                      Download PDF
+                    </a>
+                  </div>
+                  
+                  <div className="coc-preview-frame-wrap">
+                    <iframe
+                      title="Hostel Allotment List PDF preview"
+                      src={hostelAllotmentPdf}
+                      className="coc-preview-frame"
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
 
                 <div style={{

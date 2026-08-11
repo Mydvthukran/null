@@ -1,4 +1,4 @@
-﻿/* Info Cards */
+/* Info Cards */
 .info-cards {
   position: relative;
 }
@@ -66,8 +66,23 @@
 .card-body {
   position: relative;
   height: 250px;
-  overflow: hidden;
-  padding: 0.85rem 0.85rem 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0.75rem 0.85rem;
+}
+
+.card-body.has-auto-scroll {
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10px, black calc(100% - 14px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10px, black calc(100% - 14px), transparent 100%);
+}
+
+.card-body::-webkit-scrollbar {
+  display: none;
+}
+
+.card-body::after {
+  display: none;
 }
 
 .card-empty {
@@ -89,17 +104,6 @@
   font-size: 0.9rem;
   line-height: 1.6;
   max-width: 46ch;
-}
-
-.card-body::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 42px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95));
-  pointer-events: none;
 }
 
 .card-list {

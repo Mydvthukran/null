@@ -48,6 +48,7 @@ const GalleryManager = ({ token }) => {
         setTitle('');
         setCategory('Campus');
         if (fileInputRef.current) fileInputRef.current.value = '';
+        window.dispatchEvent(new CustomEvent('siet:gallery-updated'));
         fetchGallery();
       } else {
         const errorData = await res.json();
@@ -69,6 +70,7 @@ const GalleryManager = ({ token }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
+        window.dispatchEvent(new CustomEvent('siet:gallery-updated'));
         fetchGallery();
       }
     } catch (err) {
@@ -89,6 +91,7 @@ const GalleryManager = ({ token }) => {
       });
       if (res.ok) {
         setEditingId(null);
+        window.dispatchEvent(new CustomEvent('siet:gallery-updated'));
         fetchGallery();
       } else {
         alert('Failed to update image.');

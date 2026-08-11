@@ -1,4 +1,4 @@
-﻿/* Motion */
+/* Motion */
 @keyframes riseIn {
   from {
     opacity: 0;
@@ -28,6 +28,18 @@
 
   100% {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes upcoming-ticker {
+  0% {
+    left: 100%;
+    transform: translateX(0);
+  }
+
+  100% {
+    left: 0%;
+    transform: translateX(-100%);
   }
 }
 
