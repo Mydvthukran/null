@@ -81,10 +81,14 @@ app.use((err, req, res, next) => {
 // ============================================================
 // Start Server
 // ============================================================
+const ensureTables = require('./utils/ensureTables');
+
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`✅ SIET Admin Server running on http://localhost:${PORT}`);
-    console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+  ensureTables().then(() => {
+    app.listen(PORT, () => {
+      console.log(`✅ SIET Admin Server running on http://localhost:${PORT}`);
+      console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+    });
   });
 }
 
