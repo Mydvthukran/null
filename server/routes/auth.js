@@ -17,7 +17,12 @@ const loginLimiter = rateLimit({
 
 const AUTH_COOKIE = 'siet_admin_session';
 const cookieAttributes = () => {
-  const production = process.env.NODE_ENV === 'production';
+  // Detect production: explicit NODE_ENV, or common PaaS indicators (Render, Heroku, Vercel, Railway, etc.)
+  const production = process.env.NODE_ENV === 'production'
+    || !!process.env.RENDER
+    || !!process.env.DYNO
+    || !!process.env.RAILWAY_ENVIRONMENT
+    || !!process.env.VERCEL;
   return `HttpOnly; Path=/; Max-Age=86400; SameSite=${production ? 'None' : 'Lax'}${production ? '; Secure' : ''}`;
 };
 
