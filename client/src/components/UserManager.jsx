@@ -14,7 +14,7 @@ const ALL_PERMISSIONS = [
   { key: 'menus', label: 'Navigation Menus' },
 ];
 
-const UserManager = ({ token, currentAdminId }) => {
+const UserManager = ({ currentAdminId }) => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -30,8 +30,7 @@ const UserManager = ({ token, currentAdminId }) => {
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${API_BASE}/users`, {
-        credentials: 'include',
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       const data = await res.json();
       if (data.users) setUsers(data.users);
@@ -92,7 +91,7 @@ const UserManager = ({ token, currentAdminId }) => {
         const res = await fetch(`${API_BASE}/users/${editingUser.id}`, {
           method: 'PUT',
           credentials: 'include',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
@@ -112,7 +111,7 @@ const UserManager = ({ token, currentAdminId }) => {
         const res = await fetch(`${API_BASE}/users`, {
           method: 'POST',
           credentials: 'include',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
@@ -128,8 +127,7 @@ const UserManager = ({ token, currentAdminId }) => {
     try {
       const res = await fetch(`${API_BASE}/users/${id}`, {
         method: 'DELETE',
-        credentials: 'include',
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       const data = await res.json();
       if (res.ok) fetchUsers();

@@ -3,22 +3,21 @@ import '../css/adminDashboard.css';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-const FormManager = ({ token, title = 'Form Submissions (Contact Us)' }) => {
+const FormManager = ({ title = 'Form Submissions (Contact Us)' }) => {
   const [inquiries, setInquiries] = useState([]);
 
   useEffect(() => {
     fetchInquiries();
-  }, [token]);
+  }, []);
 
   const apiCall = async (endpoint, options = {}) => {
     const headers = { ...options.headers };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
     if (!(options.body instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
     }
 
     try {
-      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers, credentials: 'include' });
       if (!res.ok) return null;
       return await res.json();
     } catch (err) {

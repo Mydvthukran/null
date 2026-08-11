@@ -3,7 +3,7 @@ import { getFileUrl } from '../utils/fileUrlHelper';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-const DocumentManager = ({ token }) => {
+const DocumentManager = () => {
   const [documents, setDocuments] = useState([]);
   const uploadingDocKey = useRef(null);
   const fileInputRef = useRef(null);
@@ -15,8 +15,7 @@ const DocumentManager = ({ token }) => {
   const fetchDocuments = async () => {
     try {
       const res = await fetch(`${API_BASE}/documents`, {
-        credentials: 'include',
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       const data = await res.json();
       if (data.documents) {
@@ -38,9 +37,6 @@ const DocumentManager = ({ token }) => {
       const res = await fetch(`${API_BASE}/documents/${uploadingDocKey.current}`, {
         method: 'PUT',
         credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData
       });
       if (res.ok) {

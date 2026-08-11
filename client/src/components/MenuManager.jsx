@@ -107,7 +107,7 @@ const MenuItemEditor = ({ item, onChange, onRemove, onAddSubmenu, level }) => {
 };
 
 
-const MenuManager = ({ token }) => {
+const MenuManager = () => {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -137,7 +137,6 @@ const MenuManager = ({ token }) => {
         method: 'PUT',
         credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ menus })

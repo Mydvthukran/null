@@ -4,7 +4,7 @@ import { getFileUrl } from '../utils/fileUrlHelper';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-const EventManager = ({ token }) => {
+const EventManager = () => {
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -18,17 +18,16 @@ const EventManager = ({ token }) => {
 
   useEffect(() => {
     fetchEvents();
-  }, [token]);
+  }, []);
 
   const apiCall = async (endpoint, options = {}) => {
     const headers = { ...options.headers };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
     if (!(options.body instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
     }
 
     try {
-      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+      const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers, credentials: 'include' });
       if (!res.ok) return null;
       return await res.json();
     } catch (err) {

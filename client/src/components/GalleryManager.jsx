@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getFileUrl } from '../utils/fileUrlHelper';
 
-const GalleryManager = ({ token }) => {
+const GalleryManager = () => {
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Campus');
@@ -41,7 +41,6 @@ const GalleryManager = ({ token }) => {
       const res = await fetch(import.meta.env.VITE_API_URL + '/gallery', {
         method: 'POST',
         credentials: 'include',
-        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
@@ -69,7 +68,6 @@ const GalleryManager = ({ token }) => {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/gallery/${id}`, {
         method: 'DELETE',
         credentials: 'include',
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         window.dispatchEvent(new CustomEvent('siet:gallery-updated'));
@@ -87,8 +85,7 @@ const GalleryManager = ({ token }) => {
         method: 'PUT',
         credentials: 'include',
         headers: { 
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` 
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ title: editTitle, category: editCategory }),
       });

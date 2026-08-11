@@ -19,8 +19,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
  */
 const AdminDashboard = () => {
   // Authentication is maintained by an HttpOnly cookie; never keep the JWT in JS storage.
-  // Do not read or write sensitive auth info from local/session storage — instead verify session with the server on mount.
-  const token = null; // kept for compatibility with child components expecting the prop; real auth is in cookie
+  // All API calls use credentials: 'include' to send the cookie automatically.
   const [adminName, setAdminName] = useState('');
   const [adminRole, setAdminRole] = useState('');
   const [adminPermissions, setAdminPermissions] = useState([]);
@@ -532,52 +531,52 @@ const AdminDashboard = () => {
 
         {/* === APPLICATIONS TAB === */}
         {activeTab === 'applications' && (
-          <ApplicationManager token={token} />
+          <ApplicationManager />
         )}
 
         {/* === FORMS TAB === */}
         {activeTab === 'forms' && (
-          <FormManager token={token} title="Contact Us Inquiries" />
+          <FormManager title="Contact Us Inquiries" />
         )}
 
         {/* === DOCUMENTS TAB === */}
         {activeTab === 'documents' && (
-          <DocumentManager token={token} />
+          <DocumentManager />
         )}
 
         {/* Notice Board */}
         {activeTab === 'notices' && (
-          <NoticeManager token={token} />
+          <NoticeManager />
         )}
 
         {/* Events & Seminars */}
         {activeTab === 'events' && (
-          <EventManager token={token} />
+          <EventManager />
         )}
 
         {/* Gallery */}
         {activeTab === 'gallery' && (
-          <GalleryManager token={token} />
+          <GalleryManager />
         )}
 
         {/* Faculty */}
         {activeTab === 'faculty' && (
-          <FacultyManager token={token} />
+          <FacultyManager />
         )}
 
         {/* Settings */}
         {activeTab === 'settings' && (
-          <SettingsManager token={token} />
+          <SettingsManager />
         )}
 
         {/* Menus */}
         {activeTab === 'menus' && (
-          <MenuManager token={token} />
+          <MenuManager />
         )}
 
         {/* User Management (Super Admin only) */}
         {activeTab === 'users' && adminRole === 'super_admin' && (
-          <UserManager token={token} currentAdminId={adminId} />
+          <UserManager currentAdminId={adminId} />
         )}
       </main>
     </div>

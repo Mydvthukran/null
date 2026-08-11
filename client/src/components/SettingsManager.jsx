@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-const SettingsManager = ({ token }) => {
+const SettingsManager = () => {
   const [settings, setSettings] = useState({
     welcome_title: '',
     welcome_subtitle: '',
@@ -26,8 +26,7 @@ const SettingsManager = ({ token }) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/settings`, {
-        credentials: 'include',
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       const data = await res.json();
       if (data && !data.error) {
@@ -53,7 +52,6 @@ const SettingsManager = ({ token }) => {
         method: 'PUT',
         credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(settings)
