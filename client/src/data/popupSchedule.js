@@ -1,9 +1,9 @@
 export const popupSchedule = [
   {
-    id: 'sih-2026-flyer',
+    id: 'sih-2026-flyer-v4',
     type: 'event',
-    title: 'Smart India Hackathon (SIH) 2026 – Internal Hackathon Registration Open',
-    images: ['/sih flyer.jpeg'],
+    title: 'Visiting Faculty Advt & SIH 2026',
+    images: ['/popupadvt.png', '/sih flyer.jpeg'],
     ctaLink: '/sih-2026',
     ctaLabel: 'View Details & Registration 🚀',
     externalLink: 'https://forms.gle/f2rQw5oghq8SmQ726',

@@ -12,6 +12,7 @@ const Footer = React.memo(() => {
   const quickLinks = [
     { label: 'Home', to: '/' },
     { label: 'About Us', to: '/about/about-institute' },
+    { label: 'Mandatory Disclosure 2026-27', to: '/about/mandatory-disclosure' },
     { label: 'Academics', to: '/academics/academic-calendar' },
     { label: 'Departments', to: '/departments/cse' },
     { label: 'Query Form', to: '/admission-form' },

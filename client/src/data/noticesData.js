@@ -23,6 +23,36 @@ const admissionDocsDoc = null;
 
 export const noticesBoardData = [
   {
+    id: 32,
+    title: 'Anti Ragging squad for the session 2026-27',
+    category: 'Notice',
+    date: '25 Aug 2026',
+    priority: 'High',
+    details: 'Anti Ragging squad for the session 2026-27',
+    downloadUrl: '/Anti Ragging squad for the session 2026-27.pdf',
+    readMoreUrl: '/Anti Ragging squad for the session 2026-27.pdf'
+  },
+  {
+    id: 31,
+    title: 'Dept. Incharges SIET Panchkula',
+    category: 'Notice',
+    date: '25 Aug 2026',
+    priority: 'High',
+    details: 'List of Department Incharges SIET Panchkula',
+    downloadUrl: '/Dept. Incharges SIET Panchkula.pdf',
+    readMoreUrl: '/Dept. Incharges SIET Panchkula.pdf'
+  },
+  {
+    id: 30,
+    title: 'Notice Regarding Outsiders and parking',
+    category: 'Notice',
+    date: '20 Aug 2026',
+    priority: 'High',
+    details: 'Notice Regarding Outsiders and parking.',
+    downloadUrl: '/parkingorder.pdf',
+    readMoreUrl: '/parkingorder.pdf'
+  },
+  {
     id: 29,
     title: 'Smart India Hackathon (SIH) 2026 – Registration Open!',
     category: 'Event',
@@ -384,6 +414,9 @@ export const noticesListData = noticesBoardData
 // Pulled from the institute "Notices/Updates" feed
 // shown on https://sietpanchkula.ac.in/
 export const campusUpdatesData = [
+  { id: 22, title: 'Anti Ragging squad for the session 2026-27', date: '25 Aug, 2026', href: '/Anti Ragging squad for the session 2026-27.pdf' },
+  { id: 21, title: 'Dept. Incharges SIET Panchkula', date: '25 Aug, 2026', href: '/Dept. Incharges SIET Panchkula.pdf' },
+  { id: 20, title: 'Notice Regarding Outsiders and parking', date: '20 Aug, 2026', href: '/parkingorder.pdf' },
   { id: 19, title: 'On Spot Counselling will be from 5/08/2026', date: '04 Aug, 2026', href: '/onspotcounselling.jpeg' },
   { id: 18, title: 'Hostel Allotment List 2026-27 Released', date: '31 Jul, 2026', href: hostelAllotmentPdf },
 
