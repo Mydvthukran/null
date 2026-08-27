@@ -43,6 +43,18 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ============================================================
 // API Routes
 // ============================================================
+const { rateLimit } = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 300, // limit each IP to 300 requests per windowMs
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { error: 'Too many requests from this IP, please try again later.' }
+});
+
+app.use('/api', apiLimiter);
+
 app.use('/api', (req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.set('Pragma', 'no-cache');
