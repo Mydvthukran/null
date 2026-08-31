@@ -27,11 +27,24 @@ const PORT = process.env.PORT || 5000;
 // ============================================================
 const defaultOrigins = ['https://sietpanchkula.ac.in', 'https://www.sietpanchkula.ac.in'];
 const corsOrigins = process.env.CORS_ORIGINS 
-  ? process.env.CORS_ORIGINS.split(',').map(url => url.trim()) 
+  ? process.env.CORS_ORIGINS.split(',').map(url => url.trim().replace(/\/$/, '')) 
   : defaultOrigins;
 
 app.use(cors({
-  origin: corsOrigins,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    
+    // Allow any sietpanchkula.ac.in subdomain and local development
+    if (origin.endsWith('sietpanchkula.ac.in') || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    if (corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(null, false);
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -47,7 +60,8 @@ const { rateLimit } = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 300, // limit each IP to 300 requests per windowMs
+  limit: 300, // limit each IP to 300 requests
+  //  per windowMs
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { error: 'Too many requests from this IP, please try again later.' }
