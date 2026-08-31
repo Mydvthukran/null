@@ -83,8 +83,8 @@ const InfoCards = () => {
       ]);
       const apiNotices = noticesResponse.ok ? await noticesResponse.json() : [];
       const apiEvents = eventsResponse.ok ? await eventsResponse.json() : [];
-      const activeNotices = Array.isArray(apiNotices) ? apiNotices.filter((item) => item.status !== 'Archived') : [];
-      const activeEvents = Array.isArray(apiEvents) ? apiEvents.filter((item) => item.status !== 'Archived') : [];
+      const activeNotices = Array.isArray(apiNotices) ? apiNotices.filter((item) => item.status !== 'Archived' && item.title !== 'New Notice') : [];
+      const activeEvents = Array.isArray(apiEvents) ? apiEvents.filter((item) => item.status !== 'Archived' && item.title !== 'New Notice') : [];
 
       setNews(activeEvents.length > 0 ? activeEvents.slice(0, 8).map(mapItem) : []);
       const nonEventNotices = activeNotices.filter((item) => !['Notice', 'Event'].includes(item.category));

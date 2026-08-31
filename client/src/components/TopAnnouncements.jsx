@@ -22,7 +22,7 @@ const TopAnnouncements = () => {
       if (!response.ok || !Array.isArray(data)) return;
 
       const nextAnnouncements = data
-        .filter((notice) => notice.status !== 'Archived')
+        .filter((notice) => notice.status !== 'Archived' && notice.title !== 'New Notice')
         .slice(0, 8)
         .map((notice) => ({
           id: notice.id,

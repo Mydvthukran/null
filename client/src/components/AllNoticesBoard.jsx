@@ -9,8 +9,8 @@ const AllNoticesBoard = () => {
     fetch(import.meta.env.VITE_API_URL + '/notices')
       .then(res => res.json())
       .then(data => {
-        // Filter out any that are 'Archived' if needed, or show all
-        setNotices(data.filter(n => n.status !== 'Archived'));
+        // Filter out any that are 'Archived' and dummy test records
+        setNotices(data.filter(n => n.status !== 'Archived' && n.title !== 'New Notice'));
       })
       .catch(err => console.error('Error fetching notices:', err));
   }, []);
