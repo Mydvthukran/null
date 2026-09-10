@@ -37,11 +37,7 @@ const AdminDashboard = () => {
   // Data from API
   const [dashboardStats, setDashboardStats] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
-  const [documents, setDocuments] = useState([]);
-
-  // File upload ref
-  const fileInputRef = useRef(null);
-  const [uploadingDocKey, setUploadingDocKey] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Update document title
   useEffect(() => {
@@ -133,11 +129,13 @@ const AdminDashboard = () => {
 
   // --- FETCH DASHBOARD ---
   const fetchDashboardData = useCallback(async () => {
+    setRefreshing(true);
     const data = await apiCall('/dashboard');
     if (data) {
       setDashboardStats(data.stats);
       setRecentActivity(data.recentActivity || []);
     }
+    setRefreshing(false);
   }, [apiCall]);
 
   // Fetch data when logged in or tab changes
@@ -426,66 +424,89 @@ const AdminDashboard = () => {
         {/* === OVERVIEW TAB === */}
         {activeTab === 'overview' && (
           <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <span style={{ color: 'var(--ink-500)', fontSize: '0.875rem' }}>Live data from server</span>
+              <button
+                onClick={fetchDashboardData}
+                disabled={refreshing}
+                className="admin-btn outline"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.9rem', fontSize: '0.875rem' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                {refreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
             <div className="admin-stats-grid">
               <div className="admin-stat-card">
                 <div className="admin-stat-card-header">
                   <span>Total Visitors</span>
-                  <div className="admin-stat-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                  </div>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                 </div>
-                <div className="admin-stat-value">
-                  {dashboardStats ? dashboardStats.totalVisitors.toLocaleString() : '—'}
-                </div>
-                <div className="admin-stat-trend trend-up">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                  Live from server
-                </div>
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.totalVisitors.toLocaleString() : '—'}</div>
+                <div className="admin-stat-trend trend-up"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Live from server</div>
               </div>
 
               <div className="admin-stat-card">
                 <div className="admin-stat-card-header">
                   <span>Pending Applications</span>
-                  <div className="admin-stat-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                  </div>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
                 </div>
-                <div className="admin-stat-value">
-                  {dashboardStats ? dashboardStats.pendingApplications : '—'}
-                </div>
-                <div className="admin-stat-trend trend-up">
-                  Requires review
-                </div>
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.pendingApplications : '—'}</div>
+                <div className="admin-stat-trend trend-up">Requires review</div>
               </div>
 
               <div className="admin-stat-card">
                 <div className="admin-stat-card-header">
                   <span>Active Notices</span>
-                  <div className="admin-stat-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"></path></svg>
-                  </div>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/></svg></div>
                 </div>
-                <div className="admin-stat-value">
-                  {dashboardStats ? dashboardStats.activeNotices : '—'}
-                </div>
-                <div className="admin-stat-trend trend-up">
-                  From server
-                </div>
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.activeNotices : '—'}</div>
+                <div className="admin-stat-trend trend-up">From server</div>
               </div>
 
               <div className="admin-stat-card">
                 <div className="admin-stat-card-header">
                   <span>Upcoming Events</span>
-                  <div className="admin-stat-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  </div>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
                 </div>
-                <div className="admin-stat-value">
-                  {dashboardStats ? dashboardStats.upcomingEvents : '—'}
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.upcomingEvents : '—'}</div>
+                <div className="admin-stat-trend">From server</div>
+              </div>
+
+              <div className="admin-stat-card">
+                <div className="admin-stat-card-header">
+                  <span>Faculty Members</span>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                 </div>
-                <div className="admin-stat-trend">
-                  From server
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.facultyCount : '—'}</div>
+                <div className="admin-stat-trend">Registered</div>
+              </div>
+
+              <div className="admin-stat-card">
+                <div className="admin-stat-card-header">
+                  <span>Gallery Images</span>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
                 </div>
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.galleryCount : '—'}</div>
+                <div className="admin-stat-trend">Uploaded</div>
+              </div>
+
+              <div className="admin-stat-card">
+                <div className="admin-stat-card-header">
+                  <span>Total Applications</span>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                </div>
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.totalApplications : '—'}</div>
+                <div className="admin-stat-trend">All time</div>
+              </div>
+
+              <div className="admin-stat-card">
+                <div className="admin-stat-card-header">
+                  <span>New Inquiries</span>
+                  <div className="admin-stat-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                </div>
+                <div className="admin-stat-value">{dashboardStats ? dashboardStats.newContacts : '—'}</div>
+                <div className="admin-stat-trend">Unread</div>
               </div>
             </div>
 

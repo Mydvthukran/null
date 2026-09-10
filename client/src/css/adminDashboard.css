@@ -432,3 +432,194 @@
   box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
 }
 
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, fadeOut 0.3s ease-in 3.2s forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* Modal Improvements */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 25, 47, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.admin-modal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  animation: slideUpModal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.admin-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-modal-header h3 {
+  margin: 0;
+  color: var(--ink-900);
+  font-size: 1.25rem;
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  color: var(--ink-500);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.admin-modal-close:hover {
+  background: var(--surface-muted);
+  color: var(--danger);
+}
+
+.admin-modal-card form {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.admin-modal-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 1rem;
+  background: var(--surface-muted);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpModal {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Filter Bar & Search */
+.admin-filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--surface);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.admin-search-input {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-muted);
+  color: var(--ink-900);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-search-input:focus {
+  border-color: var(--brand-teal);
+  background: var(--surface);
+}
+
+.admin-filter-select {
+  padding: 0.6rem 2rem 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-muted);
+  color: var(--ink-900);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+}
+
+.admin-filter-select:focus {
+  border-color: var(--brand-teal);
+}
+
+.document-upload-area {
+  padding: 2rem;
+  border: 2px dashed var(--border-strong);
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.document-upload-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--brand-teal);
+  margin-bottom: 1rem;
+}
+
+/* Spinner */
+.admin-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 0.5rem;
+  vertical-align: text-bottom;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

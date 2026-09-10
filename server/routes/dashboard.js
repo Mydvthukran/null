@@ -31,6 +31,10 @@ router.get('/', authMiddleware, async (req, res) => {
     const [[pendingAppCount]] = await pool.query('SELECT COUNT(*) as count FROM applications WHERE status IN ("Under Review", "Missing Docs")');
     const [[activeNoticeCount]] = await pool.query('SELECT COUNT(*) as count FROM notices');
     const [[upcomingEventCount]] = await pool.query('SELECT COUNT(*) as count FROM events WHERE status = "Upcoming"');
+    const [[facultyCount]] = await pool.query('SELECT COUNT(*) as count FROM faculty');
+    const [[galleryCount]] = await pool.query('SELECT COUNT(*) as count FROM gallery');
+    const [[totalAppCount]] = await pool.query('SELECT COUNT(*) as count FROM applications');
+    const [[contactCount]] = await pool.query('SELECT COUNT(*) as count FROM contact_submissions WHERE status = "New"');
 
     res.json({
       stats: {
@@ -38,6 +42,10 @@ router.get('/', authMiddleware, async (req, res) => {
         pendingApplications: pendingAppCount.count,
         activeNotices: activeNoticeCount.count,
         upcomingEvents: upcomingEventCount.count,
+        facultyCount: facultyCount.count,
+        galleryCount: galleryCount.count,
+        totalApplications: totalAppCount.count,
+        newContacts: contactCount.count,
       },
       recentActivity,
     });
