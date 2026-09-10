@@ -30,7 +30,7 @@ const Hero = () => {
           src={heroImages[currentImageIndex]}
           alt="College Campus"
           style={{ transition: 'opacity 0.5s ease-in-out' }}
-          fetchpriority="high"
+          fetchPriority="high"
           loading="eager"
         />
         <div className="hero-overlay"></div>
