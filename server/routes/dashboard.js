@@ -55,4 +55,28 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+// GET /api/dashboard/logs - Get login logs and session actions
+router.get('/logs', authMiddleware, async (req, res) => {
+  try {
+    const [logins] = await pool.query('SELECT * FROM login_logs ORDER BY login_time DESC LIMIT 50');
+    
+    // For each login, fetch the actions that match its session_id
+    for (let log of logins) {
+      if (log.session_id) {
+        const [actions] = await pool.query(
+          'SELECT module, action, description, timestamp FROM activity_log WHERE session_id = ? ORDER BY timestamp DESC',
+          [log.session_id]
+        );
+        log.actions = actions;
+      } else {
+        log.actions = [];
+      }
+    }
+    res.json({ logs: logins });
+  } catch (err) {
+    console.error('Failed to fetch logs:', err);
+    res.status(500).json({ error: 'Server error retrieving logs' });
+  }
+});
+
 module.exports = router;

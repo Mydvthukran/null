@@ -1,4 +1,4 @@
-﻿/* Header */
+/* Header */
 .header {
   padding-top: 0.8rem;
   position: relative;
@@ -74,7 +74,7 @@
 }
 
 .college-name {
-  font-size: clamp(1.08rem, 2.1vw, 1.5rem);
+  font-size: clamp(1.2rem, 2.3vw, 1.65rem);
   color: #0a192f;
   font-family: var(--font-body);
   font-weight: 800;
@@ -84,7 +84,7 @@
 
 .college-subtitle {
   margin-top: 0.35rem;
-  font-size: clamp(0.72rem, 1.3vw, 0.88rem);
+  font-size: clamp(0.78rem, 1.4vw, 0.95rem);
   color: rgba(33, 64, 102, 0.92);
   letter-spacing: 0.03em;
   text-transform: uppercase;

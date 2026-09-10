@@ -15,9 +15,10 @@ const logActivity = async (admin, module, action, description) => {
     // rejects undefined bind values, so always normalize the fallback.
     const adminName = admin?.name || admin?.username || 'System';
 
+    const sessionId = admin?.session_id || null;
     await pool.execute(
-      'INSERT INTO activity_log (admin_id, admin_name, module, action, description) VALUES (?, ?, ?, ?, ?)',
-      [adminId, adminName, module, action, description]
+      'INSERT INTO activity_log (admin_id, admin_name, module, action, description, session_id) VALUES (?, ?, ?, ?, ?, ?)',
+      [adminId, adminName, module, action, description, sessionId]
     );
   } catch (error) {
     console.error('Failed to log activity:', error);
