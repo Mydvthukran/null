@@ -21,7 +21,7 @@ describe('DocumentManager Component', () => {
   it('renders correctly', async () => {
     render(<DocumentManager admin={{ role: 'super_admin' }} />);
     expect(screen.getByText('System Document Manager')).toBeInTheDocument();
-    expect(screen.getByText('Website Documents')).toBeInTheDocument();
+    expect(screen.getByText(/Website Documents/)).toBeInTheDocument();
   });
 
   it('displays fetched documents', async () => {

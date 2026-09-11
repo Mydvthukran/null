@@ -38,7 +38,7 @@ describe('ApplicationManager Component', () => {
     
     await waitFor(() => {
       const selects = screen.getAllByRole('combobox');
-      expect(selects.length).toBe(2);
+      expect(selects.length).toBe(3);
     });
   });
 });

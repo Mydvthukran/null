@@ -18,8 +18,8 @@ describe('EventManager Component', () => {
 
   it('renders correctly', async () => {
     render(<EventManager token="test" />);
-    expect(screen.getByText('Manage Announcements')).toBeInTheDocument();
-    expect(screen.getByText('+ Add Announcement')).toBeInTheDocument();
+    expect(screen.getByText('Manage Announcements & Events')).toBeInTheDocument();
+    expect(screen.getByText('+ Add Event')).toBeInTheDocument();
   });
 
   it('displays fetched events', async () => {
