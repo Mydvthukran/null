@@ -94,7 +94,7 @@ async function initDB() {
         'INSERT INTO admins (username, password, name) VALUES (?, ?, ?)',
         [adminUsername, hashedPassword, 'System Admin']
       );
-      console.log(`Default admin seeded (username: ${adminUsername})`);
+      console.log('Default admin seeded successfully.');
     }
 
     // 2. Visitors

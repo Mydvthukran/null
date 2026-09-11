@@ -74,7 +74,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     
     // Attempt to get location
     let location = 'Unknown';
-    if (cleanIp !== '127.0.0.1') {
+    if (cleanIp !== '127.0.0.1' && require('net').isIP(cleanIp)) {
       try {
         const geoRes = await fetch(`http://ip-api.com/json/${cleanIp}`);
         if (geoRes.ok) {
