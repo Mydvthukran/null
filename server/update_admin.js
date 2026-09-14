@@ -18,10 +18,10 @@ const bcrypt = require('bcryptjs');
     
     if (rows.length === 0) {
       await pool.query('INSERT INTO admins (username, password, name, role) VALUES (?, ?, ?, ?)', [username, hash, 'System Admin', 'super_admin']);
-      console.log(`Admin ${username} created successfully with the new password.`);
+      console.log(`Admin ${username} created successfully with the new credentials.`);
     } else {
       await pool.query('UPDATE admins SET password = ? WHERE username = ?', [hash, username]);
-      console.log(`Admin ${username} password updated successfully.`);
+      console.log(`Admin ${username} credentials updated successfully.`);
     }
     
     process.exit(0);
