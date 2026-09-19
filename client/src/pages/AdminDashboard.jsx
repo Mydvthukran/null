@@ -224,7 +224,7 @@ const AdminDashboard = () => {
                   background: 'var(--surface)', border: '1px solid var(--border-strong)',
                   color: 'var(--ink-900)', outline: 'none'
                 }}
-                placeholder="admin"
+                placeholder="siet_admin"
                 required
               />
             </div>
