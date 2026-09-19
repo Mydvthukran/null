@@ -9,6 +9,7 @@ import DocumentManager from '../components/DocumentManager';
 import SettingsManager from '../components/SettingsManager';
 import MenuManager from '../components/MenuManager';
 import UserManager from '../components/UserManager';
+import GrievanceManager from '../components/GrievanceManager';
 import '../css/adminDashboard.css';
 
 const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
@@ -355,6 +356,15 @@ const AdminDashboard = () => {
             Faculty Manager
           </div>
           )}
+          {hasPermission('grievances') && (
+          <div 
+            className={`admin-nav-item ${activeTab === 'grievances' ? 'active' : ''}`}
+            onClick={() => setActiveTab('grievances')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Grievance Redressal
+          </div>
+          )}
           {hasPermission('settings') && (
           <div 
             className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
@@ -410,6 +420,7 @@ const AdminDashboard = () => {
             {activeTab === 'events' && 'Announcements'}
             {activeTab === 'gallery' && 'Gallery Manager'}
             {activeTab === 'faculty' && 'Faculty Manager'}
+            {activeTab === 'grievances' && 'Grievance Redressal Cell'}
             {activeTab === 'settings' && 'System Settings & Branding'}
             {activeTab === 'menus' && 'Navigation Menus Management'}
             {activeTab === 'users' && 'User Management'}
@@ -562,6 +573,11 @@ const AdminDashboard = () => {
         {/* Faculty */}
         {activeTab === 'faculty' && (
           <FacultyManager />
+        )}
+
+        {/* Grievances */}
+        {activeTab === 'grievances' && (
+          <GrievanceManager />
         )}
 
         {/* Settings */}

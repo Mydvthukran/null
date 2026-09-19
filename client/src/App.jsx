@@ -31,6 +31,7 @@ const Developers = React.lazy(() => import('./pages/Developers'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const ContactUs = React.lazy(() => import('./pages/ContactUs'));
 const CommencementNotice = React.lazy(() => import('./pages/CommencementNotice'));
+const Grievance = React.lazy(() => import('./pages/Grievance'));
 
 const ExternalPlacementRedirect = () => {
   useEffect(() => {
@@ -100,6 +101,7 @@ function App() {
             <Route path="/developers" element={<Developers />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/grievance" element={<Grievance />} />
           </Routes>
         </Suspense>
 

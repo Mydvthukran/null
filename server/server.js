@@ -90,6 +90,7 @@ app.use('/api/faculty', require('./routes/faculty'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/menus', require('./routes/menus'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/grievances', require('./routes/grievances'));
 
 // Health check
 app.get('/api/health', (req, res) => {

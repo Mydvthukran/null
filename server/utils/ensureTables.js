@@ -173,10 +173,32 @@ async function ensureTables() {
         )
       `);
 
+      // grievances (Grievance Redressal Cell)
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS grievances (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          ticket_id VARCHAR(50) UNIQUE NOT NULL,
+          name VARCHAR(100),
+          roll_number VARCHAR(50),
+          email VARCHAR(150),
+          phone VARCHAR(20),
+          department VARCHAR(100),
+          category VARCHAR(100) NOT NULL,
+          subject VARCHAR(200) NOT NULL,
+          description TEXT NOT NULL,
+          attachment_path VARCHAR(255),
+          is_anonymous TINYINT(1) DEFAULT 0,
+          status VARCHAR(50) DEFAULT 'Submitted',
+          resolution_remarks TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+      `);
+
       // Auto-ensure super admin account credentials exist
       const ALL_PERMISSIONS = JSON.stringify([
         'overview', 'applications', 'notices', 'documents',
-        'events', 'gallery', 'faculty', 'forms', 'settings', 'menus'
+        'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances'
       ]);
       const adminUser = process.env.ADMIN_USERNAME || 'admin';
       const adminPass = process.env.ADMIN_PASSWORD || '123456';

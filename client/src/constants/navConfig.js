@@ -96,7 +96,7 @@ export const navItems = [
       { name: 'Exam Schedule', href: '/academics/exam-schedule' },
       { name: 'Scholarships', href: '/academics/scholarships' },
       { name: 'Dress Code', href: '/academics/dress-code' },
-      { name: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },
+      { name: 'Grievance Portal', href: '/grievance' },
       { name: 'Code of Conduct', href: '/academics/code-of-conduct' },
       { name: 'Anti-Ragging', href: '/academics/anti-ragging' },
       { name: 'SIH 2026', href: '/sih-2026' },
