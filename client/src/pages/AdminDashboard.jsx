@@ -11,7 +11,7 @@ import MenuManager from '../components/MenuManager';
 import UserManager from '../components/UserManager';
 import '../css/adminDashboard.css';
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 /**
  * Premium Admin Dashboard Component for College Website
@@ -223,7 +223,7 @@ const AdminDashboard = () => {
                   background: 'var(--surface)', border: '1px solid var(--border-strong)',
                   color: 'var(--ink-900)', outline: 'none'
                 }}
-                placeholder="adi_admin"
+                placeholder="admin"
                 required
               />
             </div>

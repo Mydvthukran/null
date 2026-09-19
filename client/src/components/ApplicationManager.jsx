@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/adminDashboard.css';
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 const ApplicationManager = () => {
   const [applications, setApplications] = useState([]);

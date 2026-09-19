@@ -178,7 +178,7 @@ async function ensureTables() {
         'overview', 'applications', 'notices', 'documents',
         'events', 'gallery', 'faculty', 'forms', 'settings', 'menus'
       ]);
-      const adminUser = process.env.ADMIN_USERNAME || 'adi_admin';
+      const adminUser = process.env.ADMIN_USERNAME || 'admin';
       const adminPass = process.env.ADMIN_PASSWORD || '123456';
       const [existingAdmins] = await conn.query('SELECT * FROM admins WHERE username = ? OR id = 1', [adminUser]);
       const hashedPassword = await bcrypt.hash(adminPass, 10);

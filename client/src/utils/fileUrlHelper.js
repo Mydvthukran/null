@@ -21,10 +21,7 @@ export const getFileUrl = (path) => {
   if (path.startsWith('/') && !path.startsWith('/uploads')) {
     return path;
   }
-  const apiBase = import.meta.env.VITE_API_URL;
-  if (!apiBase) {
-    return path;
-  }
+  const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
   const hostBase = apiBase.replace(/\/api\/?$/, '');
   return `${hostBase}${path.startsWith('/') ? '' : '/'}${path}`;
 };

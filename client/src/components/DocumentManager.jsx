@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getFileUrl } from '../utils/fileUrlHelper';
 import { getStoredDocuments, saveStoredDocument } from '../utils/documentStorage';
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 const DocumentManager = () => {
   const [documents, setDocuments] = useState([]);

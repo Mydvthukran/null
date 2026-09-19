@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 const ALL_PERMISSIONS = [
   { key: 'overview', label: 'Dashboard Overview' },

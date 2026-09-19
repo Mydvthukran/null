@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 // ============================================================
 // Middleware
 // ============================================================
-const defaultOrigins = ['https://sietpanchkula.ac.in', 'https://www.sietpanchkula.ac.in'];
+const defaultOrigins = ['https://sietpanchkula.ac.in', 'https://www.sietpanchkula.ac.in', 'https://test.sietpanchkula.ac.in'];
 const corsOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(url => url.trim().replace(/\/$/, '')) 
   : defaultOrigins;
