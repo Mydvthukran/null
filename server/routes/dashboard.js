@@ -31,10 +31,6 @@ router.get('/', authMiddleware, async (req, res) => {
     const [[pendingAppCount]] = await pool.query('SELECT COUNT(*) as count FROM applications WHERE status IN ("Under Review", "Missing Docs")');
     const [[activeNoticeCount]] = await pool.query('SELECT COUNT(*) as count FROM notices');
     const [[upcomingEventCount]] = await pool.query('SELECT COUNT(*) as count FROM events WHERE status = "Upcoming"');
-    const [[facultyCount]] = await pool.query('SELECT COUNT(*) as count FROM faculty');
-    const [[galleryCount]] = await pool.query('SELECT COUNT(*) as count FROM gallery');
-    const [[totalAppCount]] = await pool.query('SELECT COUNT(*) as count FROM applications');
-    const [[contactCount]] = await pool.query('SELECT COUNT(*) as count FROM contact_submissions WHERE status = "New"');
 
     res.json({
       stats: {
@@ -42,40 +38,12 @@ router.get('/', authMiddleware, async (req, res) => {
         pendingApplications: pendingAppCount.count,
         activeNotices: activeNoticeCount.count,
         upcomingEvents: upcomingEventCount.count,
-        facultyCount: facultyCount.count,
-        galleryCount: galleryCount.count,
-        totalApplications: totalAppCount.count,
-        newContacts: contactCount.count,
       },
       recentActivity,
     });
   } catch (err) {
     console.error('Dashboard error:', err);
     res.status(500).json({ error: 'Server error retrieving dashboard stats' });
-  }
-});
-
-// GET /api/dashboard/logs - Get login logs and session actions
-router.get('/logs', authMiddleware, async (req, res) => {
-  try {
-    const [logins] = await pool.query('SELECT * FROM login_logs ORDER BY login_time DESC LIMIT 50');
-    
-    // For each login, fetch the actions that match its session_id
-    for (let log of logins) {
-      if (log.session_id) {
-        const [actions] = await pool.query(
-          'SELECT module, action, description, timestamp FROM activity_log WHERE session_id = ? ORDER BY timestamp DESC',
-          [log.session_id]
-        );
-        log.actions = actions;
-      } else {
-        log.actions = [];
-      }
-    }
-    res.json({ logs: logins });
-  } catch (err) {
-    console.error('Failed to fetch logs:', err);
-    res.status(500).json({ error: 'Server error retrieving logs' });
   }
 });
 

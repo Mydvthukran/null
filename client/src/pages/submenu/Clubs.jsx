@@ -14,6 +14,16 @@ const Clubs = () => {
       website: 'https://autonex.sietpanchkula.ac.in'
     },
     {
+      initials: 'KK',
+      name: 'Kala Klique',
+      tagline: 'Creative & Cultural Space',
+      description: "SIET's heritage and culture club, celebrating art, tradition, and creative expression through events and performances.",
+      tags: ['Culture', 'Art', 'Performance'],
+      color: '#e76f51',
+      bgColor: 'rgba(231, 111, 81, 0.1)',
+      website: 'https://kalaklique.lovable.app/'
+    },
+    {
       initials: 'SA',
       name: 'Scikit-Learn Alchemists',
       tagline: 'Applied Machine Learning Club',
@@ -30,15 +40,6 @@ const Clubs = () => {
       tags: ['Artificial Intelligence', 'Machine Learning', 'Research'],
       color: '#1f8d63',
       bgColor: 'rgba(31, 141, 99, 0.1)'
-    },
-    {
-      initials: 'KK',
-      name: 'Kala Klique',
-      tagline: 'Creative & Cultural Space',
-      description: "SIET's heritage and culture club, celebrating art, tradition, and creative expression through events and performances.",
-      tags: ['Culture', 'Art', 'Performance'],
-      color: '#e76f51',
-      bgColor: 'rgba(231, 111, 81, 0.1)'
     },
     {
       initials: 'BH',

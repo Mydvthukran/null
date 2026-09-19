@@ -66,16 +66,58 @@ const DressCode = () => {
 
                 <div style={{
                   background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #cbd5e1',
                   borderRadius: '12px',
-                  padding: '1.25rem 1.5rem',
-                  maxWidth: '840px',
+                  padding: '1.5rem',
+                  maxWidth: '960px',
                   margin: '0 auto 2.5rem',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
                 }}>
-                  <p style={{ margin: 0, fontSize: '1rem', color: '#1e293b', lineHeight: '1.6' }}>
-                    📢 <strong>Official Announcement:</strong> Please review the standard uniform requirements for the upcoming academic sessions to ensure consistency and professionalism on campus.
+                  <p style={{ margin: '0 0 1.25rem 0', fontSize: '1rem', color: '#1e293b', lineHeight: '1.6' }}>
+                    📢 <strong>Official Announcement:</strong> Please review the official office order and standard uniform requirements for the academic session to ensure consistency and professionalism on campus.
                   </p>
+                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <a
+                      href="/Office Order Dress Code.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.65rem 1.3rem',
+                        backgroundColor: '#0a192f',
+                        color: '#ffffff',
+                        fontWeight: '600',
+                        borderRadius: '8px',
+                        textDecoration: 'none',
+                        fontSize: '0.95rem',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      }}
+                    >
+                      📄 View Official Office Order (PDF)
+                    </a>
+                    <a
+                      href="/Office Order Dress Code.pdf"
+                      download="Office_Order_Dress_Code.pdf"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.65rem 1.3rem',
+                        backgroundColor: '#c5a059',
+                        color: '#ffffff',
+                        fontWeight: '600',
+                        borderRadius: '8px',
+                        textDecoration: 'none',
+                        fontSize: '0.95rem',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      }}
+                    >
+                      ⬇️ Download PDF
+                    </a>
+                  </div>
                 </div>
 
                 {/* Symmetrical 2x2 Cards Grid */}
@@ -152,6 +194,29 @@ const DressCode = () => {
                   <p style={{ margin: 0, fontWeight: '600', color: '#873800', fontSize: '0.95rem' }}>
                     📌 Reminder: Adherence to the uniform code is strictly maintained across all departments and laboratories.
                   </p>
+                </div>
+
+                {/* Official PDF Document Viewer Panel */}
+                <div style={{ marginTop: '2.5rem', maxWidth: '960px', margin: '2.5rem auto 0', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+                  <div style={{ padding: '1rem 1.5rem', background: '#0a192f', color: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.05rem', color: '#fff', fontWeight: '600' }}>Official Office Order Preview</h3>
+                    <a
+                      href="/Office Order Dress Code.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#c5a059', textDecoration: 'underline', fontWeight: '600', fontSize: '0.9rem' }}
+                    >
+                      Open PDF in New Tab ↗
+                    </a>
+                  </div>
+                  <div style={{ height: '700px', width: '100%' }}>
+                    <iframe
+                      title="Official Office Order Dress Code PDF preview"
+                      src="/Office Order Dress Code.pdf"
+                      style={{ width: '100%', height: '100%', border: 'none' }}
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
 
               </div>

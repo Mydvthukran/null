@@ -72,6 +72,8 @@ function App() {
             <Route path="/departments/:deptSlug/time-table" element={<Navigate to="../#time-table" replace />} />
             <Route path="/academics" element={<Navigate to="/academics/academic-calendar" replace />} />
             <Route path="/academics/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/students/pmis" element={<SubmenuRouteHandler />} />
+            <Route path="/pmis" element={<Navigate to="/academics/pmis" replace />} />
             <Route path="/facilities" element={<Navigate to="/facilities/infrastructure" replace />} />
             <Route path="/facilities/:subSection" element={<SubmenuRouteHandler />} />
             <Route path="/placements" element={<ExternalPlacementRedirect />} />

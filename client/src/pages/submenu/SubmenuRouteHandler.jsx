@@ -1,5 +1,8 @@
 import React, { useLayoutEffect, Suspense } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { findDocumentByPath } from '../../utils/documentStorage';
+
+const SubmenuWithPDF = React.lazy(() => import('./SubmenuWithPDF'));
 
 const AboutInstitute = React.lazy(() => import('./AboutInstitute'));
 const VisionMission = React.lazy(() => import('./VisionMission'));
@@ -53,6 +56,7 @@ const PhotoGallery = React.lazy(() => import('./PhotoGallery'));
 const VideoGallery = React.lazy(() => import('./VideoGallery'));
 const EventsActivities = React.lazy(() => import('./EventsActivities'));
 const Clubs = React.lazy(() => import('./Clubs'));
+const PMIS = React.lazy(() => import('./PMIS'));
 
 const submenuComponents = {
   'about/history': History,
@@ -76,6 +80,8 @@ const submenuComponents = {
   'academics/courses-offered': CoursesOffered,
   'academics/academic-calendar': AcademicCalendar,
   'academics/syllabus': Syllabus,
+  'academics/pmis': PMIS,
+  'students/pmis': PMIS,
   'academics/teaching-learning': TeachingLearning,
   'academics/curriculum': Curriculum,
   'academics/admission-prospectus': AdmissionProspectus,
@@ -124,6 +130,26 @@ const SubmenuRouteHandler = () => {
     resetScroll();
     requestAnimationFrame(resetScroll);
   }, [location.pathname]);
+
+  // Check if a document is registered for this route target path
+  const customDoc = findDocumentByPath(location.pathname);
+  if (customDoc && customDoc.filePath) {
+    const sectionLabel = (customDoc.category || section || 'DOCUMENT').toUpperCase();
+    return (
+      <Suspense fallback={<div style={{ minHeight: '60vh', display: 'grid', placeItems: 'center' }}>Loading...</div>}>
+        <SubmenuWithPDF
+          sectionLabel={sectionLabel}
+          title={customDoc.name}
+          subtitle={`Official ${customDoc.name} document published by SIET Panchkula.`}
+          pdfUrl={customDoc.filePath}
+          body={[`Review the official ${customDoc.name} document below. Updated: ${customDoc.updatedAt || 'Recently'}.`]}
+          points={[`Document Size: ${customDoc.size || 'N/A'}`, `Target Path: ${customDoc.targetPath}`]}
+          resources={[{ label: `Download ${customDoc.name} (PDF)`, href: customDoc.filePath }]}
+          hideHero
+        />
+      </Suspense>
+    );
+  }
 
   const key = `${section}/${subSection}`;
   const Component = submenuComponents[key];

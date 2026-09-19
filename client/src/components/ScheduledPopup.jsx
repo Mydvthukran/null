@@ -53,7 +53,6 @@ const ScheduledPopup = () => {
   const handleClose = () => {
     const storageKey = `popup-dismissed-${activePopup.id}`;
     window.localStorage.setItem(storageKey, 'true');
-    window.sessionStorage.setItem('hasSeenPopup', 'true');
     setDismissed(true);
   };
 

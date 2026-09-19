@@ -20,7 +20,7 @@ describe('FormManager Component', () => {
 
   it('renders correctly', async () => {
     render(<FormManager token="test" />);
-    expect(screen.getByText('Contact Us Inquiries')).toBeInTheDocument();
+    expect(screen.getByText('Form Submissions (Contact Us)')).toBeInTheDocument();
   });
 
   it('displays fetched forms', async () => {

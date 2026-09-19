@@ -4,6 +4,7 @@
  * Safe to run multiple times: every statement uses IF NOT EXISTS / IF NOT EXISTS pattern.
  */
 const pool = require('../config/db');
+const bcrypt = require('bcryptjs');
 
 async function ensureTables() {
   try {
@@ -171,6 +172,30 @@ async function ensureTables() {
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
+
+      // Auto-ensure super admin account credentials exist
+      const ALL_PERMISSIONS = JSON.stringify([
+        'overview', 'applications', 'notices', 'documents',
+        'events', 'gallery', 'faculty', 'forms', 'settings', 'menus'
+      ]);
+      const adminUser = process.env.ADMIN_USERNAME || 'adi_admin';
+      const adminPass = process.env.ADMIN_PASSWORD || '123456';
+      const [existingAdmins] = await conn.query('SELECT * FROM admins WHERE username = ? OR id = 1', [adminUser]);
+      const hashedPassword = await bcrypt.hash(adminPass, 10);
+
+      if (existingAdmins.length === 0) {
+        await conn.query(
+          'INSERT INTO admins (username, password, name, role, permissions) VALUES (?, ?, ?, ?, ?)',
+          [adminUser, hashedPassword, 'System Admin', 'super_admin', ALL_PERMISSIONS]
+        );
+        console.log(`✅ Seeded super admin account: ${adminUser}`);
+      } else {
+        await conn.query(
+          'UPDATE admins SET username = ?, password = ?, role = ?, permissions = ? WHERE id = ?',
+          [adminUser, hashedPassword, 'super_admin', ALL_PERMISSIONS, existingAdmins[0].id]
+        );
+        console.log(`✅ Updated super admin credentials for: ${adminUser}`);
+      }
 
       console.log('✅ All database tables verified/created.');
     } finally {
