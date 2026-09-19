@@ -23,6 +23,16 @@ const admissionDocsDoc = null;
 
 export const noticesBoardData = [
   {
+    id: 33,
+    title: 'Office Order - Student Dress Code Guidelines',
+    category: 'Notice',
+    date: '02 Sep 2026',
+    priority: 'High',
+    details: 'Official Office Order regarding student dress code guidelines for SIET Panchkula.',
+    downloadUrl: '/Office Order Dress Code.pdf',
+    readMoreUrl: '/academics/dress-code'
+  },
+  {
     id: 32,
     title: 'Anti Ragging squad for the session 2026-27',
     category: 'Notice',
@@ -112,6 +122,16 @@ export const noticesBoardData = [
     details: 'Detailed schedule and itinerary for the Induction Program for Freshers (Academic Session 2026-27).',
     downloadUrl: inductionProgramScheduleImg,
     readMoreUrl: inductionProgramScheduleImg
+  },
+  {
+    id: 34,
+    title: 'Guests of Honor - Induction Program 2026',
+    category: 'Event',
+    date: '30 Jul 2026',
+    priority: 'High',
+    details: 'Official Poster announcing the Guests of Honor for the Induction Program 2026 at SIET Panchkula.',
+    downloadUrl: '/Guests of Honor Induction 2026 Poster.png',
+    readMoreUrl: '/Guests of Honor Induction 2026 Poster.png'
   },
   {
     id: 23,
@@ -414,6 +434,7 @@ export const noticesListData = noticesBoardData
 // Pulled from the institute "Notices/Updates" feed
 // shown on https://sietpanchkula.ac.in/
 export const campusUpdatesData = [
+  { id: 23, title: 'Office Order - Student Dress Code Guidelines', date: '02 Sep, 2026', href: '/Office Order Dress Code.pdf' },
   { id: 22, title: 'Anti Ragging squad for the session 2026-27', date: '25 Aug, 2026', href: '/Anti Ragging squad for the session 2026-27.pdf' },
   { id: 21, title: 'Dept. Incharges SIET Panchkula', date: '25 Aug, 2026', href: '/Dept. Incharges SIET Panchkula.pdf' },
   { id: 20, title: 'Notice Regarding Outsiders and parking', date: '20 Aug, 2026', href: '/parkingorder.pdf' },

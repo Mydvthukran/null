@@ -20,6 +20,15 @@ const copy404Plugin = () => ({
 export default defineConfig({
   base: '/',
   plugins: [react(), copy404Plugin()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  },
   test: {
     environment: 'jsdom',
     globals: true,

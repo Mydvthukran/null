@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 // ============================================================
 // Middleware
 // ============================================================
-const defaultOrigins = ['https://sietpanchkula.ac.in', 'https://www.sietpanchkula.ac.in'];
+const defaultOrigins = ['https://sietpanchkula.ac.in', 'https://www.sietpanchkula.ac.in', 'https://test.sietpanchkula.ac.in'];
 const corsOrigins = process.env.CORS_ORIGINS 
   ? process.env.CORS_ORIGINS.split(',').map(url => url.trim().replace(/\/$/, '')) 
   : defaultOrigins;
@@ -90,6 +90,7 @@ app.use('/api/faculty', require('./routes/faculty'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/menus', require('./routes/menus'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/grievances', require('./routes/grievances'));
 
 // Health check
 app.get('/api/health', (req, res) => {

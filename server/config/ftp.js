@@ -9,11 +9,16 @@ const FTP_PASSWORD = process.env.FTP_PASSWORD;
 const FTP_BASE_DIR = process.env.FTP_BASE_DIR;
 const FTP_BASE_URL = process.env.FTP_BASE_URL;
 
-if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD || !FTP_BASE_DIR || !FTP_BASE_URL) {
-  throw new Error("Missing required FTP environment variables!");
+const isFtpConfigured = Boolean(FTP_HOST && FTP_USER && FTP_PASSWORD && FTP_BASE_DIR && FTP_BASE_URL);
+
+if (!isFtpConfigured) {
+  console.warn("⚠️ FTP environment variables not fully configured. Local fallback mode enabled.");
 }
 
 async function getClient() {
+  if (!isFtpConfigured) {
+    throw new Error("FTP storage is not configured. Please set FTP environment variables.");
+  }
   const client = new ftp.Client();
   client.ftp.verbose = false;
   await client.access({

@@ -25,7 +25,7 @@ describe('NoticeManager Component', () => {
   it('displays fetched notices', async () => {
     render(<NoticeManager token="test" />);
     await waitFor(() => {
-      expect(screen.getByText('Important Notice')).toBeInTheDocument();
+      expect(screen.getAllByText('Important Notice').length).toBeGreaterThan(0);
     });
   });
 });

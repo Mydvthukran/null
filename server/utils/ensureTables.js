@@ -4,6 +4,7 @@
  * Safe to run multiple times: every statement uses IF NOT EXISTS / IF NOT EXISTS pattern.
  */
 const pool = require('../config/db');
+const bcrypt = require('bcryptjs');
 
 async function ensureTables() {
   try {
@@ -148,6 +149,13 @@ async function ensureTables() {
         )
       `);
 
+      // Auto-migrate Grievance Portal link in navigation database
+      await conn.query(`
+        UPDATE navigation_menus 
+        SET href = '/grievance', is_external = 0 
+        WHERE href LIKE '%grievance.sietpanchkula.ac.in%' OR (name = 'Grievance Portal' AND href LIKE 'http%')
+      `);
+
       // gallery (setup-gallery)
       await conn.query(`
         CREATE TABLE IF NOT EXISTS gallery (
@@ -171,6 +179,52 @@ async function ensureTables() {
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
+
+      // grievances (Grievance Redressal Cell)
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS grievances (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          ticket_id VARCHAR(50) UNIQUE NOT NULL,
+          name VARCHAR(100),
+          roll_number VARCHAR(50),
+          email VARCHAR(150),
+          phone VARCHAR(20),
+          department VARCHAR(100),
+          category VARCHAR(100) NOT NULL,
+          subject VARCHAR(200) NOT NULL,
+          description TEXT NOT NULL,
+          attachment_path VARCHAR(255),
+          is_anonymous TINYINT(1) DEFAULT 0,
+          status VARCHAR(50) DEFAULT 'Submitted',
+          resolution_remarks TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )
+      `);
+
+      // Auto-ensure super admin account credentials exist
+      const ALL_PERMISSIONS = JSON.stringify([
+        'overview', 'applications', 'notices', 'documents',
+        'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances'
+      ]);
+      const adminUser = process.env.ADMIN_USERNAME || 'siet_admin';
+      const adminPass = process.env.ADMIN_PASSWORD || 'SietAdmin@2026!';
+      const [existingAdmins] = await conn.query('SELECT * FROM admins WHERE username = ? OR id = 1', [adminUser]);
+      const hashedPassword = await bcrypt.hash(adminPass, 10);
+
+      if (existingAdmins.length === 0) {
+        await conn.query(
+          'INSERT INTO admins (username, password, name, role, permissions) VALUES (?, ?, ?, ?, ?)',
+          [adminUser, hashedPassword, 'System Admin', 'super_admin', ALL_PERMISSIONS]
+        );
+        console.log(`✅ Seeded super admin account: ${adminUser}`);
+      } else {
+        await conn.query(
+          'UPDATE admins SET username = ?, password = ?, role = ?, permissions = ? WHERE id = ?',
+          [adminUser, hashedPassword, 'super_admin', ALL_PERMISSIONS, existingAdmins[0].id]
+        );
+        console.log(`✅ Updated super admin credentials for: ${adminUser}`);
+      }
 
       console.log('✅ All database tables verified/created.');
     } finally {

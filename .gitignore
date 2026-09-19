@@ -26,3 +26,5 @@ dist-ssr
 *.sw?
 
 updated static frontend.zip
+*.zip
+

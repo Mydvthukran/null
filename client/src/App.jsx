@@ -31,6 +31,7 @@ const Developers = React.lazy(() => import('./pages/Developers'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const ContactUs = React.lazy(() => import('./pages/ContactUs'));
 const CommencementNotice = React.lazy(() => import('./pages/CommencementNotice'));
+const Grievance = React.lazy(() => import('./pages/Grievance'));
 
 const ExternalPlacementRedirect = () => {
   useEffect(() => {
@@ -72,6 +73,8 @@ function App() {
             <Route path="/departments/:deptSlug/time-table" element={<Navigate to="../#time-table" replace />} />
             <Route path="/academics" element={<Navigate to="/academics/academic-calendar" replace />} />
             <Route path="/academics/:subSection" element={<SubmenuRouteHandler />} />
+            <Route path="/students/pmis" element={<SubmenuRouteHandler />} />
+            <Route path="/pmis" element={<Navigate to="/academics/pmis" replace />} />
             <Route path="/facilities" element={<Navigate to="/facilities/infrastructure" replace />} />
             <Route path="/facilities/:subSection" element={<SubmenuRouteHandler />} />
             <Route path="/placements" element={<ExternalPlacementRedirect />} />
@@ -98,6 +101,7 @@ function App() {
             <Route path="/developers" element={<Developers />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/grievance" element={<Grievance />} />
           </Routes>
         </Suspense>
 

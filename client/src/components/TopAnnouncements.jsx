@@ -1,47 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from './ScrollReveal';
 import { topAnnouncementsData } from '../data/noticesData';
-import { getFileUrl } from '../utils/fileUrlHelper';
 
-const fallbackAnnouncements = topAnnouncementsData.map((item) => ({
+const hardcodedAnnouncements = topAnnouncementsData.map((item) => ({
   id: item.id,
   text: item.text,
   href: item.href || '/all-notices',
-  isExternal: Boolean(item.href && !item.href.startsWith('/')),
+  isExternal: Boolean(item.href && (!item.href.startsWith('/') || item.href.toLowerCase().endsWith('.pdf') || item.href.toLowerCase().endsWith('.jpeg') || item.href.toLowerCase().endsWith('.png'))),
 }));
 
 const TopAnnouncements = () => {
-  const [announcements, setAnnouncements] = useState(fallbackAnnouncements);
-
-  const loadAnnouncements = useCallback(async () => {
-    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
-    try {
-      const response = await fetch(`${apiBase}/notices`, { cache: 'no-store' });
-      const data = await response.json();
-      if (!response.ok || !Array.isArray(data)) return;
-
-      const nextAnnouncements = data
-        .filter((notice) => notice.status !== 'Archived' && notice.title !== 'New Notice')
-        .slice(0, 8)
-        .map((notice) => ({
-          id: notice.id,
-          text: notice.title,
-          href: notice.file_path ? getFileUrl(notice.file_path) : '/all-notices',
-          isExternal: Boolean(notice.file_path),
-        }));
-
-      setAnnouncements(nextAnnouncements.length > 0 ? nextAnnouncements : fallbackAnnouncements);
-    } catch (error) {
-      console.error('Failed to fetch top announcements:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadAnnouncements();
-    window.addEventListener('siet:notices-updated', loadAnnouncements);
-    return () => window.removeEventListener('siet:notices-updated', loadAnnouncements);
-  }, [loadAnnouncements]);
+  const announcements = hardcodedAnnouncements;
 
   const renderAnnouncement = (item) => (
     <>

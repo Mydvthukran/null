@@ -415,13 +415,21 @@ export const submenuData = {
   'academics/code-of-conduct': {
     sectionLabel: 'ACADEMICS',
     title: 'Code of Conduct',
-    subtitle: 'Official student code of conduct document (PDF).',
-    pdfUrl: null,
+    subtitle: 'Official Student Code of Conduct & Rules of Discipline Document',
+    pdfUrl: '/codeofconduct.pdf',
     body: [
-      'The institute Code of Conduct PDF will be embedded here once available.'
+      'The State Institute of Engineering & Technology (SIET), Panchkula, expects all students to conduct themselves with honesty, integrity, academic responsibility, and mutual respect.',
+      'This official Code of Conduct document outlines institutional guidelines regarding student behavior, attendance, campus decorum, anti-ragging mandates, prohibition of substance abuse, and academic ethics.'
     ],
-    points: [],
-    resources: []
+    points: [
+      'Strict adherence to institutional discipline, attendance norms, and academic integrity.',
+      'Zero-tolerance policy against ragging, harassment, and discrimination in any form.',
+      'Mandatory compliance with campus uniform, safety, and laboratory safety regulations.',
+      'Proper maintenance of institute property, equipment, and digital infrastructure.'
+    ],
+    resources: [
+      { label: 'Download Code of Conduct (PDF)', href: '/codeofconduct.pdf' }
+    ]
   },
   'academics/scholarships': {
     sectionLabel: 'STUDENT',
@@ -447,9 +455,11 @@ export const submenuData = {
   'academics/dress-code': {
     sectionLabel: 'ACADEMICS',
     title: 'Dress Code Guidelines',
+    subtitle: 'Official Office Order & Student Dress Code Regulations for SIET Panchkula',
+    pdfUrl: '/Office Order Dress Code.pdf',
     body: [
       '📢 Official Announcement: Student Dress Code Guidelines',
-      'Please review the standard uniform requirements for the upcoming academic sessions to ensure consistency and professionalism on campus.'
+      'Please review the official office order and standard uniform requirements for the upcoming academic sessions to ensure consistency and professionalism on campus.'
     ],
     points: [
       '☀️ Summer Uniform — Shirt/Top: Plain Light Sky Blue shirt | Trousers: Dark Grey formal trousers | Belt: Formal Black belt (Mandatory) | Tie / Scarf: Dark Blue (Optional).',
@@ -458,6 +468,9 @@ export const submenuData = {
       '🛠️ Workshop Uniform — Lab/Workshop Classes: Khaki color apron.',
       '👞 Footwear — Shoes: Formal Black shoes paired with Light Grey socks.',
       '📌 Reminder: Adherence to the uniform code is strictly maintained.'
+    ],
+    resources: [
+      { label: 'Download Official Dress Code Office Order (PDF)', href: '/Office Order Dress Code.pdf' }
     ]
   },
 

@@ -14,13 +14,24 @@ const Clubs = () => {
       website: 'https://autonex.sietpanchkula.ac.in'
     },
     {
+      initials: 'KK',
+      name: 'Kala Klique',
+      tagline: 'Creative & Cultural Space',
+      description: "SIET's heritage and culture club, celebrating art, tradition, and creative expression through events and performances.",
+      tags: ['Culture', 'Art', 'Performance'],
+      color: '#e76f51',
+      bgColor: 'rgba(231, 111, 81, 0.1)',
+      website: 'https://kalaklique.lovable.app/'
+    },
+    {
       initials: 'SA',
       name: 'Scikit-Learn Alchemists',
       tagline: 'Applied Machine Learning Club',
       description: 'A hands-on community exploring machine learning through Scikit-learn, building practical models and data-driven projects.',
       tags: ['Machine Learning', 'Scikit-learn', 'Data Science'],
       color: '#c5a059',
-      bgColor: 'rgba(197, 160, 89, 0.12)'
+      bgColor: 'rgba(197, 160, 89, 0.12)',
+      website: 'https://scikitlearnalchemists.com'
     },
     {
       initials: 'MX',
@@ -32,22 +43,14 @@ const Clubs = () => {
       bgColor: 'rgba(31, 141, 99, 0.1)'
     },
     {
-      initials: 'KK',
-      name: 'Kala Klique',
-      tagline: 'Creative & Cultural Space',
-      description: "SIET's heritage and culture club, celebrating art, tradition, and creative expression through events and performances.",
-      tags: ['Culture', 'Art', 'Performance'],
-      color: '#e76f51',
-      bgColor: 'rgba(231, 111, 81, 0.1)'
-    },
-    {
       initials: 'BH',
       name: 'BuildHub',
       tagline: 'Hackathons & Technical Competitions',
       description: 'Prepares students for hackathons and technical competitions, fostering rapid prototyping and problem-solving skills.',
       tags: ['Hackathons', 'Competitive Coding', 'Prototyping'],
       color: '#2563eb',
-      bgColor: 'rgba(37, 99, 235, 0.08)'
+      bgColor: 'rgba(37, 99, 235, 0.08)',
+      website: 'https://buildhub.taskzon.com'
     },
     {
       initials: 'SW',

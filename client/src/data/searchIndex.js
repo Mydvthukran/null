@@ -51,12 +51,15 @@ export const searchableLinks = [
   { label: 'Code of Conduct', href: '/academics/code-of-conduct' },
   { label: 'Scholarships / NSP Portal', href: '/academics/scholarships' },
   { label: 'Student Dress Code Guidelines', href: '/academics/dress-code' },
+  { label: 'Office Order - Student Dress Code Guidelines (PDF)', href: '/Office Order Dress Code.pdf', external: true },
   { label: 'Anti-Ragging', href: '/academics/anti-ragging' },
   ...departmentSearchableLinks,
+  { label: 'Prime Minister Internship Scheme (PMIS)', href: '/academics/pmis' },
+  { label: 'PMIS Official Portal (MCA)', href: 'https://pminternship.mca.gov.in/login/', external: true },
   { label: 'Job Vacancies & Careers', href: '/jobs' },
   { label: 'Job Vacancy Notice 2026 Flyer', href: '/vacancy.jpeg', external: true },
   { label: 'Induction Program for Freshers (Order 168)', href: '/order-168.jpeg', external: true },
-  { label: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },
+  { label: 'Grievance Portal', href: '/grievance' },
   { label: 'Unnat Bharat Abhiyan', href: 'https://unnatbharatabhiyan.gov.in/', external: true },
 ];
 
