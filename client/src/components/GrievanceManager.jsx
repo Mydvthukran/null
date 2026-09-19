@@ -28,6 +28,12 @@ const GrievanceManager = () => {
     setError('');
     try {
       const res = await fetch(`${API_BASE}/grievances`, { credentials: 'include', cache: 'no-store' });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        setError('Cannot connect to backend server. Make sure the Node.js backend (server.js) is running.');
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Failed to fetch grievances.');
@@ -37,7 +43,7 @@ const GrievanceManager = () => {
       setGrievances(data.grievances || []);
     } catch (err) {
       console.error('Fetch grievances error:', err);
-      setError('Cannot connect to server to load grievances.');
+      setError('Cannot connect to backend server. Make sure the Node.js backend (server.js) is running on port 5000.');
     }
     setLoading(false);
   }, []);
