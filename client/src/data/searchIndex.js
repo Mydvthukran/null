@@ -59,7 +59,7 @@ export const searchableLinks = [
   { label: 'Job Vacancies & Careers', href: '/jobs' },
   { label: 'Job Vacancy Notice 2026 Flyer', href: '/vacancy.jpeg', external: true },
   { label: 'Induction Program for Freshers (Order 168)', href: '/order-168.jpeg', external: true },
-  { label: 'Grievance Portal', href: 'https://grievance.sietpanchkula.ac.in/', external: true },
+  { label: 'Grievance Portal', href: '/grievance' },
   { label: 'Unnat Bharat Abhiyan', href: 'https://unnatbharatabhiyan.gov.in/', external: true },
 ];
 

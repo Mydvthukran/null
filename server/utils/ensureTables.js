@@ -149,6 +149,13 @@ async function ensureTables() {
         )
       `);
 
+      // Auto-migrate Grievance Portal link in navigation database
+      await conn.query(`
+        UPDATE navigation_menus 
+        SET href = '/grievance', is_external = 0 
+        WHERE href LIKE '%grievance.sietpanchkula.ac.in%' OR (name = 'Grievance Portal' AND href LIKE 'http%')
+      `);
+
       // gallery (setup-gallery)
       await conn.query(`
         CREATE TABLE IF NOT EXISTS gallery (
