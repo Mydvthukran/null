@@ -19,20 +19,38 @@ const submitLimiter = rateLimit({
   message: { error: 'Too many grievances submitted from this IP, please try again later.' }
 });
 
+// Rate limiter for public ticket tracking lookup to prevent brute-force enumeration
+const trackLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30, // Limit to 30 lookups per 15 minutes per IP
+  message: { error: 'Too many tracking requests from this IP, please try again later.' }
+});
+
 // Setup multer storage for grievance attachments
 const uploadDir = path.join(__dirname, '../uploads/grievances');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+const ALLOWED_EXTENSIONS = ['.jpeg', '.jpg', '.png', '.webp', '.pdf', '.doc', '.docx'];
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const safeExt = ALLOWED_EXTENSIONS.includes(ext) ? ext : '.bin';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, 'grievance-' + uniqueSuffix + ext);
+    cb(null, 'grievance-' + uniqueSuffix + safeExt);
   }
 });
 
@@ -40,13 +58,13 @@ const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    if (extname && mimetype) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isExtAllowed = ALLOWED_EXTENSIONS.includes(ext);
+    const isMimeAllowed = ALLOWED_MIME_TYPES.includes(file.mimetype);
+    if (isExtAllowed && isMimeAllowed) {
       return cb(null, true);
     }
-    cb(new Error('Only images, PDFs, and Word documents under 5MB are allowed.'));
+    cb(new Error('Only images (JPEG, PNG, WEBP), PDFs, and Word documents under 5MB are allowed.'));
   }
 });
 
@@ -133,12 +151,12 @@ router.post('/submit', submitLimiter, upload.single('attachment'), async (req, r
     });
   } catch (err) {
     console.error('Error submitting grievance:', err);
-    res.status(500).json({ error: err.message || 'Server error submitting grievance.' });
+    res.status(500).json({ error: 'Server error submitting grievance.' });
   }
 });
 
-// GET /api/grievances/track/:ticketId — Public ticket tracking lookup
-router.get('/track/:ticketId', async (req, res) => {
+// GET /api/grievances/track/:ticketId — Public ticket tracking lookup (rate-limited)
+router.get('/track/:ticketId', trackLimiter, async (req, res) => {
   try {
     const { ticketId } = req.params;
     if (!ticketId) {

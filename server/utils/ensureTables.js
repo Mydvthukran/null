@@ -202,28 +202,36 @@ async function ensureTables() {
         )
       `);
 
-      // Auto-ensure super admin account credentials exist
+      // Auto-ensure super admin account exists when env credentials are provided
       const ALL_PERMISSIONS = JSON.stringify([
         'overview', 'applications', 'notices', 'documents',
         'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances'
       ]);
-      const adminUser = process.env.ADMIN_USERNAME || 'siet_admin';
-      const adminPass = process.env.ADMIN_PASSWORD || 'SietAdmin@2026!';
-      const [existingAdmins] = await conn.query('SELECT * FROM admins WHERE username = ? OR id = 1', [adminUser]);
-      const hashedPassword = await bcrypt.hash(adminPass, 10);
+      const adminUser = process.env.ADMIN_USERNAME;
+      const adminPass = process.env.ADMIN_PASSWORD;
 
-      if (existingAdmins.length === 0) {
-        await conn.query(
-          'INSERT INTO admins (username, password, name, role, permissions) VALUES (?, ?, ?, ?, ?)',
-          [adminUser, hashedPassword, 'System Admin', 'super_admin', ALL_PERMISSIONS]
-        );
-        console.log(`✅ Seeded super admin account: ${adminUser}`);
+      if (adminUser && adminPass) {
+        const [existingAdmins] = await conn.query('SELECT * FROM admins WHERE username = ? OR id = 1', [adminUser]);
+        const hashedPassword = await bcrypt.hash(adminPass, 10);
+
+        if (existingAdmins.length === 0) {
+          await conn.query(
+            'INSERT INTO admins (username, password, name, role, permissions) VALUES (?, ?, ?, ?, ?)',
+            [adminUser, hashedPassword, 'System Admin', 'super_admin', ALL_PERMISSIONS]
+          );
+          console.log(`✅ Seeded super admin account: ${adminUser}`);
+        } else {
+          await conn.query(
+            'UPDATE admins SET username = ?, password = ?, role = ?, permissions = ? WHERE id = ?',
+            [adminUser, hashedPassword, 'super_admin', ALL_PERMISSIONS, existingAdmins[0].id]
+          );
+          console.log(`✅ Updated super admin credentials for: ${adminUser}`);
+        }
       } else {
-        await conn.query(
-          'UPDATE admins SET username = ?, password = ?, role = ?, permissions = ? WHERE id = ?',
-          [adminUser, hashedPassword, 'super_admin', ALL_PERMISSIONS, existingAdmins[0].id]
-        );
-        console.log(`✅ Updated super admin credentials for: ${adminUser}`);
+        const [existingAdmins] = await conn.query('SELECT id FROM admins LIMIT 1');
+        if (existingAdmins.length === 0) {
+          console.warn('⚠️ No admin account found. Please define ADMIN_USERNAME and ADMIN_PASSWORD in your environment variables to seed the super admin.');
+        }
       }
 
       console.log('✅ All database tables verified/created.');

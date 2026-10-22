@@ -30,20 +30,46 @@ const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(url => url.trim().replace(/\/$/, '')) 
   : defaultOrigins;
 
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  
+  try {
+    const parsed = new URL(origin);
+    const { protocol, hostname } = parsed;
+    
+    // Only allow HTTP/HTTPS protocols
+    if (protocol !== 'http:' && protocol !== 'https:') {
+      return false;
+    }
+    
+    // Allow local development (exact host match)
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return true;
+    }
+    
+    // Allow exact domain or any valid subdomain of sietpanchkula.ac.in
+    if (hostname === 'sietpanchkula.ac.in' || hostname.endsWith('.sietpanchkula.ac.in')) {
+      return true;
+    }
+    
+    // Check explicit whitelist entries
+    const originNormalized = `${protocol}//${parsed.host}`;
+    if (corsOrigins.includes(origin) || corsOrigins.includes(originNormalized)) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  
+  return false;
+};
+
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    
-    // Allow any sietpanchkula.ac.in subdomain and local development
-    if (origin.endsWith('sietpanchkula.ac.in') || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
-    
-    if (corsOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    
-    callback(null, false);
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
 }));
@@ -102,7 +128,10 @@ app.get('/api/health', (req, res) => {
 // ============================================================
 app.use((err, req, res, next) => {
   console.error('Server Error:', err.message);
-  res.status(500).json({ error: err.message || 'Internal server error' });
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.status(500).json({
+    error: isProduction ? 'Internal server error' : (err.message || 'Internal server error')
+  });
 });
 
 // ============================================================

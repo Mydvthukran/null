@@ -35,8 +35,8 @@ router.post('/login', loginLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Username and password are required.' });
     }
 
-    const envAdminUser = process.env.ADMIN_USERNAME || 'siet_admin';
-    const envAdminPass = process.env.ADMIN_PASSWORD || 'SietAdmin@2026!';
+    const envAdminUser = process.env.ADMIN_USERNAME;
+    const envAdminPass = process.env.ADMIN_PASSWORD;
 
     let admin = null;
 
@@ -53,8 +53,8 @@ router.post('/login', loginLimiter, async (req, res) => {
       console.warn('⚠️  MySQL Auth query warning (using fallback mode):', dbErr.message);
     }
 
-    // Direct fallback check if DB is disconnected or env credentials match
-    if (!admin && username === envAdminUser && password === envAdminPass) {
+    // Direct fallback check if DB is disconnected and explicit env credentials match
+    if (!admin && envAdminUser && envAdminPass && username === envAdminUser && password === envAdminPass) {
       admin = {
         id: 1,
         username: envAdminUser,

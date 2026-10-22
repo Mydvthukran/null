@@ -43,11 +43,19 @@ const ExternalPlacementRedirect = () => {
 
 function App() {
   useEffect(() => {
-    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
-    if (!sessionStorage.getItem('siet_visited')) {
-      fetch(`${apiBase}/visitors/hit`, { method: 'POST', cache: 'no-store' })
-        .then(() => sessionStorage.setItem('siet_visited', 'true'))
-        .catch((err) => console.error('Failed to register visit:', err));
+    try {
+      const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+      if (typeof window !== 'undefined' && window.sessionStorage && !window.sessionStorage.getItem('siet_visited')) {
+        const origin = window.location?.origin && window.location.origin !== 'null' ? window.location.origin : '';
+        const targetUrl = apiBase.startsWith('http') ? `${apiBase}/visitors/hit` : (origin ? `${origin}${apiBase}/visitors/hit` : `${apiBase}/visitors/hit`);
+        if (targetUrl.startsWith('http')) {
+          fetch(targetUrl, { method: 'POST', cache: 'no-store' })
+            .then(() => window.sessionStorage.setItem('siet_visited', 'true'))
+            .catch((err) => console.error('Failed to register visit:', err));
+        }
+      }
+    } catch {
+      // Safe guard for SSR / headless test runners
     }
   }, []);
 

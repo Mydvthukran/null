@@ -1,5 +1,11 @@
-import request from 'supertest';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+
+vi.hoisted(() => {
+  process.env.JWT_SECRET = 'test-secret';
+  process.env.PORT = '5001';
+});
+
+import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import { createRequire } from 'node:module';
 
@@ -18,10 +24,6 @@ vi.mock('../config/ftp', () => ({
   uploadToFTP: vi.fn().mockResolvedValue('https://mocked-path/file.jpg'),
   deleteFromFTP: vi.fn().mockResolvedValue(true)
 }));
-
-// Set dummy JWT secret for testing
-process.env.JWT_SECRET = 'test-secret';
-process.env.PORT = '5001'; // Avoid conflict with dev server if running
 
 describe('Notices API Routes', () => {
   const adminToken = jwt.sign({ id: 1, role: 'super_admin' }, process.env.JWT_SECRET);
