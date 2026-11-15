@@ -65,3 +65,4 @@ describe('antiInspect Utility', () => {
     expect(preventDefaultSpy).not.toHaveBeenCalled();
   });
 });
+
