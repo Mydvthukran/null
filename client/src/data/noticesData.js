@@ -23,6 +23,16 @@ const admissionDocsDoc = null;
 
 export const noticesBoardData = [
   {
+    id: 35,
+    title: 'Office Order - Revised Internal Complaint Committee (ICC)',
+    category: 'Notice',
+    date: '02 Nov 2026',
+    priority: 'High',
+    details: 'Office Order No. SIET-PKL/2026/263: Revised Internal Complaint Committee (ICC) of the Institute constituted as per Section 6 of the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013.',
+    downloadUrl: '/Office Order Internal Complaint Committee.pdf',
+    readMoreUrl: '/Office Order Internal Complaint Committee.pdf'
+  },
+  {
     id: 33,
     title: 'Office Order - Student Dress Code Guidelines',
     category: 'Notice',
@@ -434,6 +444,7 @@ export const noticesListData = noticesBoardData
 // Pulled from the institute "Notices/Updates" feed
 // shown on https://sietpanchkula.ac.in/
 export const campusUpdatesData = [
+  { id: 24, title: 'Office Order - Revised Internal Complaint Committee (ICC)', date: '02 Nov, 2026', href: '/Office Order Internal Complaint Committee.pdf' },
   { id: 23, title: 'Office Order - Student Dress Code Guidelines', date: '02 Sep, 2026', href: '/Office Order Dress Code.pdf' },
   { id: 22, title: 'Anti Ragging squad for the session 2026-27', date: '25 Aug, 2026', href: '/Anti Ragging squad for the session 2026-27.pdf' },
   { id: 21, title: 'Dept. Incharges SIET Panchkula', date: '25 Aug, 2026', href: '/Dept. Incharges SIET Panchkula.pdf' },

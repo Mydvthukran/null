@@ -2,6 +2,7 @@ require('dotenv').config({ override: true });
 const mysql = require('mysql2/promise');
 
 const noticesData = [
+  { title: 'Office Order - Revised Internal Complaint Committee (ICC)', category: 'Notice', date: '02 Nov 2026', priority: 'High', status: 'Active', file_path: '/Office Order Internal Complaint Committee.pdf' },
   { title: 'Office Order - Student Dress Code Guidelines', category: 'Notice', date: '02 Sep 2026', priority: 'High', status: 'Active', file_path: '/Office Order Dress Code.pdf' },
   { title: 'Anti Ragging squad for the session 2026-27', category: 'Notice', date: '25 Aug 2026', priority: 'High', status: 'Active', file_path: '/Anti Ragging squad for the session 2026-27.pdf' },
   { title: 'Dept. Incharges SIET Panchkula', category: 'Notice', date: '25 Aug 2026', priority: 'High', status: 'Active', file_path: '/Dept. Incharges SIET Panchkula.pdf' },

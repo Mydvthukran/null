@@ -1,18 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import ScrollReveal from './ScrollReveal';
 import { getFileUrl } from '../utils/fileUrlHelper';
+import { noticesBoardData } from '../data/noticesData';
+
+const initialNotices = noticesBoardData.map((n) => ({
+  id: n.id,
+  title: n.title,
+  category: n.category || 'Notice',
+  date: n.date,
+  file_path: n.downloadUrl || n.readMoreUrl,
+  status: 'Active',
+}));
 
 const AllNoticesBoard = () => {
-  const [notices, setNotices] = useState([]);
+  const [notices, setNotices] = useState(initialNotices);
 
   useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL + '/notices')
-      .then(res => res.json())
-      .then(data => {
-        // Filter out any that are 'Archived' and dummy test records
-        setNotices(data.filter(n => n.status !== 'Archived' && n.title !== 'New Notice'));
+    const apiBase = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+    fetch(`${apiBase}/notices`)
+      .then((res) => {
+        if (!res.ok) throw new Error('API request failed');
+        return res.json();
       })
-      .catch(err => console.error('Error fetching notices:', err));
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          // Filter out any that are 'Archived' and dummy test records
+          const filtered = data.filter((n) => n.status !== 'Archived' && n.title !== 'New Notice');
+          if (filtered.length > 0) {
+            setNotices(filtered);
+          }
+        }
+      })
+      .catch((err) => console.log('Using static notices fallback:', err.message));
   }, []);
 
   return (

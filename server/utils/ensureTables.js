@@ -67,6 +67,25 @@ async function ensureTables() {
         )
       `);
 
+      // Seed latest ICC office order if not already in database
+      try {
+        const [iccRows] = await conn.query("SELECT id FROM notices WHERE title LIKE '%Internal Complaint Committee%'");
+        if (iccRows.length === 0) {
+          await conn.query(
+            "INSERT INTO notices (title, date, status, category, file_path) VALUES (?, ?, ?, ?, ?)",
+            [
+              'Office Order - Revised Internal Complaint Committee (ICC)',
+              '02 Nov 2026',
+              'Active',
+              'Notice',
+              '/Office Order Internal Complaint Committee.pdf'
+            ]
+          );
+        }
+      } catch (seedErr) {
+        // Non-fatal if table not yet initialized or query fails
+      }
+
       // events
       await conn.query(`
         CREATE TABLE IF NOT EXISTS events (
