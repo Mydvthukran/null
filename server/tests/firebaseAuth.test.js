@@ -1,5 +1,13 @@
-import request from 'supertest';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+
+vi.hoisted(() => {
+  process.env.JWT_SECRET = 'test_jwt_secret_key_1234567890';
+  process.env.PORT = '5003';
+  process.env.FIREBASE_PROJECT_ID = 'college-website-cbebe';
+  process.env.ADMIN_EMAILS = 'my3596418@gmail.com';
+});
+
+import request from 'supertest';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const app = require('../server');

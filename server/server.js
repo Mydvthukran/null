@@ -11,8 +11,12 @@
 require('dotenv').config({ override: true });
 
 if (!process.env.JWT_SECRET) {
-  console.error('FATAL ERROR: JWT_SECRET is not defined in environment variables.');
-  process.exit(1);
+  if (process.env.NODE_ENV === 'test') {
+    process.env.JWT_SECRET = 'ci-test-jwt-secret-do-not-use-in-production';
+  } else {
+    console.error('FATAL ERROR: JWT_SECRET is not defined in environment variables.');
+    process.exit(1);
+  }
 }
 
 const express = require('express');

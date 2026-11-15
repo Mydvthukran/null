@@ -49,3 +49,8 @@ jobs:
       run: npm ci
     - name: Run server tests
       run: npm test
+      env:
+        NODE_ENV: test
+        JWT_SECRET: test_jwt_secret_key_1234567890
+        FIREBASE_PROJECT_ID: college-website-cbebe
+        ADMIN_EMAILS: my3596418@gmail.com
