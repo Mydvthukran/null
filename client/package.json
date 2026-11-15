@@ -36,21 +36,21 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^29.1.1",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "@grpc/grpc-js": ">=1.14.7",
     "body-parser": ">=2.4.0",
     "proxy-addr": ">=2.0.8",
     "undici": ">=7.10.0",
-    "qs": ">=6.14.0",
+    "qs": ">=6.16.1",
     "source-map-js": ">=1.2.2",
     "browserslist": ">=4.25.0",
     "js-yaml": ">=4.1.1",
-    "ip-address": ">=10.0.2",
+    "ip-address": ">=10.7.4",
     "@humanfs/node": ">=0.16.7",
     "brace-expansion": ">=2.0.2",
     "baseline-browser-mapping": ">=1.4.1",
-    "@vitest/mocker": ">=4.1.8"
+    "@vitest/mocker": ">=4.1.12"
   }
 }
