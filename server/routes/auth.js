@@ -52,6 +52,10 @@ router.post('/firebase-login', loginLimiter, async (req, res) => {
       return res.status(401).json({ error: `Authentication failed: ${verifyErr.message}` });
     }
 
+    if (firebaseUser.email_verified === false) {
+      return res.status(403).json({ error: 'Access denied: Google account email must be verified.' });
+    }
+
     const userEmail = (firebaseUser.email || '').toLowerCase().trim();
 
     // Determine allowed emails:

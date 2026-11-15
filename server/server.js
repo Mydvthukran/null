@@ -90,7 +90,12 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files statically
+// Block unauthenticated direct static access to confidential student grievance attachments (SEC-05)
+app.use('/uploads/grievances', (req, res) => {
+  res.status(403).json({ error: 'Direct access to grievance attachments is forbidden. Access is restricted to authorized administrators.' });
+});
+
+// Serve public uploaded files statically (faculty photos, gallery)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ============================================================

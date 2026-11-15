@@ -261,4 +261,37 @@ router.delete('/:id', [authMiddleware, requirePermission('grievances')], async (
   }
 });
 
+// GET /api/grievances/:id/attachment — Securely serve grievance attachment (SEC-05)
+router.get('/:id/attachment', [authMiddleware, requirePermission('grievances')], async (req, res) => {
+  try {
+    const { id } = req.params;
+    let attachmentPath = null;
+    try {
+      const [rows] = await pool.query('SELECT attachment_path FROM grievances WHERE id = ?', [id]);
+      if (rows.length > 0) {
+        attachmentPath = rows[0].attachment_path;
+      }
+    } catch (dbErr) {
+      const found = memoryGrievances.find(g => g.id == id);
+      if (found) attachmentPath = found.attachment_path;
+    }
+
+    if (!attachmentPath) {
+      return res.status(404).json({ error: 'Grievance or attachment not found.' });
+    }
+
+    const filename = path.basename(attachmentPath);
+    const fullPath = path.join(uploadDir, filename);
+
+    if (!fs.existsSync(fullPath)) {
+      return res.status(404).json({ error: 'Attachment file not found on disk.' });
+    }
+
+    res.download(fullPath, filename);
+  } catch (err) {
+    console.error('Error fetching grievance attachment:', err);
+    res.status(500).json({ error: 'Server error retrieving attachment.' });
+  }
+});
+
 module.exports = router;

@@ -85,23 +85,32 @@ router.put('/:id', [authMiddleware, requirePermission('events')], upload.single(
   
   let filePath = null;
   try {
+    const [existing] = await pool.query('SELECT * FROM events WHERE id = ?', [id]);
+    if (!existing || existing.length === 0) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    const current = existing[0];
+    const finalTitle = title !== undefined && title !== null ? title : current.title;
+    const finalDate = date !== undefined && date !== null ? date : current.date;
+    const finalStatus = status !== undefined && status !== null ? status : current.status;
+    const finalCategory = category !== undefined && category !== null ? category : current.category;
+
     let query = 'UPDATE events SET title = ?, date = ?, status = ?, category = ? WHERE id = ?';
-    let params = [title, date, status, category, id];
+    let params = [finalTitle, finalDate, finalStatus, finalCategory, id];
 
     if (req.file) {
       filePath = await uploadToFTP(req.file.buffer, 'events', req.file.originalname);
       
-      const [oldRows] = await pool.query('SELECT file_path FROM events WHERE id = ?', [id]);
-      if (oldRows.length > 0 && oldRows[0].file_path) {
-        await deleteFromFTP(oldRows[0].file_path);
+      if (current.file_path) {
+        await deleteFromFTP(current.file_path);
       }
 
       query = 'UPDATE events SET title = ?, date = ?, status = ?, category = ?, file_path = ? WHERE id = ?';
-      params = [title, date, status, category, filePath, id];
+      params = [finalTitle, finalDate, finalStatus, finalCategory, filePath, id];
     }
 
     await pool.query(query, params);
-    await logActivity(req.admin, 'Events', 'Update', `Updated event: ${title}`);
+    await logActivity(req.admin, 'Events', 'Update', `Updated event: ${finalTitle}`);
     res.json({ message: 'Event updated successfully' });
   } catch (err) {
     console.error('Error updating event:', err);

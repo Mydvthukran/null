@@ -353,7 +353,7 @@ const GrievanceManager = () => {
             {selectedGrievance.attachment_path && (
               <div style={{ marginBottom: '1.5rem' }}>
                 <a
-                  href={getFileUrl(selectedGrievance.attachment_path)}
+                  href={`${API_BASE}/grievances/${selectedGrievance.id}/attachment`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
