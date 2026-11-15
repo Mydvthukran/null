@@ -35,8 +35,16 @@ export default defineConfig({
     setupFiles: './src/setupTests.js',
   },
   build: {
-    // vite resolves outDir relative to this config file's directory.
-    // Using "client/dist" here created a nested client/client/dist folder.
-    outDir: 'dist'
+    outDir: 'dist',
+    // Completely disable source maps so browser DevTools cannot reconstruct original React JSX source code
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        // Obfuscate chunk file names to generic hashes
+        entryFileNames: 'assets/[hash].js',
+        chunkFileNames: 'assets/[hash].js',
+        assetFileNames: 'assets/[hash].[ext]'
+      }
+    }
   }
-})
+});
