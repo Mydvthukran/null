@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
 
 const contactLimiter = rateLimit({
@@ -35,7 +36,7 @@ router.post('/', contactLimiter, async (req, res) => {
 });
 
 // GET /api/contact — List all contact inquiries (admin)
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', [authMiddleware, requirePermission('forms')], async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM contact_submissions ORDER BY id DESC');
     res.json({ inquiries: rows });
@@ -46,7 +47,7 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 // PUT /api/contact/:id/status — Update status
-router.put('/:id/status', authMiddleware, async (req, res) => {
+router.put('/:id/status', [authMiddleware, requirePermission('forms')], async (req, res) => {
   try {
     const { status } = req.body;
     const validStatuses = ['New', 'In Progress', 'Resolved', 'Closed'];

@@ -7,6 +7,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
@@ -37,7 +38,7 @@ router.get('/', async (req, res) => {
 });
 
 // PUT /api/documents/:key — Replace a specific system document
-router.put('/:key', authMiddleware, upload.single('file'), async (req, res) => {
+router.put('/:key', [authMiddleware, requirePermission('documents')], upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded.' });
   }

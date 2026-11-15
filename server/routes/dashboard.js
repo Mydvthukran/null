@@ -4,10 +4,11 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 
 // GET /api/dashboard — Get all dashboard stats
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', [authMiddleware, requirePermission('overview')], async (req, res) => {
   try {
     let recentActivity = [];
     let stats = {

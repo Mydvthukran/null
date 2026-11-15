@@ -7,7 +7,9 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const rateLimit = require('express-rate-limit');
@@ -71,11 +73,11 @@ const upload = multer({
 // In-memory fallback array for local testing if DB is disconnected
 let memoryGrievances = [];
 
-// Helper: Generate unique ticket ID (e.g. GRV-2026-9812)
+// Helper: Generate unique ticket ID with high cryptographic entropy (e.g. GRV-2026-A1B2C3D4)
 const generateTicketId = () => {
   const year = new Date().getFullYear();
-  const randomDigits = Math.floor(1000 + Math.random() * 9000);
-  return `GRV-${year}-${randomDigits}`;
+  const token = crypto.randomBytes(4).toString('hex').toUpperCase();
+  return `GRV-${year}-${token}`;
 };
 
 // POST /api/grievances/submit — Public grievance submission
@@ -183,7 +185,7 @@ router.get('/track/:ticketId', trackLimiter, async (req, res) => {
 });
 
 // GET /api/grievances — Admin list all grievances (protected)
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', [authMiddleware, requirePermission('grievances')], async (req, res) => {
   try {
     try {
       const [rows] = await pool.query('SELECT * FROM grievances ORDER BY id DESC');
@@ -198,7 +200,7 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 // PUT /api/grievances/:id — Admin update grievance status and remarks
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', [authMiddleware, requirePermission('grievances')], async (req, res) => {
   try {
     const { status, resolution_remarks } = req.body;
     const { id } = req.params;
@@ -243,7 +245,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 });
 
 // DELETE /api/grievances/:id — Admin delete grievance (protected)
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', [authMiddleware, requirePermission('grievances')], async (req, res) => {
   try {
     const { id } = req.params;
     try {

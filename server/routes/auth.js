@@ -15,6 +15,8 @@ const loginLimiter = rateLimit({
   message: { error: 'Too many login attempts from this IP, please try again after 15 minutes.' }
 });
 
+const firebaseAuth = require('../utils/firebaseAuth');
+
 const AUTH_COOKIE = 'siet_admin_session';
 const cookieAttributes = () => {
   // Detect production: explicit NODE_ENV, or common PaaS indicators (Render, Heroku, Vercel, Railway, etc.)
@@ -26,66 +28,102 @@ const cookieAttributes = () => {
   return `HttpOnly; Path=/; Max-Age=86400; SameSite=${production ? 'None' : 'Lax'}${production ? '; Secure' : ''}`;
 };
 
-// POST /api/auth/login
-router.post('/login', loginLimiter, async (req, res) => {
-  try {
-    const { username, password } = req.body;
+// POST /api/auth/login — Deprecated: Raw username/password login removed
+router.post('/login', (req, res) => {
+  return res.status(400).json({
+    error: 'Username and password authentication has been removed. Please sign in with your authorized Google account.'
+  });
+});
 
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required.' });
+// POST /api/auth/firebase-login
+router.post('/firebase-login', loginLimiter, async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({ error: 'Firebase ID token is required.' });
     }
 
-    const envAdminUser = process.env.ADMIN_USERNAME;
-    const envAdminPass = process.env.ADMIN_PASSWORD;
+    let firebaseUser;
+    try {
+      firebaseUser = await firebaseAuth.verifyFirebaseIdToken(idToken);
+    } catch (verifyErr) {
+      console.warn('Firebase token verification failed:', verifyErr.message);
+      return res.status(401).json({ error: `Authentication failed: ${verifyErr.message}` });
+    }
 
-    let admin = null;
+    const userEmail = (firebaseUser.email || '').toLowerCase().trim();
+
+    // Determine allowed emails:
+    // Primary administrator: my3596418@gmail.com
+    // Additional administrators can be configured via ADMIN_EMAILS environment variable or MySQL admins table
+    const envEmails = (process.env.ADMIN_EMAILS || 'my3596418@gmail.com')
+      .split(',')
+      .map(e => e.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (!envEmails.includes('my3596418@gmail.com')) {
+      envEmails.push('my3596418@gmail.com');
+    }
+
+    let dbAdmin = null;
 
     try {
-      // Find admin user in MySQL
-      const [rows] = await pool.query('SELECT * FROM admins WHERE username = ?', [username]);
+      // Find matching admin in MySQL by email, username, or UID
+      const [rows] = await pool.query(
+        'SELECT * FROM admins WHERE LOWER(username) = ? OR username = ?',
+        [userEmail, firebaseUser.uid]
+      );
       if (rows.length > 0) {
-        const isMatch = await bcrypt.compare(password, rows[0].password);
-        if (isMatch) {
-          admin = rows[0];
-        }
+        dbAdmin = rows[0];
       }
     } catch (dbErr) {
-      console.warn('⚠️  MySQL Auth query warning (using fallback mode):', dbErr.message);
+      console.warn('⚠️ MySQL Auth query warning (using fallback mode):', dbErr.message);
     }
 
-    // Direct fallback check if DB is disconnected and explicit env credentials match
-    if (!admin && envAdminUser && envAdminPass && username === envAdminUser && password === envAdminPass) {
-      admin = {
-        id: 1,
-        username: envAdminUser,
-        name: 'System Admin',
-        role: 'super_admin',
-        permissions: JSON.stringify([
-          'overview', 'applications', 'notices', 'documents',
-          'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances'
-        ])
-      };
+    // Verify whether this email is authorized
+    const isAuthorized = envEmails.includes(userEmail) || Boolean(dbAdmin);
+
+    if (!isAuthorized) {
+      console.warn(`Unauthorized login attempt by: ${userEmail}`);
+      return res.status(403).json({
+        error: `Access Denied: Google account (${userEmail || 'unknown'}) is not authorized to access the Admin Portal. Only authorized administrators (such as my3596418@gmail.com) are permitted.`
+      });
     }
 
-    if (!admin) {
-      return res.status(401).json({ error: 'Invalid credentials.' });
-    }
+    const defaultPermissions = [
+      'overview', 'applications', 'notices', 'documents',
+      'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances', 'users'
+    ];
 
-    // Parse permissions
-    let permissions = [];
+    // If no existing record in MySQL, configure as authenticated admin
+    const admin = dbAdmin || {
+      id: firebaseUser.uid,
+      username: userEmail,
+      name: firebaseUser.name || 'System Admin',
+      role: 'super_admin',
+      permissions: JSON.stringify(defaultPermissions)
+    };
+
+    // Parse permissions safely
+    let permissions = defaultPermissions;
     try {
-      permissions = typeof admin.permissions === 'string' ? JSON.parse(admin.permissions) : (admin.permissions || []);
+      permissions = typeof admin.permissions === 'string'
+        ? JSON.parse(admin.permissions)
+        : (admin.permissions || defaultPermissions);
     } catch (e) {
-      permissions = [];
+      permissions = defaultPermissions;
     }
 
-    // Generate JWT token (expires in 24 hours)
+    // Generate session JWT token (expires in 24 hours)
     const token = jwt.sign(
       {
         id: admin.id,
         username: admin.username,
-        name: admin.name,
+        email: firebaseUser.email,
+        name: admin.name || firebaseUser.name,
         role: admin.role || 'super_admin',
+        firebaseUid: firebaseUser.uid,
         permissions
       },
       process.env.JWT_SECRET,
@@ -93,19 +131,20 @@ router.post('/login', loginLimiter, async (req, res) => {
     );
 
     res.setHeader('Set-Cookie', `${AUTH_COOKIE}=${encodeURIComponent(token)}; ${cookieAttributes()}`);
-    res.json({
-      message: 'Login successful',
+    return res.json({
+      message: 'Login successful via Firebase Authentication',
       admin: {
         id: admin.id,
         username: admin.username,
-        name: admin.name,
+        email: firebaseUser.email,
+        name: admin.name || firebaseUser.name,
         role: admin.role || 'super_admin',
         permissions
-      },
+      }
     });
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Server error during login.' });
+    console.error('Firebase login error:', err);
+    res.status(500).json({ error: 'Server error during Firebase login.' });
   }
 });
 

@@ -21,11 +21,15 @@ async function getClient() {
   }
   const client = new ftp.Client();
   client.ftp.verbose = false;
+  const secureOption = process.env.FTP_SECURE === 'true' || process.env.FTP_SECURE === '1' 
+    ? true 
+    : (process.env.FTP_SECURE === 'explicit' ? 'explicit' : false);
+
   await client.access({
     host: FTP_HOST,
     user: FTP_USER,
     password: FTP_PASSWORD,
-    secure: false
+    secure: secureOption
   });
   return client;
 }
@@ -66,10 +70,21 @@ const uploadToFTP = async (buffer, folderName, originalName) => {
 const deleteFromFTP = async (url) => {
   if (!url || !url.startsWith(FTP_BASE_URL)) return false;
   
+  // Guard against path traversal attacks (e.g. ../ sequences)
+  const relativePath = url.slice(FTP_BASE_URL.length);
+  const normalizedRelative = path.posix.normalize(relativePath).replace(/^(\.\.(\/|\\|$))+/, '');
+  if (normalizedRelative.includes('..')) {
+    console.warn("Blocked potential path traversal in FTP deletion:", url);
+    return false;
+  }
+
   const client = await getClient();
   try {
-    const relativePath = url.replace(FTP_BASE_URL, "");
-    const remotePath = `${FTP_BASE_DIR}${relativePath}`;
+    const remotePath = path.posix.join(FTP_BASE_DIR, normalizedRelative);
+    if (!remotePath.startsWith(path.posix.normalize(FTP_BASE_DIR))) {
+      console.warn("Attempted path traversal outside FTP_BASE_DIR:", remotePath);
+      return false;
+    }
     await client.remove(remotePath);
     return true;
   } catch (err) {

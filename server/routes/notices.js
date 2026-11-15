@@ -7,6 +7,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
@@ -37,7 +38,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/notices/admin — Fetch all notices (admin)
-router.get('/admin', authMiddleware, async (req, res) => {
+router.get('/admin', authMiddleware, requirePermission('notices'), async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM notices ORDER BY id DESC');
     res.json(rows);
@@ -48,7 +49,7 @@ router.get('/admin', authMiddleware, async (req, res) => {
 });
 
 // POST /api/notices — Add a new notice
-router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
+router.post('/', authMiddleware, requirePermission('notices'), upload.single('file'), async (req, res) => {
   const { title, date, status, category, publish_date } = req.body;
 
   if (!title) {
@@ -83,30 +84,41 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
 });
 
 // PUT /api/notices/:id — Update a notice
-router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
+router.put('/:id', authMiddleware, requirePermission('notices'), upload.single('file'), async (req, res) => {
   const { id } = req.params;
   const { title, date, status, category, publish_date } = req.body;
   
   let filePath = null;
   try {
-    const pubDate = publish_date ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') : null;
+    const [existing] = await pool.query('SELECT * FROM notices WHERE id = ?', [id]);
+    if (!existing || existing.length === 0) {
+      return res.status(404).json({ error: 'Notice not found' });
+    }
+    const current = existing[0];
+    const finalTitle = title !== undefined && title !== null ? title : current.title;
+    const finalDate = date !== undefined && date !== null ? date : current.date;
+    const finalStatus = status !== undefined && status !== null ? status : current.status;
+    const finalCategory = category !== undefined && category !== null ? category : current.category;
+
+    const pubDate = publish_date 
+      ? new Date(publish_date).toISOString().slice(0, 19).replace('T', ' ') 
+      : (publish_date === null ? null : current.publish_date);
+
     let query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ? WHERE id = ?';
-    let params = [title, date, status, category, pubDate, id];
+    let params = [finalTitle, finalDate, finalStatus, finalCategory, pubDate, id];
 
     if (req.file) {
       filePath = await uploadToFTP(req.file.buffer, 'notices', req.file.originalname);
-      
-      const [oldRows] = await pool.query('SELECT file_path FROM notices WHERE id = ?', [id]);
-      if (oldRows.length > 0 && oldRows[0].file_path) {
-        await deleteFromFTP(oldRows[0].file_path);
+      if (current.file_path) {
+        await deleteFromFTP(current.file_path);
       }
 
       query = 'UPDATE notices SET title = ?, date = ?, status = ?, category = ?, publish_date = ?, file_path = ? WHERE id = ?';
-      params = [title, date, status, category, pubDate, filePath, id];
+      params = [finalTitle, finalDate, finalStatus, finalCategory, pubDate, filePath, id];
     }
 
     await pool.query(query, params);
-    await logActivity(req.admin, 'Notices', 'Update', `Updated notice: ${title}`);
+    await logActivity(req.admin, 'Notices', 'Update', `Updated notice: ${finalTitle}`);
     res.json({ message: 'Notice updated successfully' });
   } catch (err) {
     console.error('Error updating notice:', err);
@@ -118,7 +130,7 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
 });
 
 // DELETE /api/notices/:id — Delete a notice
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authMiddleware, requirePermission('notices'), async (req, res) => {
   const { id } = req.params;
   try {
     const [rows] = await pool.query('SELECT file_path FROM notices WHERE id = ?', [id]);

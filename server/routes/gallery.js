@@ -7,6 +7,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
@@ -38,7 +39,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/gallery — Upload a new image
-router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/', [authMiddleware, requirePermission('gallery')], upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No image uploaded.' });
   }
@@ -67,7 +68,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 });
 
 // PUT /api/gallery/:id — Update image title and category
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', [authMiddleware, requirePermission('gallery')], async (req, res) => {
   const { title, category } = req.body;
   if (!title) {
     return res.status(400).json({ error: 'Image title is required.' });
@@ -88,7 +89,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 });
 
 // DELETE /api/gallery/:id — Delete an image
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', [authMiddleware, requirePermission('gallery')], async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM gallery WHERE id = ?', [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ error: 'Image not found.' });

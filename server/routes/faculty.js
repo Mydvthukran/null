@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const { uploadToFTP, deleteFromFTP } = require('../config/ftp');
@@ -78,7 +79,7 @@ router.get('/:slug', async (req, res) => {
   }
 });
 
-router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/', [authMiddleware, requirePermission('faculty')], upload.single('image'), async (req, res) => {
   const { name, slug, designation, qualification, email, area_of_interest, vidwan_link, departments } = req.body;
   
   let imagePath = null;
@@ -125,7 +126,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 });
 
 // PUT /api/faculty/:id — Update faculty (Admin)
-router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
+router.put('/:id', [authMiddleware, requirePermission('faculty')], upload.single('image'), async (req, res) => {
   const { id } = req.params;
   const { name, slug, designation, qualification, email, area_of_interest, vidwan_link, departments } = req.body;
   
@@ -175,7 +176,7 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
 });
 
 // DELETE /api/faculty/:id — Delete faculty (Admin)
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', [authMiddleware, requirePermission('faculty')], async (req, res) => {
   const { id } = req.params;
   try {
     const [rows] = await pool.query('SELECT image_path FROM faculty WHERE id = ?', [id]);

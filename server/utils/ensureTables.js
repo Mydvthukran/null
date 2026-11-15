@@ -202,36 +202,25 @@ async function ensureTables() {
         )
       `);
 
-      // Auto-ensure super admin account exists when env credentials are provided
+      // Auto-ensure super admin account exists for Firebase Auth / environment
       const ALL_PERMISSIONS = JSON.stringify([
         'overview', 'applications', 'notices', 'documents',
-        'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances'
+        'events', 'gallery', 'faculty', 'forms', 'settings', 'menus', 'grievances', 'users'
       ]);
-      const adminUser = process.env.ADMIN_USERNAME;
-      const adminPass = process.env.ADMIN_PASSWORD;
+      const primaryEmail = (process.env.ADMIN_EMAILS || 'my3596418@gmail.com').split(',')[0].trim().toLowerCase();
 
-      if (adminUser && adminPass) {
-        const [existingAdmins] = await conn.query('SELECT * FROM admins WHERE username = ? OR id = 1', [adminUser]);
-        const hashedPassword = await bcrypt.hash(adminPass, 10);
-
-        if (existingAdmins.length === 0) {
+      try {
+        const [existingEmailAdmins] = await conn.query('SELECT id FROM admins WHERE LOWER(username) = ?', [primaryEmail]);
+        if (existingEmailAdmins.length === 0) {
+          const dummyHash = await bcrypt.hash(require('crypto').randomBytes(32).toString('hex'), 10);
           await conn.query(
             'INSERT INTO admins (username, password, name, role, permissions) VALUES (?, ?, ?, ?, ?)',
-            [adminUser, hashedPassword, 'System Admin', 'super_admin', ALL_PERMISSIONS]
+            [primaryEmail, dummyHash, 'Primary Administrator', 'super_admin', ALL_PERMISSIONS]
           );
-          console.log(`✅ Seeded super admin account: ${adminUser}`);
-        } else {
-          await conn.query(
-            'UPDATE admins SET username = ?, password = ?, role = ?, permissions = ? WHERE id = ?',
-            [adminUser, hashedPassword, 'super_admin', ALL_PERMISSIONS, existingAdmins[0].id]
-          );
-          console.log(`✅ Updated super admin credentials for: ${adminUser}`);
+          console.log(`✅ Seeded primary admin account for Firebase Auth: ${primaryEmail}`);
         }
-      } else {
-        const [existingAdmins] = await conn.query('SELECT id FROM admins LIMIT 1');
-        if (existingAdmins.length === 0) {
-          console.warn('⚠️ No admin account found. Please define ADMIN_USERNAME and ADMIN_PASSWORD in your environment variables to seed the super admin.');
-        }
+      } catch (adminErr) {
+        console.warn('⚠️ Admin seed warning:', adminErr.message);
       }
 
       console.log('✅ All database tables verified/created.');

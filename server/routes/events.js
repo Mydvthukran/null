@@ -7,6 +7,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const rateLimit = require('express-rate-limit');
@@ -44,7 +45,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/events — Add a new event
-router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
+router.post('/', [authMiddleware, requirePermission('events')], upload.single('file'), async (req, res) => {
   const { title, date, status, category } = req.body;
 
   if (!title) {
@@ -78,7 +79,7 @@ router.post('/', authMiddleware, upload.single('file'), async (req, res) => {
 });
 
 // PUT /api/events/:id — Update an event
-router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
+router.put('/:id', [authMiddleware, requirePermission('events')], upload.single('file'), async (req, res) => {
   const { id } = req.params;
   const { title, date, status, category } = req.body;
   
@@ -112,7 +113,7 @@ router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
 });
 
 // DELETE /api/events/:id — Delete an event
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', [authMiddleware, requirePermission('events')], async (req, res) => {
   const { id } = req.params;
   try {
     const [rows] = await pool.query('SELECT file_path FROM events WHERE id = ?', [id]);
@@ -150,7 +151,7 @@ router.post('/register', registerLimiter, async (req, res) => {
 });
 
 // GET /api/events/registrations/:id — Get registrations for an event (admin)
-router.get('/registrations/:id', authMiddleware, async (req, res) => {
+router.get('/registrations/:id', [authMiddleware, requirePermission('events')], async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM event_registrations WHERE event_id = ? ORDER BY id DESC', [req.params.id]);
     res.json({ registrations: rows });

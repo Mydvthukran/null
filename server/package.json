@@ -12,7 +12,7 @@
   "license": "ISC",
   "description": "Backend server for SIET college admin dashboard",
   "dependencies": {
-    "basic-ftp": "^6.2.1",
+    "basic-ftp": "^6.2.6",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -25,5 +25,8 @@
   "devDependencies": {
     "supertest": "^7.2.2",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "body-parser": ">=2.4.0"
   }
 }

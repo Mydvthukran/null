@@ -4,6 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger');
 const rateLimit = require('express-rate-limit');
@@ -15,7 +16,7 @@ const appLimiter = rateLimit({
 });
 
 // GET /api/applications — List all applications
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', [authMiddleware, requirePermission('applications')], async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM applications ORDER BY id DESC');
     res.json({ applications: rows });
@@ -26,7 +27,7 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 // GET /api/applications/:id — Get single application
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', [authMiddleware, requirePermission('applications')], async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM applications WHERE id = ?', [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ error: 'Application not found.' });
@@ -62,7 +63,7 @@ router.post('/', appLimiter, async (req, res) => {
 });
 
 // PUT /api/applications/:id/status — Update application status
-router.put('/:id/status', authMiddleware, async (req, res) => {
+router.put('/:id/status', [authMiddleware, requirePermission('applications')], async (req, res) => {
   try {
     const { status } = req.body;
     const validStatuses = ['Under Review', 'Missing Docs', 'Accepted', 'Rejected', 'Waitlisted'];

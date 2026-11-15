@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const verifyAdmin = require('../middleware/auth');
-const { requireRole } = require('../middleware/auth');
+const { requirePermission } = require('../middleware/auth');
 const { logActivity } = require('../utils/logger');
 
 // Helper to build tree
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update entire navigation structure (Admin only)
-router.put('/', verifyAdmin, requireRole('super_admin'), async (req, res) => {
+router.put('/', verifyAdmin, requirePermission('menus'), async (req, res) => {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
