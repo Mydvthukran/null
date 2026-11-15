@@ -5,8 +5,12 @@ import { HelmetProvider } from 'react-helmet-async'
 import './css/base.css'
 import App from './App.jsx'
 import ErrorBoundary from './app/ErrorBoundary.jsx'
+import { initInspectProtection } from './utils/antiInspect.js'
 
 import { DocumentProvider } from './context/DocumentContext'
+
+// Initialize production inspect and shortcut protection
+initInspectProtection();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
